@@ -1,9 +1,14 @@
 package panisz.norbert.simongumis.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
 
 @Data
-public class Gumik extends BaseEntity {
+@EqualsAndHashCode(callSuper = true)
+@Entity
+public class GumikEntity extends BaseEntity {
     private String gyarto;
     private String meret;
     private int ar;

@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class Admin extends BaseEntity {
-    private String nev;
-    private String jelszo;
+public class AutokEntity extends BaseEntity  {
+    private String gyarto;
+    private String tipus;
 }
