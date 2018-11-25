@@ -1,4 +1,4 @@
-package panisz.norbert.simungumis.entities;
+package panisz.norbert.simongumis.entities;
 
 import lombok.Data;
 
