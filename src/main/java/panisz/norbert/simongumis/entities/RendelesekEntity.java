@@ -12,6 +12,6 @@ import java.util.List;
 public class RendelesekEntity extends BaseEntity {
     private int ugyfel_id;
     private List<RendelesiEgysegEntity> rendelesek;
-    private int vegosszeg;
+    private float vegosszeg;
     private String statusz;
 }

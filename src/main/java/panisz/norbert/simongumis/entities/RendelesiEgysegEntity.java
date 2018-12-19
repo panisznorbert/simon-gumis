@@ -11,4 +11,5 @@ import javax.persistence.Entity;
 public class RendelesiEgysegEntity extends BaseEntity {
     private int termek_id;
     private int mennyiseg;
+    private float reszosszeg;
 }

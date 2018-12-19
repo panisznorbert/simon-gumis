@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 public class GumikEntity extends BaseEntity {
     private String gyarto;
     private String meret;
-    private int ar;
+    private float ar;
     private String evszak;
     private String allapot;
     private int mennyiseg;
