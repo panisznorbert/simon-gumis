@@ -14,5 +14,5 @@ public class GumikEntity extends BaseEntity {
     private int ar;
     private String evszak;
     private String allapot;
-    private int mennyiseg;
+    private int mennyisegRaktarban;
 }

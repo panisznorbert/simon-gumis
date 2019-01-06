@@ -4,11 +4,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class RendelesiEgysegEntity extends BaseEntity {
-    private int termek_id;
+    @OneToOne
+    private GumikEntity gumi;
     private int mennyiseg;
 }
