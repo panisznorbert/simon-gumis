@@ -13,4 +13,5 @@ public class RendelesiEgysegEntity extends BaseEntity {
     @OneToOne
     private GumikEntity gumi;
     private int mennyiseg;
+    private float reszosszeg;
 }
