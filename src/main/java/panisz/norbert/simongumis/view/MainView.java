@@ -19,7 +19,7 @@ import panisz.norbert.simongumis.repositories.UgyfelRepository;
 public class MainView extends VerticalLayout implements KeyNotifier {
     private UgyfelEntity ugyfel;
     TextField nev = new TextField("Név");
-    TextField tel = new TextField("Telefon");
+    TextField telefon = new TextField("Telefon");
     TextField email = new TextField("E-mail");
     Button ment = new Button("Mentés", VaadinIcon.CHECK.create());
 
@@ -27,7 +27,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
     @Autowired
     public MainView(UgyfelRepository ugyfelRepository) {
-        add(nev, tel, email, ment);
+        add(nev, telefon, email, ment);
 
         binder.bindInstanceFields(this);
 
