@@ -4,5 +4,5 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public enum RendelesStatusz {
-    KOSÁRBAN, MEGRENDELVE, VISSZAIGAZOLVA, RENDEZVE, TÖRÖLVE, ÜGYFÉL_KÉRÉSÉRE_TÖRÖLVE
+    KOSARBAN, MEGRENDELVE, VISSZAIGAZOLVA, ATVETELRE_VAR, RENDEZVE, TOROLVE
 }
