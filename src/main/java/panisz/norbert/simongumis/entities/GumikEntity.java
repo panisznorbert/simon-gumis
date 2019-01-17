@@ -11,8 +11,57 @@ import javax.persistence.Entity;
 public class GumikEntity extends BaseEntity {
     private String gyarto;
     private String meret;
-    private float ar;
+    private Float ar;
     private String evszak;
     private String allapot;
-    private int mennyisegRaktarban;
+    private Integer mennyisegRaktarban;
+
+
+    public String getGyarto() {
+        return gyarto;
+    }
+
+    public void setGyarto(String gyarto) {
+        this.gyarto = gyarto;
+    }
+
+    public String getMeret() {
+        return meret;
+    }
+
+    public void setMeret(String meret) {
+        this.meret = meret;
+    }
+
+    public Float getAr() {
+        return ar;
+    }
+
+    public void setAr(Float ar) {
+        this.ar = ar;
+    }
+
+    public String getEvszak() {
+        return evszak;
+    }
+
+    public void setEvszak(String evszak) {
+        this.evszak = evszak;
+    }
+
+    public String getAllapot() {
+        return allapot;
+    }
+
+    public void setAllapot(String allapot) {
+        this.allapot = allapot;
+    }
+
+    public Integer getMennyisegRaktarban() {
+        return mennyisegRaktarban;
+    }
+
+    public void setMennyisegRaktarban(Integer mennyisegRaktarban) {
+        this.mennyisegRaktarban = mennyisegRaktarban;
+    }
 }

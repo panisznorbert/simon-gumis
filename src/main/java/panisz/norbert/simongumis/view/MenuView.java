@@ -14,7 +14,6 @@ public class MenuView extends HorizontalLayout {
     public MenuView(){
         setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), "Gumik", e -> MainView.setTartalom("gumik")));
         setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), "Alap", e -> MainView.setTartalom("alap")));
-
         add(appLayout);
     }
 
@@ -22,4 +21,6 @@ public class MenuView extends HorizontalLayout {
         menuItem.getElement().setAttribute("theme", "icon-on-top");
         menu.addMenuItem(menuItem);
     }
+
+
 }

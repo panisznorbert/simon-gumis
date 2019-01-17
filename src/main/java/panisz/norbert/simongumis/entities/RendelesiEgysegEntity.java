@@ -12,6 +12,6 @@ import javax.persistence.OneToOne;
 public class RendelesiEgysegEntity extends BaseEntity {
     @OneToOne
     private GumikEntity gumi;
-    private int mennyiseg;
-    private float reszosszeg;
+    private Integer mennyiseg;
+    private Float reszosszeg;
 }

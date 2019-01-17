@@ -17,7 +17,7 @@ import java.util.Collection;
 
 
 public class MainViewAlap extends VerticalLayout implements KeyNotifier {
-    private UgyfelEntity ugyfel;
+
     TextField nev = new TextField("Név");
     TextField telefon = new TextField("Telefon");
     TextField email = new TextField("E-mail");
@@ -30,18 +30,16 @@ public class MainViewAlap extends VerticalLayout implements KeyNotifier {
     TextField telefon2 = new TextField("Telefon");
     TextField email2 = new TextField("E-mail");
 
-    Binder<UgyfelEntity> binder = new Binder<>(UgyfelEntity.class);
+
 
     @Autowired
     public MainViewAlap(UgyfelRepository ugyfelRepository) {
         add(nev, telefon, email, ment, betolt, db, szamol);
 
-        binder.bindInstanceFields(this);
 
-        setSpacing(true);
 
-        addKeyPressListener(Key.ENTER, e -> ugyfelRepository.save(createUgyfel(nev.getValue(), telefon.getValue(), email.getValue())));
-        ment.addClickListener(e -> ugyfelRepository.save(createUgyfel(nev.getValue(), telefon.getValue(), email.getValue())));
+        addKeyPressListener(Key.ENTER, e -> ment(ugyfelRepository));
+        ment.addClickListener(e -> ment(ugyfelRepository));
 
         betolt.addClickListener(e -> betolt(ugyfelRepository.findAll()));
 
@@ -50,8 +48,11 @@ public class MainViewAlap extends VerticalLayout implements KeyNotifier {
 
     }
 
-    private void szamol(){
-
+    private void ment(UgyfelRepository ugyfelRepository){
+        ugyfelRepository.save(createUgyfel(nev.getValue(), telefon.getValue(), email.getValue()));
+        nev.setValue("");
+        telefon.setValue("");
+        email.setValue("");
     }
 
     private void betolt(Collection<UgyfelEntity> lista){
