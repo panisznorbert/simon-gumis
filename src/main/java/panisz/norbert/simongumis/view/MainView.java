@@ -31,8 +31,8 @@ public class MainView extends VerticalLayout{
         menu = new MenuView();
         alapUgyfelRepository = ugyfelRepository;
         alapGumikRepository = gumikRepository;
-        mainViewAlap = new MainViewAlap(ugyfelRepository);
-        tartalom = mainViewAlap;
+        gumikView = new GumikView(alapGumikRepository);
+        tartalom = gumikView;
         layout.add(menu, tartalom, lab);
 
         add(layout);
@@ -52,6 +52,9 @@ public class MainView extends VerticalLayout{
         }
 
         if(menupont=="alap"){
+            if(mainViewAlap == null){
+                mainViewAlap = new MainViewAlap(alapUgyfelRepository);
+            }
             layout.remove(tartalom);
             tartalom = mainViewAlap;
             layout.add(tartalom);

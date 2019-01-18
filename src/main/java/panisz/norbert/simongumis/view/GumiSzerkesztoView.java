@@ -20,16 +20,14 @@ public class GumiSzerkesztoView extends VerticalLayout {
 
     public GumiSzerkesztoView(GumikEntity gumikEntity){
 
-        this.gyarto.setValue(gumikEntity.getGyarto());
-        this.meret.setValue(gumikEntity.getMeret());
-        this.ar.setValue(gumikEntity.getAr().toString());
-        this.evszak.setValue(gumikEntity.getEvszak());
-        this.allapot.setValue(gumikEntity.getAllapot());
-        this.darab.setValue(gumikEntity.getMennyisegRaktarban().toString());
+        gyarto.setValue(gumikEntity.getGyarto());
+        meret.setValue(gumikEntity.getMeret());
+        evszak.setValue(gumikEntity.getEvszak());
+        allapot.setValue(gumikEntity.getAllapot());
+        ar.setValue(gumikEntity.getAr().toString());
+        darab.setValue(gumikEntity.getMennyisegRaktarban().toString());
 
-
-
-        add(this.gyarto, this.meret, this.ar, this.evszak, this.allapot, this.darab);
+        add(gyarto, meret, evszak, allapot, ar, darab);
 
     }
 
