@@ -1,6 +1,5 @@
 package panisz.norbert.simongumis.view;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -41,7 +40,6 @@ public class MainView extends VerticalLayout{
 
     public static void setTartalom(String menupont) {
 
-
         if(menupont=="gumik"){
             if(gumikView == null){
                 gumikView = new GumikView(alapGumikRepository);
@@ -59,7 +57,6 @@ public class MainView extends VerticalLayout{
             tartalom = mainViewAlap;
             layout.add(tartalom);
         }
-
     }
 
 

@@ -12,8 +12,6 @@ import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
 
 
-
-
 public class Proba extends VerticalLayout implements KeyNotifier {
     private UgyfelEntity ugyfel;
     private UgyfelRepository ugyfelRepository;
@@ -45,8 +43,6 @@ public class Proba extends VerticalLayout implements KeyNotifier {
 
         save.addClickListener(e -> save());
         szamol.addClickListener(e -> db.setValue(new Integer(ugyfelRepository.findAll().size()).toString()));
-        //setVisible(false);
-
     }
 
     void save() {

@@ -36,8 +36,6 @@ public class MainViewAlap extends VerticalLayout implements KeyNotifier {
     public MainViewAlap(UgyfelRepository ugyfelRepository) {
         add(nev, telefon, email, ment, betolt, db, szamol);
 
-
-
         addKeyPressListener(Key.ENTER, e -> ment(ugyfelRepository));
         ment.addClickListener(e -> ment(ugyfelRepository));
 
