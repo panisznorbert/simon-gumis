@@ -61,9 +61,8 @@ public class MainView extends VerticalLayout{
         }
 
         if(menupont=="gumik"){
-            if(gumikView == null){
-                gumikView = new GumikView();
-            }
+            gumikView = new GumikView(alapGumikRepository, alapGumiMeretekRepository);
+
             layout.remove(tartalom);
             tartalom = gumikView;
             layout.add(tartalom);

@@ -41,4 +41,5 @@ public class GumiMeretekEntity extends BaseEntity {
     public String toString() {
         return szelesseg + "/" + profil + "/R/" + felni;
     }
+
 }
