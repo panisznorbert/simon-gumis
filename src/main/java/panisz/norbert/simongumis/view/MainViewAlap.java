@@ -38,12 +38,8 @@ public class MainViewAlap extends VerticalLayout implements KeyNotifier {
 
         addKeyPressListener(Key.ENTER, e -> ment(ugyfelRepository));
         ment.addClickListener(e -> ment(ugyfelRepository));
-
         betolt.addClickListener(e -> betolt(ugyfelRepository.findAll()));
-
         szamol.addClickListener(e -> db.setValue(new Integer(ugyfelRepository.findAll().size()).toString()));
-
-
     }
 
     private void ment(UgyfelRepository ugyfelRepository){
@@ -61,7 +57,6 @@ public class MainViewAlap extends VerticalLayout implements KeyNotifier {
         nev2.setValue(ugyfel.getNev());
         telefon2.setValue(ugyfel.getTelefon());
         email2.setValue(ugyfel.getEmail());
-
     }
 
     private UgyfelEntity createUgyfel (String nev, String telefon, String email){
@@ -72,6 +67,5 @@ public class MainViewAlap extends VerticalLayout implements KeyNotifier {
 
         return ugyfel;
     }
-
 
 }

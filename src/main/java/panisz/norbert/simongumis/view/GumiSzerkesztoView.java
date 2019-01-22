@@ -1,13 +1,13 @@
 package panisz.norbert.simongumis.view;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
+import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 
 
 public class GumiSzerkesztoView extends VerticalLayout {
@@ -41,23 +41,27 @@ public class GumiSzerkesztoView extends VerticalLayout {
         allapot.setRequired(true);
         darab.setRequired(true);
 
-        String[] meret = gumikEntity.getMeret().split("/");
-
         gyarto.setValue(gumikEntity.getGyarto());
-        meret1.setValue(meret[0]);
-        meret2.setValue(meret[1]);
-        meret3.setValue(meret[3]);
+        meret1.setValue(gumikEntity.getMeret().getSzelesseg().toString());
+        meret2.setValue(gumikEntity.getMeret().getProfil().toString());
+        meret3.setValue(gumikEntity.getMeret().getFelni().toString());
         evszak.setValue(gumikEntity.getEvszak());
         allapot.setValue(gumikEntity.getAllapot());
         ar.setValue(gumikEntity.getAr().toString());
         darab.setValue(gumikEntity.getMennyisegRaktarban().toString());
-
-        add(gyarto, meret1, meret2, meret3, evszak, allapot, ar, darab);
+        add(new HorizontalLayout(gyarto, meret1), new HorizontalLayout(meret2, meret3), new HorizontalLayout(evszak, allapot), new HorizontalLayout(ar, darab));
     }
 
-    public GumikEntity beallit(GumikEntity gumikEntity){
+
+
+    public GumikEntity beallit(GumikEntity gumikEntity, GumiMeretekRepository gumiMeretekRepository){
             gumikEntity.setGyarto(gyarto.getValue());
-            gumikEntity.setMeret(meret1.getValue() + "/" + meret2.getValue() + "/R/" + meret3.getValue());
+            GumiMeretekEntity meret = gumikEntity.getMeret();
+            meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
+            meret.setProfil(Integer.valueOf(meret2.getValue()));
+            meret.setFelni(Integer.valueOf(meret3.getValue()));
+            gumiMeretekRepository.save(meret);
+            gumikEntity.setMeret(meret);
             gumikEntity.setEvszak(evszak.getValue().toString());
             gumikEntity.setAllapot(allapot.getValue().toString());
             gumikEntity.setAr(Float.valueOf(ar.getValue()));
@@ -67,7 +71,7 @@ public class GumiSzerkesztoView extends VerticalLayout {
     }
 
     public String validacio() {
-        return GumikView.getString(gyarto, evszak, allapot, ar, darab, meret1, meret2, meret3);
+        return GumikKezeleseView.getString(gyarto, evszak, allapot, ar, darab, meret1, meret2, meret3);
     }
 
 

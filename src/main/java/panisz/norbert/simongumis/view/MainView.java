@@ -4,6 +4,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
 
@@ -16,9 +17,11 @@ public class MainView extends VerticalLayout{
 
     private static UgyfelRepository alapUgyfelRepository = null;
     private static GumikRepository alapGumikRepository = null;
+    private static GumiMeretekRepository alapGumiMeretekRepository = null;
 
-    private static GumikView gumikView = null;
+    private static GumikKezeleseView gumikKezeleseView = null;
     private static MainViewAlap mainViewAlap = null;
+    private static GumikView gumikView = null;
 
     private static Component menu = new HorizontalLayout();
     private static Component tartalom = new HorizontalLayout();
@@ -26,26 +29,25 @@ public class MainView extends VerticalLayout{
 
 
     @Autowired
-    public MainView(UgyfelRepository ugyfelRepository, GumikRepository gumikRepository) {
+    public MainView(UgyfelRepository ugyfelRepository, GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository) {
         menu = new MenuView();
         alapUgyfelRepository = ugyfelRepository;
         alapGumikRepository = gumikRepository;
-        gumikView = new GumikView(alapGumikRepository);
-        tartalom = gumikView;
+        alapGumiMeretekRepository = gumiMeretekRepository;
+        gumikKezeleseView = new GumikKezeleseView(alapGumikRepository, alapGumiMeretekRepository);
+        tartalom = gumikKezeleseView;
         layout.add(menu, tartalom, lab);
-
         add(layout);
     }
 
 
     public static void setTartalom(String menupont) {
-
-        if(menupont=="gumik"){
-            if(gumikView == null){
-                gumikView = new GumikView(alapGumikRepository);
+        if(menupont=="gumik_kezelese"){
+            if(gumikKezeleseView == null){
+                gumikKezeleseView = new GumikKezeleseView(alapGumikRepository, alapGumiMeretekRepository);
             }
             layout.remove(tartalom);
-            tartalom = gumikView;
+            tartalom = gumikKezeleseView;
             layout.add(tartalom);
         }
 
@@ -55,6 +57,15 @@ public class MainView extends VerticalLayout{
             }
             layout.remove(tartalom);
             tartalom = mainViewAlap;
+            layout.add(tartalom);
+        }
+
+        if(menupont=="gumik"){
+            if(gumikView == null){
+                gumikView = new GumikView();
+            }
+            layout.remove(tartalom);
+            tartalom = gumikView;
             layout.add(tartalom);
         }
     }

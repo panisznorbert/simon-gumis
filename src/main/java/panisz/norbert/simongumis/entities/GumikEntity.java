@@ -4,13 +4,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class GumikEntity extends BaseEntity {
     private String gyarto;
-    private String meret;
+    @OneToOne
+    private GumiMeretekEntity meret;
     private Float ar;
     private String evszak;
     private String allapot;
@@ -24,11 +26,11 @@ public class GumikEntity extends BaseEntity {
         this.gyarto = gyarto;
     }
 
-    public String getMeret() {
+    public GumiMeretekEntity getMeret() {
         return meret;
     }
 
-    public void setMeret(String meret) {
+    public void setMeret(GumiMeretekEntity meret) {
         this.meret = meret;
     }
 
@@ -63,14 +65,4 @@ public class GumikEntity extends BaseEntity {
     public void setMennyisegRaktarban(Integer mennyisegRaktarban) {
         this.mennyisegRaktarban = mennyisegRaktarban;
     }
-    /**
-    public GumikEntity(String gyarto, String meret, Float ar, String evszak, String allapot, Integer mennyisegRaktarban) {
-        this.gyarto = gyarto;
-        this.meret = meret;
-        this.ar = ar;
-        this.evszak = evszak;
-        this.allapot = allapot;
-        this.mennyisegRaktarban = mennyisegRaktarban;
-    }
- */
 }
