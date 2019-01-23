@@ -64,7 +64,7 @@ public class GumiSzerkesztoView extends VerticalLayout {
             gumikEntity.setMeret(meret);
             gumikEntity.setEvszak(evszak.getValue().toString());
             gumikEntity.setAllapot(allapot.getValue().toString());
-            gumikEntity.setAr(Float.valueOf(ar.getValue()));
+            gumikEntity.setAr(Integer.valueOf(ar.getValue()));
             gumikEntity.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
 
         return gumikEntity;

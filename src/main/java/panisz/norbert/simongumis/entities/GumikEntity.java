@@ -13,7 +13,7 @@ public class GumikEntity extends BaseEntity {
     private String gyarto;
     @OneToOne
     private GumiMeretekEntity meret;
-    private Float ar;
+    private Integer ar;
     private String evszak;
     private String allapot;
     private Integer mennyisegRaktarban;
@@ -34,11 +34,11 @@ public class GumikEntity extends BaseEntity {
         this.meret = meret;
     }
 
-    public Float getAr() {
+    public Integer getAr() {
         return ar;
     }
 
-    public void setAr(Float ar) {
+    public void setAr(Integer ar) {
         this.ar = ar;
     }
 
