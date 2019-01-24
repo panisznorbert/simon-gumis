@@ -11,16 +11,16 @@ public class MenuView extends HorizontalLayout {
     AppLayoutMenu menu = appLayout.createMenu();
 
     public MenuView(){
-        setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> MainView.setTartalom("alap")));
-        setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> MainView.setTartalom("alap")));
-        setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e -> MainView.setTartalom("gumik_kezelese")));
-        setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> MainView.setTartalom("gumik")));
-        setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> MainView.setTartalom("alap")));
-        setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> MainView.setTartalom("alap")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> MainView.setTartalom("alap")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> MainView.setTartalom("alap")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e -> MainView.setTartalom("gumik_kezelese")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> MainView.setTartalom("gumik")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> MainView.setTartalom("alap")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> MainView.setTartalom("alap")));
         add(appLayout);
     }
 
-    private void setMenuItem(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {
+    private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {
         menuItem.getElement().setAttribute("theme", "icon-on-top");
         menu.addMenuItem(menuItem);
     }

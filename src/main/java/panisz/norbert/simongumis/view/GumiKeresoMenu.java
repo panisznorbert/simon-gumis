@@ -28,7 +28,6 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private HorizontalLayout meret2cb = new HorizontalLayout(meret2);
     private HorizontalLayout meret3cb = new HorizontalLayout(meret3);
 
-
     private ComboBox evszak = new ComboBox("Évszak", "Téli", "Nyári");
     private ComboBox allapot = new ComboBox("Állapot", "Új","Használt");
 
@@ -40,20 +39,16 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private Button alaphelyzet = new Button("Alaphelyzet");
     private Button keres = new Button("Keresés");
 
-
     private HorizontalLayout menu1 = new HorizontalLayout();
     private HorizontalLayout menu2 = new HorizontalLayout();
     private VerticalLayout menu = new VerticalLayout();
 
 
     public GumiKeresoMenu(GumiMeretekRepository gumiMeretekRepository){
-
         alapGumiMeretekRepository = gumiMeretekRepository;
         init();
         egyeb.addClickListener(e -> tovabbiFeltetelek());
         alaphelyzet.addClickListener(e -> init());
-        evszak.addValueChangeListener(e -> setEvszak());
-        allapot.addValueChangeListener(e -> setAllapot());
         keres.addClickListener(e -> adatokBeallitasa());
 
     }
@@ -77,24 +72,19 @@ public class GumiKeresoMenu extends HorizontalLayout {
             vegAr=Integer.valueOf(arig.getValue());
         }
 
-
-    }
-
-    private void setEvszak(){
         if(evszak.isEmpty()){
             kriterium.setEvszak("");
         }else{
             kriterium.setEvszak(evszak.getValue().toString());
         }
-    }
 
-    private void setAllapot(){
         if(allapot.isEmpty()){
             kriterium.setAllapot("");
         }else{
             kriterium.setAllapot(allapot.getValue().toString());
         }
     }
+
 
     private void szelessegKivalasztas(){
         if(meret1.isEmpty()){
