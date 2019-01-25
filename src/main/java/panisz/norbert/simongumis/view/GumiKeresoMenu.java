@@ -5,6 +5,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 
 public class GumiKeresoMenu extends HorizontalLayout {
@@ -43,6 +45,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private HorizontalLayout menu2 = new HorizontalLayout();
     private VerticalLayout menu = new VerticalLayout();
 
+    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     public GumiKeresoMenu(GumiMeretekRepository gumiMeretekRepository){
         alapGumiMeretekRepository = gumiMeretekRepository;
@@ -87,6 +90,62 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
 
     private void szelessegKivalasztas(){
+        Integer beallito = 111;
+        if(meret1.isEmpty()){
+            beallito = beallito - 100;
+        }
+        if(meret2.isEmpty()) {
+            beallito = beallito - 10;
+        }
+        if(meret3.isEmpty()) {
+            beallito = beallito - 1;
+        }
+
+        switch(beallito){
+            case 0:{
+                meretFeltolto(alapGumiMeretekRepository.findAll(), 0, 0, 0);
+                setMeret(0, 0, 0);
+                break;
+            }
+            case 1:{
+                meretFeltolto(alapGumiMeretekRepository.findAllByFelni(Integer.valueOf(meret3.getValue())), 0, 0, 1);
+                setMeret(0, 0, Integer.valueOf(meret3.getValue()));
+                break;
+            }
+            case 10:{
+                meretFeltolto(alapGumiMeretekRepository.findAllByProfil(Integer.valueOf(meret2.getValue())),0 ,1 ,0);
+                setMeret(0, Integer.valueOf(meret2.getValue()), 0);
+                break;
+            }
+            case 11:{
+                meretFeltolto(alapGumiMeretekRepository.findAllByProfilAndFelni(Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue())),0,1,1);
+                setMeret(0, Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue()));
+                break;
+            }
+            case 100:{
+                meretFeltolto(alapGumiMeretekRepository.findAllBySzelesseg(Integer.valueOf(meret1.getValue())), 1, 0, 0);
+                setMeret(Integer.valueOf(meret1.getValue()), 0, 0);
+                break;
+            }
+            case 101:{
+                meretFeltolto(alapGumiMeretekRepository.findAllBySzelessegAndFelni(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret3.getValue())), 1, 0, 1);
+                setMeret(Integer.valueOf(meret1.getValue()), 0, Integer.valueOf(meret3.getValue()));
+                break;
+            }
+            case 110:{
+                meretFeltolto(alapGumiMeretekRepository.findAllBySzelessegAndProfil(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue())), 1, 1, 0);
+                setMeret(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue()), 0);
+                break;
+            }
+            case 111:{
+                setMeret(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue()));
+                break;
+            }
+
+        }
+
+
+        /*
         if(meret1.isEmpty()){
             if(meret2.isEmpty()){
                 if(meret3.isEmpty()){
@@ -137,6 +196,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
                 }
             }
         }
+        */
 
     }
 
