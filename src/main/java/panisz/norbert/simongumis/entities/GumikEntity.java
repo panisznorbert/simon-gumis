@@ -18,4 +18,8 @@ public class GumikEntity extends BaseEntity {
     private String allapot;
     private Integer mennyisegRaktarban;
 
+    @Override
+    public String toString() {
+        return gyarto + " " + meret + " " + evszak + " " + allapot;
+    }
 }

@@ -1,14 +1,26 @@
 package panisz.norbert.simongumis.view;
 
+import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.NativeButtonRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
+import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -22,6 +34,11 @@ public class GumikView extends HorizontalLayout {
     private VerticalLayout tartalom = new VerticalLayout();
     private GumiKeresoMenu menu;
     private Grid<GumikEntity> gumik = new Grid<>();
+
+    //Ezt át kell vinni a kosár view-ra és a kosárview-ot létre kell hozni az oldal megnyitásakor és minden rendelési egységet hozzáadni
+    private List<RendelesiEgysegEntity> kosar = null;
+
+    private Dialog darabszamAblak;
 
     public GumikView(GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository){
         alapGumikRepository = gumikRepository;
@@ -40,9 +57,39 @@ public class GumikView extends HorizontalLayout {
         gumik.addColumn(GumikEntity::getAllapot).setHeader("Állapot");
         gumik.addColumn(GumikEntity::getAr).setHeader("Ár");
         gumik.addColumn(GumikEntity::getMennyisegRaktarban).setHeader("Raktáron (db)");
-        gumik.setWidth("800px");
-
+        gumik.addColumn(new NativeButtonRenderer<>("kosárba", item -> kosarbahelyezes(item)));
+        gumik.setWidth("950px");
         add(tartalom);
+    }
+
+
+    private void kosarbahelyezes(GumikEntity item){
+        RendelesiEgysegEntity rendeles = new RendelesiEgysegEntity();
+
+        Label tipus = new Label(item.toString() + " típusú gumiból");
+        Label hiba = new Label();
+        TextField darab = new TextField();
+        darab.setPattern("[0-9]*");
+        darab.setSuffixComponent(new Span("Db"));
+        VerticalLayout leiras = new VerticalLayout(tipus, hiba, darab);
+        Button megse  = new Button("Mégse");
+        Button ok  = new Button("Ok");
+        HorizontalLayout gombok = new HorizontalLayout(ok, megse);
+        darabszamAblak = new Dialog(leiras, gombok);
+        megse.addClickListener(e -> darabszamAblak.close());
+        ok.addClickListener( e -> {
+            if(darab.isInvalid() || Integer.valueOf(darab.getValue())>item.getMennyisegRaktarban()){
+                hiba.setText("Hibás adat (maximum rendelhető: " + item.getMennyisegRaktarban().toString() + " db)");
+                darab.setInvalid(true);
+            }else{
+                rendeles.setGumi(item);
+                rendeles.setMennyiseg(Integer.valueOf(darab.getValue()));
+                rendeles.setReszosszeg(item.getAr()*Integer.valueOf(darab.getValue()));
+                darabszamAblak.close();
+            }
+        });
+        darabszamAblak.open();
+        darabszamAblak.setWidth("400px");
     }
 
     public void gumikTablaFeltolt(GumikEntity szures){
