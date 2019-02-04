@@ -1,18 +1,14 @@
 package panisz.norbert.simongumis.view;
 
-import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
-import com.vaadin.flow.data.renderer.TextRenderer;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
@@ -35,9 +31,6 @@ public class GumikView extends HorizontalLayout {
     private GumiKeresoMenu menu;
     private Grid<GumikEntity> gumik = new Grid<>();
 
-    //Ezt át kell vinni a kosár view-ra és a kosárview-ot létre kell hozni az oldal megnyitásakor és minden rendelési egységet hozzáadni
-    private List<RendelesiEgysegEntity> kosar = null;
-
     private Dialog darabszamAblak;
 
     public GumikView(GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository){
@@ -57,16 +50,15 @@ public class GumikView extends HorizontalLayout {
         gumik.addColumn(GumikEntity::getAllapot).setHeader("Állapot");
         gumik.addColumn(GumikEntity::getAr).setHeader("Ár");
         gumik.addColumn(GumikEntity::getMennyisegRaktarban).setHeader("Raktáron (db)");
-        gumik.addColumn(new NativeButtonRenderer<>("kosárba", item -> kosarbahelyezes(item)));
+        gumik.addColumn(new NativeButtonRenderer<>("kosárba", item -> kosarbahelyezesAblak(item)));
         gumik.setWidth("950px");
+        gumikTablaFeltolt(menu.getKriterium());
         add(tartalom);
     }
 
 
-    private void kosarbahelyezes(GumikEntity item){
-        RendelesiEgysegEntity rendeles = new RendelesiEgysegEntity();
-
-        Label tipus = new Label(item.toString() + " típusú gumiból");
+    private void kosarbahelyezesAblak(GumikEntity gumi){
+        Label tipus = new Label(gumi.toString() + " típusú gumiból");
         Label hiba = new Label();
         TextField darab = new TextField();
         darab.setPattern("[0-9]*");
@@ -78,18 +70,35 @@ public class GumikView extends HorizontalLayout {
         darabszamAblak = new Dialog(leiras, gombok);
         megse.addClickListener(e -> darabszamAblak.close());
         ok.addClickListener( e -> {
-            if(darab.isInvalid() || Integer.valueOf(darab.getValue())>item.getMennyisegRaktarban()){
-                hiba.setText("Hibás adat (maximum rendelhető: " + item.getMennyisegRaktarban().toString() + " db)");
+            if(darab.isInvalid() || Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()){
+                hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db)");
                 darab.setInvalid(true);
-            }else{
-                rendeles.setGumi(item);
-                rendeles.setMennyiseg(Integer.valueOf(darab.getValue()));
-                rendeles.setReszosszeg(item.getAr()*Integer.valueOf(darab.getValue()));
+            }
+            if(!darab.isInvalid() && !MainView.getFomenu().getAktualisRendelesek().getRendelesiEgysegek().isEmpty()){
+                for(RendelesiEgysegEntity rendeles:KosarView.getAlapRendelesEntity().getRendelesiEgysegek()) {
+                    if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
+                        hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
+                        darab.setInvalid(true);
+                    }
+                }
+            }
+            if(!darab.isInvalid()){
+                kosarbaRak(gumi, Integer.valueOf(darab.getValue()));
                 darabszamAblak.close();
             }
         });
         darabszamAblak.open();
         darabszamAblak.setWidth("400px");
+
+    }
+
+    private void kosarbaRak(GumikEntity gumi, Integer darab){
+        RendelesiEgysegEntity rendeles = new RendelesiEgysegEntity();
+        rendeles.setGumi(gumi);
+        rendeles.setMennyiseg(darab);
+        rendeles.setReszosszeg(gumi.getAr()*darab);
+
+        MainView.kosarhozAd(rendeles);
     }
 
     public void gumikTablaFeltolt(GumikEntity szures){
@@ -156,6 +165,7 @@ public class GumikView extends HorizontalLayout {
     }
 
     private boolean adottArraSzurtE(Integer aktualisAr){
+        LOGGER.info(GumiKeresoMenu.getKezdoAr().toString());
         return aktualisAr < GumiKeresoMenu.getKezdoAr() || (GumiKeresoMenu.getVegAr() != 0 && aktualisAr > GumiKeresoMenu.getVegAr());
     }
 

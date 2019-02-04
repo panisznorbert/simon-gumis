@@ -4,11 +4,19 @@ import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import lombok.Data;
+import panisz.norbert.simongumis.entities.RendelesEntity;
+import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 
+@Data
 public class MenuView extends HorizontalLayout {
     AppLayout appLayout = new AppLayout();
     AppLayoutMenu menu = appLayout.createMenu();
+
+    private RendelesEntity aktualisRendelesek = new RendelesEntity();
 
     public MenuView(){
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> MainView.setTartalom("alap")));
@@ -16,8 +24,11 @@ public class MenuView extends HorizontalLayout {
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e -> MainView.setTartalom("gumik_kezelese")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> MainView.setTartalom("gumik")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> MainView.setTartalom("alap")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> MainView.setTartalom("alap")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> MainView.setTartalom("kosar")));
         add(appLayout);
+
+        List<RendelesiEgysegEntity> rendelesek = new ArrayList<>();
+        aktualisRendelesek.setRendelesiEgysegek(rendelesek);
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {

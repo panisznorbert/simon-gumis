@@ -3,14 +3,15 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
 
 
 @Route
-
 public class MainView extends VerticalLayout{
 
     private static VerticalLayout layout = new VerticalLayout();
@@ -22,15 +23,17 @@ public class MainView extends VerticalLayout{
     private static GumikKezeleseView gumikKezeleseView = null;
     private static MainViewAlap mainViewAlap = null;
     private static GumikView gumikView = null;
+    private static KosarView kosarView = null;
 
-    private static Component menu = new HorizontalLayout();
+    private static MenuView fomenu = new MenuView();
+
+    private static Component menu = new HorizontalLayout(fomenu);
     private static Component tartalom = new HorizontalLayout();
     private static Component lab = new HorizontalLayout();
 
 
     @Autowired
     public MainView(UgyfelRepository ugyfelRepository, GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository) {
-        menu = new MenuView();
         alapUgyfelRepository = ugyfelRepository;
         alapGumikRepository = gumikRepository;
         alapGumiMeretekRepository = gumiMeretekRepository;
@@ -42,7 +45,7 @@ public class MainView extends VerticalLayout{
 
 
     public static void setTartalom(String menupont) {
-        if(menupont=="gumik_kezelese"){
+        if("gumik_kezelese".equals(menupont)){
             if(gumikKezeleseView == null){
                 gumikKezeleseView = new GumikKezeleseView(alapGumikRepository, alapGumiMeretekRepository);
             }
@@ -51,7 +54,7 @@ public class MainView extends VerticalLayout{
             layout.add(tartalom);
         }
 
-        if(menupont=="alap"){
+        if("alap".equals(menupont)){
             if(mainViewAlap == null){
                 mainViewAlap = new MainViewAlap(alapUgyfelRepository);
             }
@@ -60,14 +63,44 @@ public class MainView extends VerticalLayout{
             layout.add(tartalom);
         }
 
-        if(menupont=="gumik"){
+        if("gumik".equals(menupont)){
             gumikView = new GumikView(alapGumikRepository, alapGumiMeretekRepository);
 
             layout.remove(tartalom);
             tartalom = gumikView;
             layout.add(tartalom);
         }
+
+        if("kosar".equals(menupont)){
+            kosarView = new KosarView(fomenu.getAktualisRendelesek());
+
+            layout.remove(tartalom);
+            tartalom = kosarView;
+            layout.add(tartalom);
+        }
     }
 
+    public static void kosarhozAd(RendelesiEgysegEntity rendelesiEgysegEntity){
+        Boolean benneVolt = false;
+        for(RendelesiEgysegEntity aktualisRendelesiEgyseg:fomenu.getAktualisRendelesek().getRendelesiEgysegek()){
+            if(aktualisRendelesiEgyseg.getGumi().equals(rendelesiEgysegEntity.getGumi())){
+                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg))
+                        .setMennyiseg(
+                                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg)).getMennyiseg()+rendelesiEgysegEntity.getMennyiseg()
+                        );
+                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg))
+                        .setReszosszeg(
+                                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg)).getReszosszeg()+rendelesiEgysegEntity.getReszosszeg()
+                        );
+                benneVolt = true;
+            }
+        }
+        if(!benneVolt){
+            fomenu.getAktualisRendelesek().getRendelesiEgysegek().add(rendelesiEgysegEntity);
+        }
+    }
 
+    public static MenuView getFomenu() {
+        return fomenu;
+    }
 }
