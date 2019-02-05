@@ -16,7 +16,6 @@ import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -165,7 +164,6 @@ public class GumikView extends HorizontalLayout {
     }
 
     private boolean adottArraSzurtE(Integer aktualisAr){
-        LOGGER.info(GumiKeresoMenu.getKezdoAr().toString());
         return aktualisAr < GumiKeresoMenu.getKezdoAr() || (GumiKeresoMenu.getVegAr() != 0 && aktualisAr > GumiKeresoMenu.getVegAr());
     }
 

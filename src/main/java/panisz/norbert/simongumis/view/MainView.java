@@ -78,6 +78,13 @@ public class MainView extends VerticalLayout{
             tartalom = kosarView;
             layout.add(tartalom);
         }
+
+        if("idopont_foglalas".equals(menupont)){
+
+            layout.remove(tartalom);
+            tartalom = new IdopontFoglalasView();
+            layout.add(tartalom);
+        }
     }
 
     public static void kosarhozAd(RendelesiEgysegEntity rendelesiEgysegEntity){

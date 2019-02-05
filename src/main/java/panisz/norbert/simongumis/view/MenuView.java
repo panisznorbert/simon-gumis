@@ -23,7 +23,7 @@ public class MenuView extends HorizontalLayout {
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> MainView.setTartalom("alap")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e -> MainView.setTartalom("gumik_kezelese")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> MainView.setTartalom("gumik")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> MainView.setTartalom("alap")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> MainView.setTartalom("idopont_foglalas")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> MainView.setTartalom("kosar")));
         add(appLayout);
 
