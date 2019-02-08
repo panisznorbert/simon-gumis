@@ -14,7 +14,6 @@ import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
-
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -74,7 +73,7 @@ public class GumikView extends HorizontalLayout {
                 darab.setInvalid(true);
             }
             if(!darab.isInvalid() && !MainView.getFomenu().getAktualisRendelesek().getRendelesiEgysegek().isEmpty()){
-                for(RendelesiEgysegEntity rendeles:KosarView.getAlapRendelesEntity().getRendelesiEgysegek()) {
+                for(RendelesiEgysegEntity rendeles:MainView.getFomenu().getAktualisRendelesek().getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);

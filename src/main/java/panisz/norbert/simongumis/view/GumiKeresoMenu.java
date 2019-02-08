@@ -9,7 +9,6 @@ import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

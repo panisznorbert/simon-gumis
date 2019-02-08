@@ -1,4 +1,5 @@
 package panisz.norbert.simongumis.view;
+
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
@@ -7,7 +8,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import lombok.Data;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 

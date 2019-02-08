@@ -3,7 +3,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;

@@ -7,7 +7,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import panisz.norbert.simongumis.LoggerExample;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
