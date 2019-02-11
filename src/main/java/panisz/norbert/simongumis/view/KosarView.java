@@ -39,21 +39,20 @@ public class KosarView extends HorizontalLayout {
     public KosarView(RendelesEntity rendelesEntity){
         alapRendelesEntity = rendelesEntity;
 
-        if(rendelesEntity != null && !rendelesEntity.getRendelesiEgysegek().isEmpty()){
-            init(rendelesEntity);
+        if(alapRendelesEntity != null && !alapRendelesEntity.getRendelesiEgysegek().isEmpty()){
+            init();
         }
-
     }
 
-    private void init(RendelesEntity rendelesEntity){
+    private void init(){
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Összeg");
         rendelesekTabla.setWidth("600px");
-        vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
+        vegosszeg.setValue(alapRendelesEntity.getVegosszeg().toString());
         vegosszeg.setSuffixComponent(new Span("Ft"));
         vegosszeg.setReadOnly(true);
-        rendelesekTablaFeltolt(rendelesEntity.getRendelesiEgysegek());
+        rendelesekTablaFeltolt(alapRendelesEntity.getRendelesiEgysegek());
         tartalom.add(rendelesekTabla, vegosszeg, vevoAdatai, gombok);
         add(tartalom);
         tovabb.addClickListener(e -> megrendeles());
