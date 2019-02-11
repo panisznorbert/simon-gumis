@@ -5,9 +5,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
-import panisz.norbert.simongumis.repositories.GumikRepository;
-import panisz.norbert.simongumis.repositories.UgyfelRepository;
+import panisz.norbert.simongumis.entities.UgyfelEntity;
+import panisz.norbert.simongumis.repositories.*;
+
+import java.util.List;
 
 
 @Route
@@ -18,6 +19,8 @@ public class MainView extends VerticalLayout{
     private static UgyfelRepository alapUgyfelRepository = null;
     private static GumikRepository alapGumikRepository = null;
     private static GumiMeretekRepository alapGumiMeretekRepository = null;
+    private static RendelesRepository alapRendelesRepository = null;
+    private static RendelesiEgysegRepository alapRendelesiEgysegRepository = null;
 
     private static GumikKezeleseView gumikKezeleseView = null;
     private static MainViewAlap mainViewAlap = null;
@@ -32,10 +35,12 @@ public class MainView extends VerticalLayout{
 
 
     @Autowired
-    public MainView(UgyfelRepository ugyfelRepository, GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository) {
+    public MainView(UgyfelRepository ugyfelRepository, GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository, RendelesRepository rendelesRepository, RendelesiEgysegRepository rendelesiEgysegRepository) {
         alapUgyfelRepository = ugyfelRepository;
         alapGumikRepository = gumikRepository;
         alapGumiMeretekRepository = gumiMeretekRepository;
+        alapRendelesRepository = rendelesRepository;
+        alapRendelesiEgysegRepository = rendelesiEgysegRepository;
         gumikKezeleseView = new GumikKezeleseView(alapGumikRepository, alapGumiMeretekRepository);
         tartalom = gumikKezeleseView;
         layout.add(menu, tartalom, lab);
@@ -71,7 +76,7 @@ public class MainView extends VerticalLayout{
         }
 
         if("kosar".equals(menupont)){
-            kosarView = new KosarView(fomenu.getAktualisRendelesek());
+            kosarView = new KosarView(fomenu.getAktualisRendelesek(), alapRendelesRepository, alapUgyfelRepository, alapRendelesiEgysegRepository);
 
             layout.remove(tartalom);
             tartalom = kosarView;
@@ -82,6 +87,13 @@ public class MainView extends VerticalLayout{
 
             layout.remove(tartalom);
             tartalom = new IdopontFoglalasView();
+            layout.add(tartalom);
+        }
+
+        if("rendelesek".equals(menupont)){
+
+            layout.remove(tartalom);
+            tartalom = new RendelesekView(alapRendelesRepository);
             layout.add(tartalom);
         }
     }
@@ -103,10 +115,25 @@ public class MainView extends VerticalLayout{
         }
         if(!benneVolt){
             fomenu.getAktualisRendelesek().getRendelesiEgysegek().add(rendelesiEgysegEntity);
+
         }
+        fomenu.getAktualisRendelesek().setVegosszeg(vegosszegSzamol(fomenu.getAktualisRendelesek().getRendelesiEgysegek()));
+    }
+
+    private static Integer vegosszegSzamol(List<RendelesiEgysegEntity> rendelesiEgysegek){
+        Integer ossz = 0;
+        for (RendelesiEgysegEntity rendelesiEgysegEntity:rendelesiEgysegek) {
+            ossz += rendelesiEgysegEntity.getReszosszeg();
+        }
+        return ossz;
     }
 
     public static MenuView getFomenu() {
         return fomenu;
     }
+
+    public static RendelesRepository getAlapRendelesRepository() {
+        return alapRendelesRepository;
+    }
+
 }

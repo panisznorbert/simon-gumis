@@ -17,6 +17,5 @@ public class RendelesEntity extends BaseEntity {
     @OneToMany
     private List<RendelesiEgysegEntity> rendelesiEgysegek;
     private Integer vegosszeg;
-    @Embedded
-    private RendelesStatusz statusz;
+    private String statusz;
 }

@@ -6,4 +6,5 @@ import panisz.norbert.simongumis.entities.UgyfelEntity;
 
 @Repository
 public interface UgyfelRepository extends JpaRepository<UgyfelEntity, Integer> {
+
 }

@@ -95,7 +95,7 @@ public class GumikView extends HorizontalLayout {
         rendeles.setGumi(gumi);
         rendeles.setMennyiseg(darab);
         rendeles.setReszosszeg(gumi.getAr()*darab);
-
+        LOGGER.info(rendeles.toString());
         MainView.kosarhozAd(rendeles);
     }
 

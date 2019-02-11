@@ -16,7 +16,7 @@ public class MenuView extends HorizontalLayout {
     AppLayout appLayout = new AppLayout();
     AppLayoutMenu menu = appLayout.createMenu();
 
-    private RendelesEntity aktualisRendelesek = new RendelesEntity();
+    private RendelesEntity aktualisRendelesek;
 
     public MenuView(){
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> MainView.setTartalom("alap")));
@@ -25,15 +25,21 @@ public class MenuView extends HorizontalLayout {
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> MainView.setTartalom("gumik")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> MainView.setTartalom("idopont_foglalas")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> MainView.setTartalom("kosar")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> MainView.setTartalom("rendelesek")));
         add(appLayout);
 
-        List<RendelesiEgysegEntity> rendelesek = new ArrayList<>();
-        aktualisRendelesek.setRendelesiEgysegek(rendelesek);
+        aktualisRendelesekInit();
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {
         menuItem.getElement().setAttribute("theme", "icon-on-top");
         menu.addMenuItem(menuItem);
+    }
+
+    public void aktualisRendelesekInit(){
+        aktualisRendelesek = new RendelesEntity();
+        List<RendelesiEgysegEntity> rendelesek = new ArrayList<>();
+        aktualisRendelesek.setRendelesiEgysegek(rendelesek);
     }
 
 }
