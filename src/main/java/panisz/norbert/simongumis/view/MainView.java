@@ -5,7 +5,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.*;
 
 import java.util.List;
@@ -76,7 +75,7 @@ public class MainView extends VerticalLayout{
         }
 
         if("kosar".equals(menupont)){
-            kosarView = new KosarView(fomenu.getAktualisRendelesek(), alapRendelesRepository, alapUgyfelRepository, alapRendelesiEgysegRepository);
+            kosarView = new KosarView(fomenu.getAktualisRendelesek());
 
             layout.remove(tartalom);
             tartalom = kosarView;
@@ -136,4 +135,11 @@ public class MainView extends VerticalLayout{
         return alapRendelesRepository;
     }
 
+    public static RendelesiEgysegRepository getAlapRendelesiEgysegRepository() {
+        return alapRendelesiEgysegRepository;
+    }
+
+    public static UgyfelRepository getAlapUgyfelRepository() {
+        return alapUgyfelRepository;
+    }
 }
