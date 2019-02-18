@@ -22,7 +22,6 @@ public class MainView extends VerticalLayout{
     private static RendelesiEgysegRepository alapRendelesiEgysegRepository = null;
 
     private static GumikKezeleseView gumikKezeleseView = null;
-    private static MainViewAlap mainViewAlap = null;
     private static GumikView gumikView = null;
     private static KosarView kosarView = null;
 
@@ -54,15 +53,6 @@ public class MainView extends VerticalLayout{
             }
             layout.remove(tartalom);
             tartalom = gumikKezeleseView;
-            layout.add(tartalom);
-        }
-
-        if("alap".equals(menupont)){
-            if(mainViewAlap == null){
-                mainViewAlap = new MainViewAlap(alapUgyfelRepository);
-            }
-            layout.remove(tartalom);
-            tartalom = mainViewAlap;
             layout.add(tartalom);
         }
 

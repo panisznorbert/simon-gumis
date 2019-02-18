@@ -14,6 +14,7 @@ import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,7 +24,7 @@ import static panisz.norbert.simongumis.entities.RendelesStatusz.MEGRENDELVE;
 public class KosarView extends HorizontalLayout {
     private RendelesEntity alapRendelesEntity = null;
 
-    private VerticalLayout tartalom = new VerticalLayout();
+    private HorizontalLayout tartalom = new HorizontalLayout();
     private Grid<RendelesiEgysegEntity> rendelesekTabla = new Grid<>();
 
     private TextField nev = new TextField("Név:");
@@ -53,7 +54,7 @@ public class KosarView extends HorizontalLayout {
         vegosszeg.setSuffixComponent(new Span("Ft"));
         vegosszeg.setReadOnly(true);
         rendelesekTablaFeltolt(alapRendelesEntity.getRendelesiEgysegek());
-        tartalom.add(rendelesekTabla, vegosszeg, vevoAdatai, gombok);
+        tartalom.add(new VerticalLayout(rendelesekTabla, vegosszeg), new VerticalLayout(vevoAdatai, gombok));
         add(tartalom);
         tovabb.addClickListener(e -> megrendeles());
     }
@@ -91,7 +92,8 @@ public class KosarView extends HorizontalLayout {
             LOGGER.info(rendelesek.getUgyfel().toString());
             LOGGER.info(rendelesek.getStatusz());
             LOGGER.info(rendelesek.getVegosszeg().toString());
-            for (RendelesiEgysegEntity rendeles : rendelesek.getRendelesiEgysegek()) {
+            ArrayList<RendelesiEgysegEntity> rendelesiEgysegek = new ArrayList<>(rendelesek.getRendelesiEgysegek());
+            for (RendelesiEgysegEntity rendeles : rendelesiEgysegek) {
                 LOGGER.info(rendeles.getGumi().toString() + " " + rendeles.getMennyiseg() + " " + rendeles.getReszosszeg());
             }
 

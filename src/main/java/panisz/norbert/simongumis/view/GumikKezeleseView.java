@@ -58,7 +58,13 @@ public class GumikKezeleseView extends HorizontalLayout {
         hozzaad.addClickListener(e -> ment());
         torol.addClickListener(e -> mezokInit());
         eltavolit.addClickListener(e -> torles());
-        modosit.addClickListener(e -> szerkesztes());
+        modosit.addClickListener(e -> {
+            if(!grid.getSelectedItems().isEmpty()){
+                szerkesztes(new ArrayList<>(grid.getSelectedItems()).get(0));
+            }else{
+                openNotification("Nincs kiválasztva módosítandó sor!");
+        }});
+        grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
     }
 
 
@@ -120,7 +126,6 @@ public class GumikKezeleseView extends HorizontalLayout {
         darab.setValue("6");
         ment();
 
-
         gombok.add(hozzaad, torol);
         adatokBevitel.add(gyarto, meret1, meret2, meret3, evszak, allapot, ar, darab);
         adatokBevitel.setHeight("100px");
@@ -153,7 +158,6 @@ public class GumikKezeleseView extends HorizontalLayout {
             openNotification(hiba);
         }
     }
-
 
     private String validacio() {
         return getString(gyarto, evszak, allapot, ar, darab, meret1, meret2, meret3);
@@ -218,23 +222,17 @@ public class GumikKezeleseView extends HorizontalLayout {
         }
     }
 
-    private void szerkesztes(){
-        if(!grid.getSelectedItems().isEmpty()){
-            ArrayList<GumikEntity> gumik = new ArrayList();
-            gumik.addAll(grid.getSelectedItems());
-            GumikEntity szerkesztendo = gumik.get(0);
-            GumiSzerkesztoView adatok = new GumiSzerkesztoView(szerkesztendo);
+    private void szerkesztes(GumikEntity gumikEntity){
+            GumiSzerkesztoView adatok = new GumiSzerkesztoView(gumikEntity);
             Button megse  = new Button("Mégse");
             Button ment  = new Button("Módosít");
             HorizontalLayout gombok = new HorizontalLayout(ment, megse);
             gumiSzerkeszto = new Dialog(adatok, gombok);
             gumiSzerkeszto.setCloseOnOutsideClick(false);
             megse.addClickListener(e -> gumiSzerkeszto.close());
-            ment.addClickListener(e -> szerkesztesMentese(szerkesztendo, adatok));
+            ment.addClickListener(e -> szerkesztesMentese(gumikEntity, adatok));
             gumiSzerkeszto.open();
-        }else{
-            openNotification("Nincs kiválasztva módosítandó sor!");
-        }
+
     }
 
     private void openNotification(String uzenet){
