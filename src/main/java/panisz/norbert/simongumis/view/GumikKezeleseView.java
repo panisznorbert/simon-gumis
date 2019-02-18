@@ -82,6 +82,7 @@ public class GumikKezeleseView extends HorizontalLayout {
         darab.setRequired(true);
 
         gumikTablaFeltolt();
+
         //alapadatok hozzáadása
         gyarto.setValue("Gyártó1");
         meret1.setValue("155");
@@ -137,7 +138,7 @@ public class GumikKezeleseView extends HorizontalLayout {
             meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
             meret.setProfil(Integer.valueOf(meret2.getValue()));
             meret.setFelni(Integer.valueOf(meret3.getValue()));
-            alapGumiMeretekRepository.save(meret);
+
             gumi.setGyarto(gyarto.getValue());
             gumi.setMeret(meret);
             gumi.setAr(Integer.valueOf(ar.getValue()));

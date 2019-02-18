@@ -2,20 +2,22 @@ package panisz.norbert.simongumis.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class RendelesEntity extends BaseEntity {
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private UgyfelEntity ugyfel;
-    @OneToMany
+
+    @OneToMany(cascade = CascadeType.ALL)
     private List<RendelesiEgysegEntity> rendelesiEgysegek;
+
     private Integer vegosszeg;
-    private String statusz;
+
+    @Enumerated(EnumType.STRING)
+    private RendelesStatusz statusz;
 }

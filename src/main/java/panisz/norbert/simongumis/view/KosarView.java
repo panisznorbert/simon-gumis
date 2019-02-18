@@ -9,6 +9,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import lombok.Data;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
+import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
@@ -69,7 +70,7 @@ public class KosarView extends HorizontalLayout {
         ugyfel.setEmail(email.getValue());
         ugyfel.setTelefon(telefon.getValue());
         alapRendelesEntity.setUgyfel(ugyfel);
-        alapRendelesEntity.setStatusz(MEGRENDELVE.toString());
+        alapRendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
         ment(alapRendelesEntity, ugyfel);
         MainView.getFomenu().aktualisRendelesekInit();
     }
@@ -77,19 +78,19 @@ public class KosarView extends HorizontalLayout {
     private static void ment(RendelesEntity rendelesEntity, UgyfelEntity ugyfel){
 
         LOGGER.info(rendelesEntity.getUgyfel().toString());
-        LOGGER.info(rendelesEntity.getStatusz());
+        LOGGER.info(rendelesEntity.getStatusz().toString());
         LOGGER.info(rendelesEntity.getVegosszeg().toString());
         for (RendelesiEgysegEntity rendeles : rendelesEntity.getRendelesiEgysegek()) {
             LOGGER.info(rendeles.getGumi().toString() + " " + rendeles.getMennyiseg() + " " + rendeles.getReszosszeg());
         }
 
-        MainView.getAlapUgyfelRepository().save(ugyfel);
-        MainView.getAlapRendelesiEgysegRepository().saveAll(rendelesEntity.getRendelesiEgysegek());
         MainView.getAlapRendelesRepository().save(rendelesEntity);
 
+        LOGGER.info("Elemek: "+new Integer(MainView.getAlapRendelesRepository().findAll().size()).toString());
         for(RendelesEntity rendelesek : MainView.getAlapRendelesRepository().findAll()){
+
             LOGGER.info(rendelesek.getUgyfel().toString());
-            LOGGER.info(rendelesek.getStatusz());
+            LOGGER.info(rendelesek.getStatusz().toString());
             LOGGER.info(rendelesek.getVegosszeg().toString());
             for (RendelesiEgysegEntity rendeles : rendelesek.getRendelesiEgysegek()) {
                 LOGGER.info(rendeles.getGumi().toString() + " " + rendeles.getMennyiseg() + " " + rendeles.getReszosszeg());

@@ -53,7 +53,7 @@ public class RendelesekView extends VerticalLayout {
         email.setValue(rendelesEntity.getUgyfel().getEmail());
         telefon.setValue(rendelesEntity.getUgyfel().getTelefon());
         ar.setValue(rendelesEntity.getVegosszeg().toString());
-        statusz.setValue(rendelesEntity.getStatusz());
+        statusz.setValue(rendelesEntity.getStatusz().toString());
         rendelesek.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi");
         rendelesek.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab");
         rendelesek.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Ár");
