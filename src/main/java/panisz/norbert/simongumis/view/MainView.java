@@ -6,13 +6,10 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.*;
-
 import java.util.List;
-
 
 @Route
 public class MainView extends VerticalLayout{
-
     private static VerticalLayout layout = new VerticalLayout();
 
     private static UgyfelRepository alapUgyfelRepository = null;
@@ -65,7 +62,7 @@ public class MainView extends VerticalLayout{
         }
 
         if("kosar".equals(menupont)){
-            kosarView = new KosarView(fomenu.getAktualisRendelesek());
+            kosarView = new KosarView(fomenu.getAktualisRendeles());
 
             layout.remove(tartalom);
             tartalom = kosarView;
@@ -89,24 +86,25 @@ public class MainView extends VerticalLayout{
 
     public static void kosarhozAd(RendelesiEgysegEntity rendelesiEgysegEntity){
         Boolean benneVolt = false;
-        for(RendelesiEgysegEntity aktualisRendelesiEgyseg:fomenu.getAktualisRendelesek().getRendelesiEgysegek()){
+        for(RendelesiEgysegEntity aktualisRendelesiEgyseg:fomenu.getAktualisRendeles().getRendelesiEgysegek()){
+
             if(aktualisRendelesiEgyseg.getGumi().equals(rendelesiEgysegEntity.getGumi())){
-                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg))
+                fomenu.getAktualisRendeles().getRendelesiEgysegek().get(fomenu.getAktualisRendeles().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg))
                         .setMennyiseg(
-                                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg)).getMennyiseg()+rendelesiEgysegEntity.getMennyiseg()
+                                fomenu.getAktualisRendeles().getRendelesiEgysegek().get(fomenu.getAktualisRendeles().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg)).getMennyiseg()+rendelesiEgysegEntity.getMennyiseg()
                         );
-                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg))
+                fomenu.getAktualisRendeles().getRendelesiEgysegek().get(fomenu.getAktualisRendeles().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg))
                         .setReszosszeg(
-                                fomenu.getAktualisRendelesek().getRendelesiEgysegek().get(fomenu.getAktualisRendelesek().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg)).getReszosszeg()+rendelesiEgysegEntity.getReszosszeg()
+                                fomenu.getAktualisRendeles().getRendelesiEgysegek().get(fomenu.getAktualisRendeles().getRendelesiEgysegek().indexOf(aktualisRendelesiEgyseg)).getReszosszeg()+rendelesiEgysegEntity.getReszosszeg()
                         );
                 benneVolt = true;
             }
         }
         if(!benneVolt){
-            fomenu.getAktualisRendelesek().getRendelesiEgysegek().add(rendelesiEgysegEntity);
+            fomenu.getAktualisRendeles().getRendelesiEgysegek().add(rendelesiEgysegEntity);
 
         }
-        fomenu.getAktualisRendelesek().setVegosszeg(vegosszegSzamol(fomenu.getAktualisRendelesek().getRendelesiEgysegek()));
+        fomenu.getAktualisRendeles().setVegosszeg(vegosszegSzamol(fomenu.getAktualisRendeles().getRendelesiEgysegek()));
     }
 
     private static Integer vegosszegSzamol(List<RendelesiEgysegEntity> rendelesiEgysegek){
@@ -123,13 +121,5 @@ public class MainView extends VerticalLayout{
 
     public static RendelesRepository getAlapRendelesRepository() {
         return alapRendelesRepository;
-    }
-
-    public static RendelesiEgysegRepository getAlapRendelesiEgysegRepository() {
-        return alapRendelesiEgysegRepository;
-    }
-
-    public static UgyfelRepository getAlapUgyfelRepository() {
-        return alapUgyfelRepository;
     }
 }

@@ -68,12 +68,14 @@ public class GumikView extends HorizontalLayout {
         darabszamAblak = new Dialog(leiras, gombok);
         megse.addClickListener(e -> darabszamAblak.close());
         ok.addClickListener( e -> {
+            //Ha rossz érték van beírva vagy több mint amennyi van a raktárban akkor hiba jön
             if(darab.isInvalid() || Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()){
                 hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db)");
                 darab.setInvalid(true);
             }
-            if(!darab.isInvalid() && !MainView.getFomenu().getAktualisRendelesek().getRendelesiEgysegek().isEmpty()){
-                for(RendelesiEgysegEntity rendeles:MainView.getFomenu().getAktualisRendelesek().getRendelesiEgysegek()) {
+            //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
+            if(!darab.isInvalid() && !MainView.getFomenu().getAktualisRendeles().getRendelesiEgysegek().isEmpty()){
+                for(RendelesiEgysegEntity rendeles:MainView.getFomenu().getAktualisRendeles().getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);

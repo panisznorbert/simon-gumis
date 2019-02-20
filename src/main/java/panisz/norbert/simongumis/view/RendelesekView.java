@@ -1,6 +1,7 @@
 package panisz.norbert.simongumis.view;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -24,9 +25,10 @@ public class RendelesekView extends VerticalLayout {
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     public RendelesekView(RendelesRepository rendelesRepository){
-        LOGGER.info(rendelesRepository.findAll().get(0).getUgyfel().getNev());
         alapRendelesRepository = rendelesRepository;
-        init(alapRendelesRepository.findAll());
+        if(alapRendelesRepository != null) {
+            init(alapRendelesRepository.findAll());
+        }
     }
 
     private void init(List<RendelesEntity> rendelesEntities){
@@ -45,6 +47,7 @@ public class RendelesekView extends VerticalLayout {
         TextField telefon = new TextField("Telefon:");
         HorizontalLayout uygfelLeiras = new HorizontalLayout(nev, email, telefon);
         Grid<RendelesiEgysegEntity> rendelesek = new Grid<>();
+        rendelesek.setWidth("550px");
         VerticalLayout ugyfelRendeles = new VerticalLayout(rendelesek);
         TextField ar = new TextField("Ár");
         TextField statusz = new TextField("Státusz:");
@@ -54,9 +57,9 @@ public class RendelesekView extends VerticalLayout {
         telefon.setValue(rendelesEntity.getUgyfel().getTelefon());
         ar.setValue(rendelesEntity.getVegosszeg().toString());
         statusz.setValue(rendelesEntity.getStatusz().toString());
-        rendelesek.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi");
-        rendelesek.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab");
-        rendelesek.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Ár");
+        rendelesek.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
+        rendelesek.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab").setWidth("100px");
+        rendelesek.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Ár").setWidth("100px");
         rendelesek.setItems(rendelesEntity.getRendelesiEgysegek());
         rendelesek.getDataProvider().refreshAll();
         tartalom.add(new VerticalLayout(uygfelLeiras, ugyfelRendeles, labLec));

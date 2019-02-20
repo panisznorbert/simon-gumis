@@ -13,7 +13,7 @@ public class RendelesEntity extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private UgyfelEntity ugyfel;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,  fetch=FetchType.EAGER)
     private List<RendelesiEgysegEntity> rendelesiEgysegek;
 
     private Integer vegosszeg;

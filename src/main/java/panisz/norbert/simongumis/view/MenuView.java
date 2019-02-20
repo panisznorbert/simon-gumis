@@ -16,7 +16,7 @@ public class MenuView extends HorizontalLayout {
     AppLayout appLayout = new AppLayout();
     AppLayoutMenu menu = appLayout.createMenu();
 
-    private RendelesEntity aktualisRendelesek;
+    private RendelesEntity aktualisRendeles;
 
     public MenuView(){
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> MainView.setTartalom("gumik")));
@@ -36,10 +36,11 @@ public class MenuView extends HorizontalLayout {
         menu.addMenuItem(menuItem);
     }
 
+
     public void aktualisRendelesekInit(){
-        aktualisRendelesek = new RendelesEntity();
+        aktualisRendeles = new RendelesEntity();
         List<RendelesiEgysegEntity> rendelesek = new ArrayList<>();
-        aktualisRendelesek.setRendelesiEgysegek(rendelesek);
+        aktualisRendeles.setRendelesiEgysegek(rendelesek);
     }
 
 }

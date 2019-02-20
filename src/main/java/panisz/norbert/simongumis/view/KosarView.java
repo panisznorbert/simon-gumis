@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Data;
+import org.springframework.transaction.annotation.Transactional;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
@@ -72,34 +73,13 @@ public class KosarView extends HorizontalLayout {
         ugyfel.setTelefon(telefon.getValue());
         alapRendelesEntity.setUgyfel(ugyfel);
         alapRendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
-        ment(alapRendelesEntity, ugyfel);
+        ment(alapRendelesEntity);
         MainView.getFomenu().aktualisRendelesekInit();
+        MainView.setTartalom("gumik");
     }
 
-    private static void ment(RendelesEntity rendelesEntity, UgyfelEntity ugyfel){
-
-        LOGGER.info(rendelesEntity.getUgyfel().toString());
-        LOGGER.info(rendelesEntity.getStatusz().toString());
-        LOGGER.info(rendelesEntity.getVegosszeg().toString());
-        for (RendelesiEgysegEntity rendeles : rendelesEntity.getRendelesiEgysegek()) {
-            LOGGER.info(rendeles.getGumi().toString() + " " + rendeles.getMennyiseg() + " " + rendeles.getReszosszeg());
-        }
-
+    private static void ment(RendelesEntity rendelesEntity){
         MainView.getAlapRendelesRepository().save(rendelesEntity);
-
-        LOGGER.info("Elemek: "+new Integer(MainView.getAlapRendelesRepository().findAll().size()).toString());
-        for(RendelesEntity rendelesek : MainView.getAlapRendelesRepository().findAll()){
-
-            LOGGER.info(rendelesek.getUgyfel().toString());
-            LOGGER.info(rendelesek.getStatusz().toString());
-            LOGGER.info(rendelesek.getVegosszeg().toString());
-            ArrayList<RendelesiEgysegEntity> rendelesiEgysegek = new ArrayList<>(rendelesek.getRendelesiEgysegek());
-            for (RendelesiEgysegEntity rendeles : rendelesiEgysegek) {
-                LOGGER.info(rendeles.getGumi().toString() + " " + rendeles.getMennyiseg() + " " + rendeles.getReszosszeg());
-            }
-
-        }
-
     }
 
 }

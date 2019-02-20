@@ -11,8 +11,13 @@ import javax.persistence.OneToOne;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class RendelesiEgysegEntity extends BaseEntity {
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private GumikEntity gumi;
     private Integer mennyiseg;
     private Integer reszosszeg;
+
+    @Override
+    public String toString() {
+        return gumi.toString() + ", " + mennyiseg + ", db" + reszosszeg + " Ft";
+    }
 }
