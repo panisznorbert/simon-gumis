@@ -17,6 +17,7 @@ public class MainView extends VerticalLayout{
     private static GumiMeretekRepository alapGumiMeretekRepository = null;
     private static RendelesRepository alapRendelesRepository = null;
     private static RendelesiEgysegRepository alapRendelesiEgysegRepository = null;
+    private static FoglalasRepository alapFoglalasRepository = null;
 
     private static GumikKezeleseView gumikKezeleseView = null;
     private static GumikView gumikView = null;
@@ -30,12 +31,13 @@ public class MainView extends VerticalLayout{
 
 
     @Autowired
-    public MainView(UgyfelRepository ugyfelRepository, GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository, RendelesRepository rendelesRepository, RendelesiEgysegRepository rendelesiEgysegRepository) {
+    public MainView(UgyfelRepository ugyfelRepository, GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository, RendelesRepository rendelesRepository, RendelesiEgysegRepository rendelesiEgysegRepository, FoglalasRepository foglalasRepository) {
         alapUgyfelRepository = ugyfelRepository;
         alapGumikRepository = gumikRepository;
         alapGumiMeretekRepository = gumiMeretekRepository;
         alapRendelesRepository = rendelesRepository;
         alapRendelesiEgysegRepository = rendelesiEgysegRepository;
+        alapFoglalasRepository = foglalasRepository;
         gumikKezeleseView = new GumikKezeleseView(alapGumikRepository, alapGumiMeretekRepository);
         tartalom = gumikKezeleseView;
         layout.add(menu, tartalom, lab);
@@ -72,7 +74,7 @@ public class MainView extends VerticalLayout{
         if("idopont_foglalas".equals(menupont)){
 
             layout.remove(tartalom);
-            tartalom = new IdopontFoglalasView();
+            tartalom = new IdopontFoglalasView(alapFoglalasRepository, alapUgyfelRepository);
             layout.add(tartalom);
         }
 
