@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -47,6 +48,7 @@ public class IdopontFoglalasView extends VerticalLayout {
     }
 
     private void init(){
+        idopontokDatum.setMin(LocalDate.now());
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
         nev.setRequired(true);
@@ -59,15 +61,16 @@ public class IdopontFoglalasView extends VerticalLayout {
     private void orakFeltoltese(LocalDate kivalasztottDatum){
         idopontok.remove(foglalhatoOrak);
         List<LocalTime> orak = new ArrayList<>();
-        for(int i = 8; i<17; i++){
 
-            if(alapFoglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null){
+        for(int i=8; i<17; i++){
+            if(alapFoglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))){
                 orak.add(LocalTime.of(i, 0));
             }
-            if(alapFoglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null){
+            if(alapFoglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))){
                 orak.add(LocalTime.of(i, 30));
             }
         }
+        Collections.sort(orak);
         foglalhatoOrak = new ComboBox<>("Szabad időpontok", orak);
         idopontok.add(foglalhatoOrak);
     }
@@ -102,6 +105,7 @@ public class IdopontFoglalasView extends VerticalLayout {
             //hibaüzenet
         }else{
             alapFoglalasRepository.save(idopontFoglalasAdat());
+            LOGGER.info("Mentett Id: " + alapUgyfelRepository.findByNevAndTelefonAndEmail(nev.getValue(), telefon.getValue(), email.getValue()).getId().toString());
         }
     }
 }
