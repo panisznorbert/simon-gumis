@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.view;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -49,6 +50,8 @@ public class IdopontFoglalasView extends VerticalLayout {
 
     private void init(){
         idopontokDatum.setMin(LocalDate.now());
+        idopontokDatum.setValue(LocalDate.now());
+        orakFeltoltese(LocalDate.now());
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
         nev.setRequired(true);
@@ -97,15 +100,31 @@ public class IdopontFoglalasView extends VerticalLayout {
     }
 
     private boolean kitoltottseg(){
-        return idopontokDatum.isInvalid() || foglalhatoOrak.isInvalid() || nev.isInvalid() || telefon.isInvalid() || email.isInvalid();
+        return idopontokDatum.isEmpty() || foglalhatoOrak.isEmpty()
+                || nev.isInvalid() || telefon.isInvalid() || email.isInvalid()
+                || nev.isEmpty() || telefon.isEmpty() || email.isEmpty();
     }
 
     private void idopontFoglalas(){
         if(kitoltottseg()){
-            //hibaüzenet
+            Notification hiba = new HibaView("Hibás kitöltés");
+            hiba.open();
         }else{
             alapFoglalasRepository.save(idopontFoglalasAdat());
             LOGGER.info("Mentett Id: " + alapUgyfelRepository.findByNevAndTelefonAndEmail(nev.getValue(), telefon.getValue(), email.getValue()).getId().toString());
+            alaphelyzetbeAllit();
+
         }
+    }
+
+    private void alaphelyzetbeAllit(){
+        idopontokDatum.setMin(LocalDate.now());
+        idopontokDatum.setValue(LocalDate.now());
+        orakFeltoltese(LocalDate.now());
+        nev.clear();
+        telefon.clear();
+        email.clear();
+        megjegyzes.setValue("");
+        idopontokDatum.setMin(LocalDate.now());
     }
 }
