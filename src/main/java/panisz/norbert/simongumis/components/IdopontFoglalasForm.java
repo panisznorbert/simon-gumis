@@ -1,17 +1,22 @@
-package panisz.norbert.simongumis.view;
+package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.FoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.FoglalasRepository;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,42 +25,57 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-
-public class IdopontFoglalasView extends VerticalLayout {
-
+@UIScope
+@Component
+public class IdopontFoglalasForm extends VerticalLayout {
+    @Autowired
+    private FoglalasRepository alapFoglalasRepository;
+    @Autowired
+    private UgyfelRepository alapUgyfelRepository;
+    private MenuForm fomenu = new MenuForm();
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
-    private DatePicker idopontokDatum = new DatePicker("Dátum:");
-    private ComboBox<LocalTime> foglalhatoOrak = new ComboBox<>("Szabad időpontok");
-    private HorizontalLayout idopontok = new HorizontalLayout(idopontokDatum, foglalhatoOrak);
+    private DatePicker idopontokDatum;
+    private ComboBox<LocalTime> foglalhatoOrak;
+    private HorizontalLayout idopontok = new HorizontalLayout();
+
     private Button foglal = new Button("Lefoglal");
     private HorizontalLayout gombsor = new HorizontalLayout(foglal);
+
     private TextField nev = new TextField("Név:");
     private TextField telefon = new TextField("Telefon:");
     private TextField email = new TextField("E-mail:");
-    private HorizontalLayout adatok = new HorizontalLayout(nev, telefon, email);
+    private HorizontalLayout adatok = new HorizontalLayout();
+
     private TextField megjegyzes = new TextField("Megjegyzés:");
-    private VerticalLayout torzs = new VerticalLayout(adatok, megjegyzes);
+    private VerticalLayout torzs = new VerticalLayout();
 
-    private FoglalasRepository alapFoglalasRepository;
-    private UgyfelRepository alapUgyfelRepository;
 
-    public IdopontFoglalasView(FoglalasRepository foglalasRepository, UgyfelRepository ugyfelRepository){
-        alapFoglalasRepository = foglalasRepository;
-        alapUgyfelRepository = ugyfelRepository;
+    public IdopontFoglalasForm(){
         init();
+    }
+
+    private void init(){
+        idopontokDatum = new DatePicker("Dátum:");
+        foglalhatoOrak = new ComboBox<>("Szabad időpontok");
+        idopontok.add(idopontokDatum, foglalhatoOrak);
+        adatok.add(nev, telefon, email);
+        torzs.add(adatok, megjegyzes);
+        add(fomenu, idopontok, torzs, gombsor);
         idopontokDatum.addValueChangeListener(e -> orakFeltoltese(e.getValue()));
         foglal.addClickListener(e -> idopontFoglalas());
     }
 
-    private void init(){
+    @PostConstruct
+    private void alapBeallitas(){
+        megjegyzes.setValue("");
         idopontokDatum.setMin(LocalDate.now());
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
         nev.setRequired(true);
         telefon.setRequired(true);
         email.setRequired(true);
-        megjegyzes.setValue("");
-        add(idopontok, torzs, gombsor);
+        idopontokDatum.setValue(LocalDate.now());
+        orakFeltoltese(LocalDate.now());
     }
 
     private void orakFeltoltese(LocalDate kivalasztottDatum){
@@ -97,15 +117,30 @@ public class IdopontFoglalasView extends VerticalLayout {
     }
 
     private boolean kitoltottseg(){
-        return idopontokDatum.isInvalid() || foglalhatoOrak.isInvalid() || nev.isInvalid() || telefon.isInvalid() || email.isInvalid();
+        return idopontokDatum.isEmpty() || foglalhatoOrak.isEmpty()
+                || nev.isInvalid() || telefon.isInvalid() || email.isInvalid()
+                || nev.isEmpty() || telefon.isEmpty() || email.isEmpty();
     }
 
     private void idopontFoglalas(){
         if(kitoltottseg()){
-            //hibaüzenet
+            Notification hiba = new HibaJelzes("Hibás kitöltés");
+            hiba.open();
         }else{
             alapFoglalasRepository.save(idopontFoglalasAdat());
             LOGGER.info("Mentett Id: " + alapUgyfelRepository.findByNevAndTelefonAndEmail(nev.getValue(), telefon.getValue(), email.getValue()).getId().toString());
+            alaphelyzetbeAllit();
         }
+    }
+
+    private void alaphelyzetbeAllit(){
+        idopontokDatum.setMin(LocalDate.now());
+        idopontokDatum.setValue(LocalDate.now());
+        orakFeltoltese(LocalDate.now());
+        nev.clear();
+        telefon.clear();
+        email.clear();
+        megjegyzes.setValue("");
+        idopontokDatum.setMin(LocalDate.now());
     }
 }

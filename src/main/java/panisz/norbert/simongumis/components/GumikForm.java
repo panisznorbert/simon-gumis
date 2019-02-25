@@ -1,7 +1,8 @@
-package panisz.norbert.simongumis.view;
+package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
@@ -9,38 +10,44 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
+import panisz.norbert.simongumis.views.MainView;
+
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-
-public class GumikView extends HorizontalLayout {
-
+@UIScope
+@Component
+public class GumikForm extends VerticalLayout {
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    private static GumikRepository alapGumikRepository = null;
-    private static GumiMeretekRepository alapGumiMeretekRepository = null;
+    @Autowired
+    private GumikRepository alapGumikRepository;
+    @Autowired
+    private GumiMeretekRepository alapGumiMeretekRepository;
 
-    private VerticalLayout tartalom = new VerticalLayout();
+    private MenuForm fomenu = new MenuForm();
+
     private GumiKeresoMenu menu;
     private Grid<GumikEntity> gumik = new Grid<>();
 
     private Dialog darabszamAblak;
 
-    public GumikView(GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository){
-        alapGumikRepository = gumikRepository;
-        alapGumiMeretekRepository = gumiMeretekRepository;
-        init();
+    public GumikForm(){
+        LOGGER.info("GumikForm-ba belépett");
+        //init();
     }
 
+    @PostConstruct
     public void init(){
-        menu = new GumiKeresoMenu(alapGumiMeretekRepository);
-        tartalom.add(new HorizontalLayout(menu), new HorizontalLayout(gumik));
-        menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
 
         gumik.addColumn(GumikEntity::getGyarto).setHeader("Gyártó");
         gumik.addColumn(GumikEntity::getMeret).setHeader("Méret");
@@ -48,10 +55,13 @@ public class GumikView extends HorizontalLayout {
         gumik.addColumn(GumikEntity::getAllapot).setHeader("Állapot");
         gumik.addColumn(GumikEntity::getAr).setHeader("Ár");
         gumik.addColumn(GumikEntity::getMennyisegRaktarban).setHeader("Raktáron (db)");
-        gumik.addColumn(new NativeButtonRenderer<>("kosárba", item -> kosarbahelyezesAblak(item)));
+        gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
         gumik.setWidth("950px");
+        menu = new GumiKeresoMenu(alapGumiMeretekRepository);
         gumikTablaFeltolt(menu.getKriterium());
-        add(tartalom);
+
+        add(fomenu, menu, gumik);
+        menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }
 
 
@@ -97,7 +107,6 @@ public class GumikView extends HorizontalLayout {
         rendeles.setGumi(gumi);
         rendeles.setMennyiseg(darab);
         rendeles.setReszosszeg(gumi.getAr()*darab);
-        LOGGER.info(rendeles.toString());
         MainView.kosarhozAd(rendeles);
     }
 

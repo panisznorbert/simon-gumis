@@ -1,4 +1,4 @@
-package panisz.norbert.simongumis.view;
+package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -7,23 +7,22 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Data;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
-import panisz.norbert.simongumis.repositories.UgyfelRepository;
+import panisz.norbert.simongumis.views.MainView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static panisz.norbert.simongumis.entities.RendelesStatusz.MEGRENDELVE;
-
 @Data
-public class KosarView extends HorizontalLayout {
+public class KosarForm extends HorizontalLayout {
+    @Autowired
+    private RendelesRepository rendelesRepository;
     private RendelesEntity alapRendelesEntity = null;
 
     private HorizontalLayout tartalom = new HorizontalLayout();
@@ -39,7 +38,7 @@ public class KosarView extends HorizontalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public KosarView(RendelesEntity rendelesEntity){
+    public KosarForm(RendelesEntity rendelesEntity){
         alapRendelesEntity = rendelesEntity;
 
         if(alapRendelesEntity != null && !alapRendelesEntity.getRendelesiEgysegek().isEmpty()){
@@ -75,11 +74,10 @@ public class KosarView extends HorizontalLayout {
         alapRendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
         ment(alapRendelesEntity);
         MainView.getFomenu().aktualisRendelesekInit();
-        MainView.setTartalom("gumik");
     }
 
-    private static void ment(RendelesEntity rendelesEntity){
-        MainView.getAlapRendelesRepository().save(rendelesEntity);
+    private void ment(RendelesEntity rendelesEntity){
+        rendelesRepository.save(rendelesEntity);
     }
 
 }

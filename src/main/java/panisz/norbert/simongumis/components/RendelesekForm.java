@@ -1,4 +1,4 @@
-package panisz.norbert.simongumis.view;
+package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.FooterRow;
@@ -14,7 +14,7 @@ import panisz.norbert.simongumis.repositories.RendelesRepository;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class RendelesekView extends VerticalLayout {
+public class RendelesekForm extends VerticalLayout {
     private RendelesRepository alapRendelesRepository = null;
 
     private TextField kereso = new TextField("Név:");
@@ -24,7 +24,7 @@ public class RendelesekView extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public RendelesekView(RendelesRepository rendelesRepository){
+    public RendelesekForm(RendelesRepository rendelesRepository){
         alapRendelesRepository = rendelesRepository;
         if(alapRendelesRepository != null) {
             init(alapRendelesRepository.findAll());

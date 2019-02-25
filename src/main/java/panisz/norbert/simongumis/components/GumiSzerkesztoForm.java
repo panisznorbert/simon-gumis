@@ -1,4 +1,4 @@
-package panisz.norbert.simongumis.view;
+package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Span;
@@ -10,7 +10,7 @@ import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 
 
-public class GumiSzerkesztoView extends VerticalLayout {
+public class GumiSzerkesztoForm extends VerticalLayout {
 
     private TextField gyarto = new TextField("Gyártó");
     private TextField meret1 = new TextField("Méret-szélesség");
@@ -22,7 +22,7 @@ public class GumiSzerkesztoView extends VerticalLayout {
     private TextField darab  = new TextField("Raktárkészlet");
 
 
-    public GumiSzerkesztoView(GumikEntity gumikEntity){
+    public GumiSzerkesztoForm(GumikEntity gumikEntity){
 
         ar.setPattern("\\d*(\\.\\d*)?");
         ar.setPreventInvalidInput(true);
@@ -71,7 +71,7 @@ public class GumiSzerkesztoView extends VerticalLayout {
     }
 
     public String validacio() {
-        return GumikKezeleseView.getString(gyarto, evszak, allapot, ar, darab, meret1, meret2, meret3);
+        return GumikKezeleseForm.getString(gyarto, evszak, allapot, ar, darab, meret1, meret2, meret3);
     }
 
 

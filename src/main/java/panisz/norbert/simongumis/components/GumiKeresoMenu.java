@@ -1,4 +1,4 @@
-package panisz.norbert.simongumis.view;
+package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 
 public class GumiKeresoMenu extends HorizontalLayout {
-    private static GumiMeretekRepository alapGumiMeretekRepository = null;
+    private static GumiMeretekRepository alapGumiMeretekRepository;
     private GumikEntity kriterium = new GumikEntity();
     private static Integer kezdoAr;
     private static Integer vegAr;
@@ -192,9 +192,9 @@ public class GumiKeresoMenu extends HorizontalLayout {
         menu1.add(meret1cb, meret2cb, meret3cb, evszak, allapot);
         menu2.removeAll();
         menu2.add(egyeb, alaphelyzet, keres);
+        menu2.setAlignItems(Alignment.END);
         menu.removeAll();
         menu.add(menu1, menu2);
-        menu2.setAlignItems(Alignment.END);
         add(menu);
         adatokBeallitasa();
     }

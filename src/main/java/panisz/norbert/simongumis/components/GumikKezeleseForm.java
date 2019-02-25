@@ -1,5 +1,6 @@
-package panisz.norbert.simongumis.view;
+package panisz.norbert.simongumis.components;
 
+import com.helger.commons.annotation.Singleton;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -10,19 +11,28 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
+
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
+@UIScope
+@Component
+public class GumikKezeleseForm extends VerticalLayout {
+    @Autowired
+    private GumikRepository alapGumikRepository;
+    @Autowired
+    private GumiMeretekRepository alapGumiMeretekRepository;
 
-public class GumikKezeleseView extends HorizontalLayout {
-
-    private GumikRepository alapGumikRepository = null;
-    private GumiMeretekRepository alapGumiMeretekRepository = null;
-
+    private MenuForm fomenu = new MenuForm();
     private VerticalLayout layout = new VerticalLayout();
 
     private HorizontalLayout gombok = new HorizontalLayout();
@@ -35,6 +45,7 @@ public class GumikKezeleseView extends HorizontalLayout {
     private Button eltavolit  = new Button("Eltávolít");
     private Button modosit  = new Button("Módosít");
 
+    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     private Grid<GumikEntity> grid = new Grid<>();
 
@@ -43,17 +54,15 @@ public class GumikKezeleseView extends HorizontalLayout {
     private TextField meret2 = new TextField("Méret-profil arány");
     private TextField meret3 = new TextField("Méret-felni átmérő");
     private TextField ar = new TextField("Ár");
-    private ComboBox evszak = new ComboBox("Évszak", "Téli", "Nyári");
-    private ComboBox allapot = new ComboBox("Állapot", "Új","Használt");
+    private ComboBox<String> evszak = new ComboBox<>("Évszak", "Téli", "Nyári");
+    private ComboBox<String> allapot = new ComboBox<>("Állapot", "Új","Használt");
     private TextField darab  = new TextField("Raktárkészlet");
 
 
     private Dialog gumiSzerkeszto;
 
-    @Autowired
-    public GumikKezeleseView(GumikRepository gumikRepository, GumiMeretekRepository gumiMeretekRepository){
-        this.alapGumikRepository = gumikRepository;
-        this.alapGumiMeretekRepository = gumiMeretekRepository;
+
+    public GumikKezeleseForm(){
         init();
         hozzaad.addClickListener(e -> ment());
         torol.addClickListener(e -> mezokInit());
@@ -89,6 +98,18 @@ public class GumikKezeleseView extends HorizontalLayout {
 
         gumikTablaFeltolt();
 
+
+
+        gombok.add(hozzaad, torol);
+        adatokBevitel.add(gyarto, meret1, meret2, meret3, evszak, allapot, ar, darab);
+        adatokBevitel.setHeight("100px");
+        adatokMegjelenites.add(grid);
+        layout.add(gombok, adatokBevitel, adatokMegjelenites, new HorizontalLayout(eltavolit, modosit));
+        add(fomenu, layout);
+    }
+
+    @PostConstruct
+    private void tesztadatok(){
         //alapadatok hozzáadása
         gyarto.setValue("Gyártó1");
         meret1.setValue("155");
@@ -126,30 +147,30 @@ public class GumikKezeleseView extends HorizontalLayout {
         allapot.setValue("Új");
         darab.setValue("6");
         ment();
-
-        gombok.add(hozzaad, torol);
-        adatokBevitel.add(gyarto, meret1, meret2, meret3, evszak, allapot, ar, darab);
-        adatokBevitel.setHeight("100px");
-        adatokMegjelenites.add(grid);
-        layout.add(gombok, adatokBevitel, adatokMegjelenites, new HorizontalLayout(eltavolit, modosit));
-        add(layout);
     }
 
     private void ment(){
         String hiba=validacio();
-        if(hiba==null){
-            GumikEntity gumi = new GumikEntity();
-            GumiMeretekEntity meret = new GumiMeretekEntity();
+        GumikEntity gumi = new GumikEntity();
+        GumiMeretekEntity meret = new GumiMeretekEntity();
+        if(hiba == null) {
             meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
             meret.setProfil(Integer.valueOf(meret2.getValue()));
             meret.setFelni(Integer.valueOf(meret3.getValue()));
-
+        }
+        for(GumiMeretekEntity gumiMeretekEntity : alapGumiMeretekRepository.findAll()){
+            if(gumi.equals(gumiMeretekEntity)){
+                hiba = "Ilyen gumiméret már van.";
+            }
+        }
+        if(hiba == null){
             gumi.setGyarto(gyarto.getValue());
             gumi.setMeret(meret);
             gumi.setAr(Integer.valueOf(ar.getValue()));
-            gumi.setEvszak(evszak.getValue().toString());
-            gumi.setAllapot(allapot.getValue().toString());
+            gumi.setEvszak(evszak.getValue());
+            gumi.setAllapot(allapot.getValue());
             gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
+            if(alapGumikRepository == null){LOGGER.info("alapgumirepo null");}
             alapGumikRepository.save(gumi);
 
             grid.setItems(alapGumikRepository.findAll());
@@ -224,7 +245,7 @@ public class GumikKezeleseView extends HorizontalLayout {
     }
 
     private void szerkesztes(GumikEntity gumikEntity){
-            GumiSzerkesztoView adatok = new GumiSzerkesztoView(gumikEntity);
+            GumiSzerkesztoForm adatok = new GumiSzerkesztoForm(gumikEntity);
             Button megse  = new Button("Mégse");
             Button ment  = new Button("Módosít");
             HorizontalLayout gombok = new HorizontalLayout(ment, megse);
@@ -245,10 +266,10 @@ public class GumikKezeleseView extends HorizontalLayout {
         notification.open();
     }
 
-    private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoView gumiSzerkesztoView){
-        String leiras = gumiSzerkesztoView.validacio();
+    private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
+        String leiras = gumiSzerkesztoForm.validacio();
         if(leiras == null){
-            alapGumikRepository.save(gumiSzerkesztoView.beallit(gumikEntity, alapGumiMeretekRepository));
+            alapGumikRepository.save(gumiSzerkesztoForm.beallit(gumikEntity, alapGumiMeretekRepository));
             gridRefresh();
             gumiSzerkeszto.close();
         }else{
