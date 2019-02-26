@@ -5,19 +5,26 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
+
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-
+@UIScope
+@Component
 public class GumiKeresoMenu extends HorizontalLayout {
-    private static GumiMeretekRepository alapGumiMeretekRepository;
+    @Autowired
+    private GumiMeretekRepository gumiMeretekRepository;
     private GumikEntity kriterium = new GumikEntity();
     private static Integer kezdoAr;
     private static Integer vegAr;
@@ -46,12 +53,44 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public GumiKeresoMenu(GumiMeretekRepository gumiMeretekRepository){
-        alapGumiMeretekRepository = gumiMeretekRepository;
-        init();
+    public GumiKeresoMenu(){
+        //init();
         egyeb.addClickListener(e -> tovabbiFeltetelek());
         alaphelyzet.addClickListener(e -> init());
         keres.addClickListener(e -> adatokBeallitasa());
+    }
+
+    @PostConstruct
+    private void init(){
+        meretFeltolto(gumiMeretekRepository.findAll(), 0, 0, 0);
+        kriterium.setMeret(new GumiMeretekEntity());
+        setMeret(0,0,0);
+        kriterium.setGyarto("");
+        kriterium.setAllapot("");
+        kriterium.setEvszak("");
+        kriterium.setMennyisegRaktarban(0);
+        kriterium.setAr(Integer.valueOf(0));
+        evszak.clear();
+        allapot.clear();
+        gyarto.clear();
+        artol.clear();
+        arig.clear();
+        menu1.removeAll();
+        menu1.add(meret1cb, meret2cb, meret3cb, evszak, allapot);
+        menu2.removeAll();
+        menu2.add(egyeb, alaphelyzet, keres);
+        menu2.setAlignItems(Alignment.BASELINE);
+        menu.setHeight("200px");
+        menu.removeAll();
+        menu.add(menu1, menu2);
+        add(menu);
+        adatokBeallitasa();
+    }
+
+
+    private void alapMeretBeallitas(){
+        meretFeltolto(gumiMeretekRepository.findAll(), 0, 0, 0);
+        LOGGER.info("Gumi repo mérete: " + Integer.toString(gumiMeretekRepository.findAll().size()));
     }
 
     private void adatokBeallitasa(){
@@ -101,37 +140,37 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
         switch(beallito){
             case 0:{
-                meretFeltolto(alapGumiMeretekRepository.findAll(), 0, 0, 0);
+                meretFeltolto(gumiMeretekRepository.findAll(), 0, 0, 0);
                 setMeret(0, 0, 0);
                 break;
             }
             case 1:{
-                meretFeltolto(alapGumiMeretekRepository.findAllByFelni(Integer.valueOf(meret3.getValue())), 0, 0, 1);
+                meretFeltolto(gumiMeretekRepository.findAllByFelni(Integer.valueOf(meret3.getValue())), 0, 0, 1);
                 setMeret(0, 0, Integer.valueOf(meret3.getValue()));
                 break;
             }
             case 10:{
-                meretFeltolto(alapGumiMeretekRepository.findAllByProfil(Integer.valueOf(meret2.getValue())),0 ,1 ,0);
+                meretFeltolto(gumiMeretekRepository.findAllByProfil(Integer.valueOf(meret2.getValue())),0 ,1 ,0);
                 setMeret(0, Integer.valueOf(meret2.getValue()), 0);
                 break;
             }
             case 11:{
-                meretFeltolto(alapGumiMeretekRepository.findAllByProfilAndFelni(Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue())),0,1,1);
+                meretFeltolto(gumiMeretekRepository.findAllByProfilAndFelni(Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue())),0,1,1);
                 setMeret(0, Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue()));
                 break;
             }
             case 100:{
-                meretFeltolto(alapGumiMeretekRepository.findAllBySzelesseg(Integer.valueOf(meret1.getValue())), 1, 0, 0);
+                meretFeltolto(gumiMeretekRepository.findAllBySzelesseg(Integer.valueOf(meret1.getValue())), 1, 0, 0);
                 setMeret(Integer.valueOf(meret1.getValue()), 0, 0);
                 break;
             }
             case 101:{
-                meretFeltolto(alapGumiMeretekRepository.findAllBySzelessegAndFelni(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret3.getValue())), 1, 0, 1);
+                meretFeltolto(gumiMeretekRepository.findAllBySzelessegAndFelni(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret3.getValue())), 1, 0, 1);
                 setMeret(Integer.valueOf(meret1.getValue()), 0, Integer.valueOf(meret3.getValue()));
                 break;
             }
             case 110:{
-                meretFeltolto(alapGumiMeretekRepository.findAllBySzelessegAndProfil(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue())), 1, 1, 0);
+                meretFeltolto(gumiMeretekRepository.findAllBySzelessegAndProfil(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue())), 1, 1, 0);
                 setMeret(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue()), 0);
                 break;
             }
@@ -173,35 +212,10 @@ public class GumiKeresoMenu extends HorizontalLayout {
         meret3.addValueChangeListener(e -> szelessegKivalasztas());
     }
 
-
-    private void init(){
-        meretFeltolto(alapGumiMeretekRepository.findAll(), 0, 0, 0);
-        kriterium.setMeret(new GumiMeretekEntity());
-        setMeret(0,0,0);
-        kriterium.setGyarto("");
-        kriterium.setAllapot("");
-        kriterium.setEvszak("");
-        kriterium.setMennyisegRaktarban(0);
-        kriterium.setAr(Integer.valueOf(0));
-        evszak.clear();
-        allapot.clear();
-        gyarto.clear();
-        artol.clear();
-        arig.clear();
-        menu1.removeAll();
-        menu1.add(meret1cb, meret2cb, meret3cb, evszak, allapot);
-        menu2.removeAll();
-        menu2.add(egyeb, alaphelyzet, keres);
-        menu2.setAlignItems(Alignment.END);
-        menu.removeAll();
-        menu.add(menu1, menu2);
-        add(menu);
-        adatokBeallitasa();
-    }
-
     private void tovabbiFeltetelek(){
         menu2.removeAll();
         menu2.add(gyarto, artol, arig, alaphelyzet, keres);
+        menu.setHeight("300px");
     }
 
 

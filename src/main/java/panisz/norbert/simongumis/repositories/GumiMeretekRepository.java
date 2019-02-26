@@ -15,4 +15,6 @@ public interface GumiMeretekRepository extends JpaRepository<GumiMeretekEntity, 
     List<GumiMeretekEntity> findAllBySzelessegAndFelni(Integer szelesseg, Integer felni);
     List<GumiMeretekEntity> findAllByProfilAndFelni(Integer profil, Integer felni);
 
+    GumiMeretekEntity findBySzelessegAndProfilAndFelni(Integer szelesseg, Integer profil, Integer felni);
+
 }

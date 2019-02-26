@@ -6,8 +6,10 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Data
+@UIScope
+@Component
 public class KosarForm extends HorizontalLayout {
     @Autowired
     private RendelesRepository rendelesRepository;

@@ -21,6 +21,7 @@ import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.PostLoad;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -28,9 +29,9 @@ import java.util.logging.Logger;
 @Component
 public class GumikKezeleseForm extends VerticalLayout {
     @Autowired
-    private GumikRepository alapGumikRepository;
+    private GumikRepository gumikRepository;
     @Autowired
-    private GumiMeretekRepository alapGumiMeretekRepository;
+    private GumiMeretekRepository gumiMeretekRepository;
 
     private MenuForm fomenu = new MenuForm();
     private VerticalLayout layout = new VerticalLayout();
@@ -71,7 +72,8 @@ public class GumikKezeleseForm extends VerticalLayout {
             if(!grid.getSelectedItems().isEmpty()){
                 szerkesztes(new ArrayList<>(grid.getSelectedItems()).get(0));
             }else{
-                openNotification("Nincs kiválasztva módosítandó sor!");
+                Notification hibaAblak = new HibaJelzes("Nincs kiválasztva módosítandó sor!");
+                hibaAblak.open();
         }});
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
     }
@@ -157,27 +159,38 @@ public class GumikKezeleseForm extends VerticalLayout {
             meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
             meret.setProfil(Integer.valueOf(meret2.getValue()));
             meret.setFelni(Integer.valueOf(meret3.getValue()));
-        }
-        for(GumiMeretekEntity gumiMeretekEntity : alapGumiMeretekRepository.findAll()){
-            if(gumi.equals(gumiMeretekEntity)){
-                hiba = "Ilyen gumiméret már van.";
+
+            //vizsgálni hogy van-e mály ilyen méret lementve és ha igen ne mentsunk még egyet le
+            GumiMeretekEntity mentettGumimeret = gumiMeretekRepository.findBySzelessegAndProfilAndFelni(meret.getSzelesseg(), meret.getProfil(), meret.getFelni());
+            if (mentettGumimeret != null) {
+                LOGGER.info(mentettGumimeret.toString());
+                meret = mentettGumimeret;
             }
-        }
-        if(hiba == null){
+
             gumi.setGyarto(gyarto.getValue());
             gumi.setMeret(meret);
             gumi.setAr(Integer.valueOf(ar.getValue()));
             gumi.setEvszak(evszak.getValue());
             gumi.setAllapot(allapot.getValue());
             gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
-            if(alapGumikRepository == null){LOGGER.info("alapgumirepo null");}
-            alapGumikRepository.save(gumi);
 
-            grid.setItems(alapGumikRepository.findAll());
-            grid.getDataProvider().refreshAll();
-            mezokInit();
-        }else{
-            openNotification(hiba);
+            //vizsgálni, hogy van-e már ilyen gumi lementve, és ha igen akkor ne mentsunk még egyet le
+
+            GumikEntity mentettGumi = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapot(gumi.getGyarto(), gumi.getMeret().getSzelesseg(), gumi.getMeret().getProfil(), gumi.getMeret().getFelni(), gumi.getEvszak(), gumi.getAllapot());
+            if(mentettGumi != null){
+                hiba = "Már van ilyen gumi";
+            }else{
+                gumikRepository.save(gumi);
+
+                grid.setItems(gumikRepository.findAll());
+                grid.getDataProvider().refreshAll();
+                mezokInit();
+            }
+
+        }
+        if(hiba != null){
+            Notification hibaAblak = new HibaJelzes(hiba);
+            hibaAblak.open();
         }
     }
 
@@ -237,10 +250,11 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private void torles(){
         if(!grid.getSelectedItems().isEmpty()) {
-            alapGumikRepository.deleteAll(grid.getSelectedItems());
+            gumikRepository.deleteAll(grid.getSelectedItems());
             gridRefresh();
         }else{
-            openNotification("Nincs kiválasztva módosítandó sor!");
+            Notification hibaAblak = new HibaJelzes("Nincs kiválasztva módosítandó sor!");
+            hibaAblak.open();
         }
     }
 
@@ -254,31 +268,23 @@ public class GumikKezeleseForm extends VerticalLayout {
             megse.addClickListener(e -> gumiSzerkeszto.close());
             ment.addClickListener(e -> szerkesztesMentese(gumikEntity, adatok));
             gumiSzerkeszto.open();
-
     }
 
-    private void openNotification(String uzenet){
-        Button kilep = new Button("Ok");
-        Label leiras = new Label(uzenet);
-        Notification notification = new Notification(leiras, kilep);
-        kilep.addClickListener(event -> notification.close());
-        notification.setPosition(Notification.Position.MIDDLE);
-        notification.open();
-    }
 
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
         String leiras = gumiSzerkesztoForm.validacio();
         if(leiras == null){
-            alapGumikRepository.save(gumiSzerkesztoForm.beallit(gumikEntity, alapGumiMeretekRepository));
+            gumikRepository.save(gumiSzerkesztoForm.beallit(gumikEntity, gumiMeretekRepository));
             gridRefresh();
             gumiSzerkeszto.close();
         }else{
-            openNotification(leiras);
+            Notification hibaAblak = new HibaJelzes(leiras);
+            hibaAblak.open();
         }
     }
 
     public void gridRefresh(){
-        grid.setItems(alapGumikRepository.findAll());
+        grid.setItems(gumikRepository.findAll());
         grid.getDataProvider().refreshAll();
     }
 

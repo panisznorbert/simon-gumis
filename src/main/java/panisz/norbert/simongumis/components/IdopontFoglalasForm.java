@@ -17,21 +17,21 @@ import panisz.norbert.simongumis.repositories.FoglalasRepository;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
 
 import javax.annotation.PostConstruct;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @UIScope
 @Component
 public class IdopontFoglalasForm extends VerticalLayout {
     @Autowired
-    private FoglalasRepository alapFoglalasRepository;
+    private FoglalasRepository foglalasRepository;
     @Autowired
-    private UgyfelRepository alapUgyfelRepository;
+    private UgyfelRepository ugyfelRepository;
     private MenuForm fomenu = new MenuForm();
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
     private DatePicker idopontokDatum;
@@ -41,26 +41,39 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private Button foglal = new Button("Lefoglal");
     private HorizontalLayout gombsor = new HorizontalLayout(foglal);
 
-    private TextField nev = new TextField("Név:");
-    private TextField telefon = new TextField("Telefon:");
-    private TextField email = new TextField("E-mail:");
-    private HorizontalLayout adatok = new HorizontalLayout();
+    private UgyfelMezok ugyfelAdatok = new UgyfelMezok();
 
     private TextField megjegyzes = new TextField("Megjegyzés:");
-    private VerticalLayout torzs = new VerticalLayout();
+
 
 
     public IdopontFoglalasForm(){
         init();
     }
 
+    private DatePicker.DatePickerI18n magyarDatumInit(){
+        DatePicker.DatePickerI18n magyarDatum = new DatePicker.DatePickerI18n();
+        magyarDatum.setCalendar("Kalendárium");
+        magyarDatum.setCancel("Mégse");
+        magyarDatum.setClear("Ürít");
+        magyarDatum.setFirstDayOfWeek(1);
+        String[] honap = {"Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"};
+        magyarDatum.setMonthNames(Arrays.asList(honap));
+        magyarDatum.setToday("Ma");
+        magyarDatum.setWeek("Hét");
+        String[] nap = {"Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"};
+        magyarDatum.setWeekdays(Arrays.asList(nap));
+        String[] napRov = {"Va", "Hé", "Ke", "Sze", "Csü", "Pé", "Szo"};
+        magyarDatum.setWeekdaysShort(Arrays.asList(napRov));
+
+        return magyarDatum;
+    }
+
     private void init(){
         idopontokDatum = new DatePicker("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
-        adatok.add(nev, telefon, email);
-        torzs.add(adatok, megjegyzes);
-        add(fomenu, idopontok, torzs, gombsor);
+        add(fomenu, idopontok, ugyfelAdatok, megjegyzes, gombsor);
         idopontokDatum.addValueChangeListener(e -> orakFeltoltese(e.getValue()));
         foglal.addClickListener(e -> idopontFoglalas());
     }
@@ -71,10 +84,8 @@ public class IdopontFoglalasForm extends VerticalLayout {
         idopontokDatum.setMin(LocalDate.now());
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
-        nev.setRequired(true);
-        telefon.setRequired(true);
-        email.setRequired(true);
         idopontokDatum.setValue(LocalDate.now());
+        idopontokDatum.setI18n(magyarDatumInit());
         orakFeltoltese(LocalDate.now());
     }
 
@@ -83,10 +94,10 @@ public class IdopontFoglalasForm extends VerticalLayout {
         List<LocalTime> orak = new ArrayList<>();
 
         for(int i=8; i<17; i++){
-            if(alapFoglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))){
+            if(foglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))){
                 orak.add(LocalTime.of(i, 0));
             }
-            if(alapFoglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))){
+            if(foglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))){
                 orak.add(LocalTime.of(i, 30));
             }
         }
@@ -98,13 +109,13 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private FoglalasEntity idopontFoglalasAdat(){
         FoglalasEntity foglalasEntity = new FoglalasEntity();
 
-        UgyfelEntity ugyfelEntity = alapUgyfelRepository.findByNevAndTelefonAndEmail(nev.getValue(), telefon.getValue(), email.getValue());
+        UgyfelEntity ugyfelEntity = ugyfelRepository.findByNevAndTelefonAndEmail(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue());
 
         if(ugyfelEntity == null) {
             ugyfelEntity = new UgyfelEntity();
-            ugyfelEntity.setNev(nev.getValue());
-            ugyfelEntity.setTelefon(telefon.getValue());
-            ugyfelEntity.setEmail(email.getValue());
+            ugyfelEntity.setNev(ugyfelAdatok.getNev().getValue());
+            ugyfelEntity.setTelefon(ugyfelAdatok.getTelefon().getValue());
+            ugyfelEntity.setEmail(ugyfelAdatok.getEmail().getValue());
         }
 
         foglalasEntity.setUgyfel(ugyfelEntity);
@@ -117,9 +128,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
     }
 
     private boolean kitoltottseg(){
-        return idopontokDatum.isEmpty() || foglalhatoOrak.isEmpty()
-                || nev.isInvalid() || telefon.isInvalid() || email.isInvalid()
-                || nev.isEmpty() || telefon.isEmpty() || email.isEmpty();
+        return idopontokDatum.isEmpty() || foglalhatoOrak.isEmpty() || ugyfelAdatok.kitoltottseg();
     }
 
     private void idopontFoglalas(){
@@ -127,8 +136,8 @@ public class IdopontFoglalasForm extends VerticalLayout {
             Notification hiba = new HibaJelzes("Hibás kitöltés");
             hiba.open();
         }else{
-            alapFoglalasRepository.save(idopontFoglalasAdat());
-            LOGGER.info("Mentett Id: " + alapUgyfelRepository.findByNevAndTelefonAndEmail(nev.getValue(), telefon.getValue(), email.getValue()).getId().toString());
+            foglalasRepository.save(idopontFoglalasAdat());
+            LOGGER.info("Mentett Id: " + ugyfelRepository.findByNevAndTelefonAndEmail(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue()).getId().toString());
             alaphelyzetbeAllit();
         }
     }
@@ -137,9 +146,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
         idopontokDatum.setMin(LocalDate.now());
         idopontokDatum.setValue(LocalDate.now());
         orakFeltoltese(LocalDate.now());
-        nev.clear();
-        telefon.clear();
-        email.clear();
+        ugyfelAdatok.alaphelyzet();
         megjegyzes.setValue("");
         idopontokDatum.setMin(LocalDate.now());
     }

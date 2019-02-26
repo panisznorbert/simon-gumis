@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Data
@@ -12,7 +13,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class GumikEntity extends BaseEntity {
     private String gyarto;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private GumiMeretekEntity meret;
     private Integer ar;
     private String evszak;
@@ -22,5 +23,9 @@ public class GumikEntity extends BaseEntity {
     @Override
     public String toString() {
         return gyarto + " " + meret + " " + evszak + " " + allapot;
+    }
+
+    public String toStringFull() {
+        return gyarto + " " + meret + " " + evszak + " " + allapot + " " + ar + " " + mennyisegRaktarban;
     }
 }

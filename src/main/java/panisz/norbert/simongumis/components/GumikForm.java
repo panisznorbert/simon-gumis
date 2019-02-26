@@ -2,7 +2,6 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.views.MainView;
 
@@ -30,25 +28,18 @@ public class GumikForm extends VerticalLayout {
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     @Autowired
-    private GumikRepository alapGumikRepository;
+    private GumikRepository gumikRepository;
+
+    private MenuForm fomenu  = new MenuForm();
     @Autowired
-    private GumiMeretekRepository alapGumiMeretekRepository;
-
-    private MenuForm fomenu = new MenuForm();
-
-    private GumiKeresoMenu menu;
+    private GumiKeresoMenu menu = new GumiKeresoMenu();
     private Grid<GumikEntity> gumik = new Grid<>();
 
     private Dialog darabszamAblak;
 
-    public GumikForm(){
-        LOGGER.info("GumikForm-ba belépett");
-        //init();
-    }
 
     @PostConstruct
     public void init(){
-
         gumik.addColumn(GumikEntity::getGyarto).setHeader("Gyártó");
         gumik.addColumn(GumikEntity::getMeret).setHeader("Méret");
         gumik.addColumn(GumikEntity::getEvszak).setHeader("Évszak");
@@ -57,9 +48,7 @@ public class GumikForm extends VerticalLayout {
         gumik.addColumn(GumikEntity::getMennyisegRaktarban).setHeader("Raktáron (db)");
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
         gumik.setWidth("950px");
-        menu = new GumiKeresoMenu(alapGumiMeretekRepository);
         gumikTablaFeltolt(menu.getKriterium());
-
         add(fomenu, menu, gumik);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }
@@ -111,7 +100,7 @@ public class GumikForm extends VerticalLayout {
     }
 
     public void gumikTablaFeltolt(GumikEntity szures){
-        ArrayList<GumikEntity> osszesGumi = new ArrayList<>(alapGumikRepository.findAll());
+        ArrayList<GumikEntity> osszesGumi = new ArrayList<>(gumikRepository.findAll());
         ArrayList<GumikEntity> szurtAdatok = new ArrayList<>(osszesGumi);
         int gumikSzama = osszesGumi.size();
         for(int i=0;i<gumikSzama;i++){
