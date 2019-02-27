@@ -1,0 +1,10 @@
+INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 1, 255, 60, 19 );
+INSERT INTO gumik (id, gyarto, meret_id, ar, evszak, allapot, mennyiseg_raktarban) VALUES ( 1, 'Gyarto1', 1, 4500, 'Nyári', 'Új', 6 );
+INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 2, 205, 60, 21 );
+INSERT INTO gumik (id, gyarto, meret_id, ar, evszak, allapot, mennyiseg_raktarban) VALUES ( 2, 'Gyarto2', 2, 5500, 'Nyári', 'Új', 8 );
+INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 3, 215, 40, 21 );
+INSERT INTO gumik (id, gyarto, meret_id, ar, evszak, allapot, mennyiseg_raktarban) VALUES ( 3, 'Gyarto3', 3, 2500, 'Nyári', 'Használt', 10 );
+INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 4, 195, 50, 20 );
+INSERT INTO gumik (id, gyarto, meret_id, ar, evszak, allapot, mennyiseg_raktarban) VALUES ( 4, 'Gyarto1', 4, 4000, 'Téli', 'Új', 2 );
+INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 5, 200, 70, 18 );
+INSERT INTO gumik (id, gyarto, meret_id, ar, evszak, allapot, mennyiseg_raktarban) VALUES ( 5, 'Gyarto1', 5, 6000, 'Téli', 'Új', 5 );

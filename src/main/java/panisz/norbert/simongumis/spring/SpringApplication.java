@@ -14,11 +14,18 @@ import panisz.norbert.simongumis.views.MainView;
 @EnableJpaRepositories(basePackages = "panisz.norbert.simongumis")
 
 public class SpringApplication extends SpringBootServletInitializer {
+    private static Integer rendelesAzon = null;
     public static void main(String[] args) {
         org.springframework.boot.SpringApplication.run(SpringApplication.class, args);
     }
 
+    public static Integer getRendelesAzon() {
+        return rendelesAzon;
+    }
 
+    public static void setRendelesAzon(Integer rendelesAzon) {
+        SpringApplication.rendelesAzon = rendelesAzon;
+    }
 }
 
 

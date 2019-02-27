@@ -52,8 +52,6 @@ public class GumiSzerkesztoForm extends VerticalLayout {
         add(new HorizontalLayout(gyarto, meret1), new HorizontalLayout(meret2, meret3), new HorizontalLayout(evszak, allapot), new HorizontalLayout(ar, darab));
     }
 
-
-
     public GumikEntity beallit(GumikEntity gumikEntity, GumiMeretekRepository gumiMeretekRepository){
             gumikEntity.setGyarto(gyarto.getValue());
             GumiMeretekEntity meret = gumikEntity.getMeret();
@@ -73,8 +71,5 @@ public class GumiSzerkesztoForm extends VerticalLayout {
     public String validacio() {
         return GumikKezeleseForm.getString(gyarto, evszak, allapot, ar, darab, meret1, meret2, meret3);
     }
-
-
-
 
 }

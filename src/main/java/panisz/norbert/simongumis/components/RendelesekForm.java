@@ -6,16 +6,19 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class RendelesekForm extends VerticalLayout {
-    private RendelesRepository alapRendelesRepository = null;
+    @Autowired
+    private RendelesRepository alapRendelesRepository;
 
     private TextField kereso = new TextField("Név:");
     private Button keres = new Button("Keres");
@@ -24,15 +27,11 @@ public class RendelesekForm extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public RendelesekForm(RendelesRepository rendelesRepository){
-        alapRendelesRepository = rendelesRepository;
-        if(alapRendelesRepository != null) {
-            init(alapRendelesRepository.findAll());
-        }
-    }
 
-    private void init(List<RendelesEntity> rendelesEntities){
-        if(rendelesEntities != null && !rendelesEntities.isEmpty()) {
+    @PostConstruct
+    private void init(){
+        List<RendelesEntity> rendelesEntities = alapRendelesRepository.findAll();
+        if(!rendelesEntities.isEmpty()) {
             for (RendelesEntity rendeles : rendelesEntities) {
                 ujRendelesSor(rendeles);
             }

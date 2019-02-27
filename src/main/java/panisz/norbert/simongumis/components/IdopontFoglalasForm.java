@@ -15,10 +15,7 @@ import panisz.norbert.simongumis.entities.FoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.FoglalasRepository;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
-
 import javax.annotation.PostConstruct;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -44,7 +41,6 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private UgyfelMezok ugyfelAdatok = new UgyfelMezok();
 
     private TextField megjegyzes = new TextField("Megjegyzés:");
-
 
 
     public IdopontFoglalasForm(){

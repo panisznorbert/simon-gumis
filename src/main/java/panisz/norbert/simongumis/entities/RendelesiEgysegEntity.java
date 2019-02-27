@@ -18,6 +18,6 @@ public class RendelesiEgysegEntity extends BaseEntity {
 
     @Override
     public String toString() {
-        return gumi.toString() + ", " + mennyiseg + ", db" + reszosszeg + " Ft";
+        return gumi.toString() + ", " + mennyiseg + " db," + reszosszeg + " Ft";
     }
 }

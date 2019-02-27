@@ -12,7 +12,6 @@ import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
-
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,7 +53,6 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     public GumiKeresoMenu(){
-        //init();
         egyeb.addClickListener(e -> tovabbiFeltetelek());
         alaphelyzet.addClickListener(e -> init());
         keres.addClickListener(e -> adatokBeallitasa());
@@ -85,12 +83,6 @@ public class GumiKeresoMenu extends HorizontalLayout {
         menu.add(menu1, menu2);
         add(menu);
         adatokBeallitasa();
-    }
-
-
-    private void alapMeretBeallitas(){
-        meretFeltolto(gumiMeretekRepository.findAll(), 0, 0, 0);
-        LOGGER.info("Gumi repo mérete: " + Integer.toString(gumiMeretekRepository.findAll().size()));
     }
 
     private void adatokBeallitasa(){

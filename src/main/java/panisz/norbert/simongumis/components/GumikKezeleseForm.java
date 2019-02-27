@@ -1,11 +1,9 @@
 package panisz.norbert.simongumis.components;
 
-import com.helger.commons.annotation.Singleton;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,9 +17,7 @@ import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
-
 import javax.annotation.PostConstruct;
-import javax.persistence.PostLoad;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -64,7 +60,6 @@ public class GumikKezeleseForm extends VerticalLayout {
 
 
     public GumikKezeleseForm(){
-        init();
         hozzaad.addClickListener(e -> ment());
         torol.addClickListener(e -> mezokInit());
         eltavolit.addClickListener(e -> torles());
@@ -79,6 +74,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
 
+    @PostConstruct
     private void init(){
         ar.setPattern("\\d*(\\.\\d*)?");
         ar.setPreventInvalidInput(true);
@@ -98,9 +94,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         allapot.setRequired(true);
         darab.setRequired(true);
 
-        gumikTablaFeltolt();
-
-
+        gumikTablaInit();
 
         gombok.add(hozzaad, torol);
         adatokBevitel.add(gyarto, meret1, meret2, meret3, evszak, allapot, ar, darab);
@@ -110,46 +104,6 @@ public class GumikKezeleseForm extends VerticalLayout {
         add(fomenu, layout);
     }
 
-    @PostConstruct
-    private void tesztadatok(){
-        //alapadatok hozzáadása
-        gyarto.setValue("Gyártó1");
-        meret1.setValue("155");
-        meret2.setValue("40");
-        meret3.setValue("20");
-        ar.setValue("4500");
-        evszak.setValue("Téli");
-        allapot.setValue("Új");
-        darab.setValue("4");
-        ment();
-        gyarto.setValue("Gyártó2");
-        meret1.setValue("155");
-        meret2.setValue("50");
-        meret3.setValue("19");
-        ar.setValue("4500");
-        evszak.setValue("Téli");
-        allapot.setValue("Új");
-        darab.setValue("4");
-        ment();
-        gyarto.setValue("Gyártó3");
-        meret1.setValue("255");
-        meret2.setValue("40");
-        meret3.setValue("21");
-        ar.setValue("4500");
-        evszak.setValue("Téli");
-        allapot.setValue("Új");
-        darab.setValue("4");
-        ment();
-        gyarto.setValue("Gyártó2");
-        meret1.setValue("215");
-        meret2.setValue("30");
-        meret3.setValue("21");
-        ar.setValue("4000");
-        evszak.setValue("Nyári");
-        allapot.setValue("Új");
-        darab.setValue("6");
-        ment();
-    }
 
     private void ment(){
         String hiba=validacio();
@@ -182,8 +136,7 @@ public class GumikKezeleseForm extends VerticalLayout {
             }else{
                 gumikRepository.save(gumi);
 
-                grid.setItems(gumikRepository.findAll());
-                grid.getDataProvider().refreshAll();
+                gumikTablaFrissit();
                 mezokInit();
             }
 
@@ -227,7 +180,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         return null;
     }
 
-    private void gumikTablaFeltolt(){
+    private void gumikTablaInit(){
         grid.addColumn(GumikEntity::getGyarto).setHeader("Gyártó");
         grid.addColumn(GumikEntity::getMeret).setHeader("Méret");
         grid.addColumn(GumikEntity::getEvszak).setHeader("Évszak");
@@ -235,6 +188,14 @@ public class GumikKezeleseForm extends VerticalLayout {
         grid.addColumn(GumikEntity::getAr).setHeader("Ár");
         grid.addColumn(GumikEntity::getMennyisegRaktarban).setHeader("Raktáron (db)");
 
+        //if(gumikRepository.findAll().size()>0){
+            gumikTablaFrissit();
+       // }
+    }
+
+    private void gumikTablaFrissit(){
+        grid.setItems(gumikRepository.findAll());
+        grid.getDataProvider().refreshAll();
     }
 
     private void mezokInit(){

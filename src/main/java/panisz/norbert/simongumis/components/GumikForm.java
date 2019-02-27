@@ -14,10 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
+import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumikRepository;
-import panisz.norbert.simongumis.views.MainView;
-
+import panisz.norbert.simongumis.repositories.KosarRepository;
+import panisz.norbert.simongumis.spring.SpringApplication;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -29,6 +30,9 @@ public class GumikForm extends VerticalLayout {
 
     @Autowired
     private GumikRepository gumikRepository;
+
+    @Autowired
+    private KosarRepository kosarRepository;
 
     private MenuForm fomenu  = new MenuForm();
     @Autowired
@@ -53,7 +57,6 @@ public class GumikForm extends VerticalLayout {
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }
 
-
     private void kosarbahelyezesAblak(GumikEntity gumi){
         Label tipus = new Label(gumi.toString() + " típusú gumiból");
         Label hiba = new Label();
@@ -73,8 +76,8 @@ public class GumikForm extends VerticalLayout {
                 darab.setInvalid(true);
             }
             //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
-            if(!darab.isInvalid() && !MainView.getFomenu().getAktualisRendeles().getRendelesiEgysegek().isEmpty()){
-                for(RendelesiEgysegEntity rendeles:MainView.getFomenu().getAktualisRendeles().getRendelesiEgysegek()) {
+            if(!darab.isInvalid() && SpringApplication.getRendelesAzon() != null){
+                for(RendelesiEgysegEntity rendeles:kosarRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);
@@ -88,54 +91,73 @@ public class GumikForm extends VerticalLayout {
         });
         darabszamAblak.open();
         darabszamAblak.setWidth("400px");
-
     }
 
     private void kosarbaRak(GumikEntity gumi, Integer darab){
-        RendelesiEgysegEntity rendeles = new RendelesiEgysegEntity();
-        rendeles.setGumi(gumi);
-        rendeles.setMennyiseg(darab);
-        rendeles.setReszosszeg(gumi.getAr()*darab);
-        MainView.kosarhozAd(rendeles);
+        RendelesiEgysegEntity rendelesiEgyseg = new RendelesiEgysegEntity();
+        RendelesEntity rendeles = new RendelesEntity();
+        rendelesiEgyseg.setGumi(gumi);
+        rendelesiEgyseg.setMennyiseg(darab);
+        rendelesiEgyseg.setReszosszeg(gumi.getAr()*darab);
+        boolean meglevo = false;
+        //Az aktuális rendelés azonosító tárolása, mely később cookie-ban lesz
+        if(SpringApplication.getRendelesAzon() == null){
+            rendeles.setRendelesiEgysegek(new ArrayList<>());
+
+        }else {
+            rendeles = kosarRepository.findById(SpringApplication.getRendelesAzon()).get();
+        }
+
+        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendeles.getRendelesiEgysegek()){
+            //Ellenőrzi hogy az adott gumiból már van-e a kosárban és ha van akkor azt növeli
+            if(rendelesiEgysegEntity.getGumi().equals(rendelesiEgyseg.getGumi())){
+                rendelesiEgysegEntity.setMennyiseg(rendelesiEgysegEntity.getMennyiseg() + rendelesiEgyseg.getMennyiseg());
+                rendelesiEgysegEntity.setReszosszeg(rendelesiEgysegEntity.getReszosszeg() + rendelesiEgyseg.getReszosszeg());
+                meglevo = true;
+            }
+        }
+
+        if(!meglevo){
+            rendeles.getRendelesiEgysegek().add(rendelesiEgyseg);
+        }
+
+        SpringApplication.setRendelesAzon(kosarRepository.save(rendeles).getId());
     }
 
-    public void gumikTablaFeltolt(GumikEntity szures){
+    private void gumikTablaFeltolt(GumikEntity szures){
         ArrayList<GumikEntity> osszesGumi = new ArrayList<>(gumikRepository.findAll());
         ArrayList<GumikEntity> szurtAdatok = new ArrayList<>(osszesGumi);
-        int gumikSzama = osszesGumi.size();
-        for(int i=0;i<gumikSzama;i++){
-            if(adottSzelessegreSzurtE(osszesGumi.get(i).getMeret().getSzelesseg(), szures.getMeret().getSzelesseg())){
-                szurtAdatok.remove(osszesGumi.get(i));
+        for (GumikEntity gumikEntity : osszesGumi) {
+            if (adottSzelessegreSzurtE(gumikEntity.getMeret().getSzelesseg(), szures.getMeret().getSzelesseg())) {
+                szurtAdatok.remove(gumikEntity);
                 continue;
             }
-            if(adottProfilraSzurtE(osszesGumi.get(i).getMeret().getProfil(), szures.getMeret().getProfil())){
-                szurtAdatok.remove(osszesGumi.get(i));
+            if (adottProfilraSzurtE(gumikEntity.getMeret().getProfil(), szures.getMeret().getProfil())) {
+                szurtAdatok.remove(gumikEntity);
                 continue;
             }
-            if(adottFelnireSzurtE(osszesGumi.get(i).getMeret().getFelni(), szures.getMeret().getFelni())){
-                szurtAdatok.remove(osszesGumi.get(i));
+            if (adottFelnireSzurtE(gumikEntity.getMeret().getFelni(), szures.getMeret().getFelni())) {
+                szurtAdatok.remove(gumikEntity);
                 continue;
             }
-            if(adottEvszakraSzurtE(osszesGumi.get(i).getEvszak(),szures.getEvszak())){
-                szurtAdatok.remove(osszesGumi.get(i));
+            if (adottEvszakraSzurtE(gumikEntity.getEvszak(), szures.getEvszak())) {
+                szurtAdatok.remove(gumikEntity);
                 continue;
             }
-            if(adottAllapotraSzurtE(osszesGumi.get(i).getAllapot(),szures.getAllapot())){
-                szurtAdatok.remove(osszesGumi.get(i));
+            if (adottAllapotraSzurtE(gumikEntity.getAllapot(), szures.getAllapot())) {
+                szurtAdatok.remove(gumikEntity);
                 continue;
             }
-            if(adottGyartoraSzurtE(osszesGumi.get(i).getGyarto(), szures.getGyarto())){
-                szurtAdatok.remove(osszesGumi.get(i));
+            if (adottGyartoraSzurtE(gumikEntity.getGyarto(), szures.getGyarto())) {
+                szurtAdatok.remove(gumikEntity);
                 continue;
             }
-            if(adottArraSzurtE(osszesGumi.get(i).getAr())){
-                szurtAdatok.remove(osszesGumi.get(i));
-                continue;
+            if (adottArraSzurtE(gumikEntity.getAr())) {
+                szurtAdatok.remove(gumikEntity);
             }
         }
         gumik.setItems(szurtAdatok);
         gumik.getDataProvider().refreshAll();
-
     }
 
     private boolean adottSzelessegreSzurtE(Integer aktualisSzelesseg, Integer szurtSzelesseg){

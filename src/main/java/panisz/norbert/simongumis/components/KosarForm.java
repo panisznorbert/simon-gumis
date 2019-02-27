@@ -11,13 +11,11 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
-import panisz.norbert.simongumis.entities.RendelesEntity;
-import panisz.norbert.simongumis.entities.RendelesStatusz;
-import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.entities.UgyfelEntity;
+import panisz.norbert.simongumis.entities.*;
+import panisz.norbert.simongumis.repositories.KosarRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
-import panisz.norbert.simongumis.views.MainView;
-
+import panisz.norbert.simongumis.spring.SpringApplication;
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,41 +25,51 @@ import java.util.logging.Logger;
 public class KosarForm extends HorizontalLayout {
     @Autowired
     private RendelesRepository rendelesRepository;
-    private RendelesEntity alapRendelesEntity = null;
 
-    private HorizontalLayout tartalom = new HorizontalLayout();
+    @Autowired
+    private KosarRepository kosarRepository;
+
+    private MenuForm fomenu  = new MenuForm();
+
+    private RendelesEntity rendelesEntity = new RendelesEntity();
+    private VerticalLayout tartalom = new VerticalLayout();
     private Grid<RendelesiEgysegEntity> rendelesekTabla = new Grid<>();
 
-    private TextField nev = new TextField("Név:");
-    private TextField email = new TextField("E-mail:");
-    private TextField telefon = new TextField("Telefon:");
-    private VerticalLayout vevoAdatai = new VerticalLayout(nev, email, telefon);
+    private UgyfelMezok vevoAdatai = new UgyfelMezok();
     private Button tovabb = new Button("Megrendelés");
     private HorizontalLayout gombok = new HorizontalLayout(tovabb);
     private TextField vegosszeg = new TextField("Végösszeg:");
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public KosarForm(RendelesEntity rendelesEntity){
-        alapRendelesEntity = rendelesEntity;
-
-        if(alapRendelesEntity != null && !alapRendelesEntity.getRendelesiEgysegek().isEmpty()){
-            init();
-        }
-    }
-
+    @PostConstruct
     private void init(){
+        add(fomenu);
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Összeg");
         rendelesekTabla.setWidth("600px");
-        vegosszeg.setValue(alapRendelesEntity.getVegosszeg().toString());
         vegosszeg.setSuffixComponent(new Span("Ft"));
         vegosszeg.setReadOnly(true);
-        rendelesekTablaFeltolt(alapRendelesEntity.getRendelesiEgysegek());
-        tartalom.add(new VerticalLayout(rendelesekTabla, vegosszeg), new VerticalLayout(vevoAdatai, gombok));
-        add(tartalom);
-        tovabb.addClickListener(e -> megrendeles());
+
+        if(kosarRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek().size()>0) {
+            rendelesEntity.setRendelesiEgysegek(kosarRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek());
+            rendelesekTablaFeltolt(rendelesEntity.getRendelesiEgysegek());
+            rendelesEntity.setVegosszeg(rendelesVegosszeg());
+            vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
+            tartalom.add(new VerticalLayout(rendelesekTabla, vegosszeg), new VerticalLayout(vevoAdatai, gombok));
+            add(tartalom);
+            tovabb.addClickListener(e -> megrendeles());
+        }
+    }
+
+    private Integer rendelesVegosszeg(){
+        Integer osszeg = 0;
+        for(RendelesiEgysegEntity rendeles : rendelesEntity.getRendelesiEgysegek()){
+            osszeg += rendeles.getReszosszeg();
+        }
+
+        return osszeg;
     }
 
     private void rendelesekTablaFeltolt(List<RendelesiEgysegEntity> rendelesiEgysegek){
@@ -71,17 +79,14 @@ public class KosarForm extends HorizontalLayout {
 
     private void megrendeles(){
         UgyfelEntity ugyfel = new UgyfelEntity();
-        ugyfel.setNev(nev.getValue());
-        ugyfel.setEmail(email.getValue());
-        ugyfel.setTelefon(telefon.getValue());
-        alapRendelesEntity.setUgyfel(ugyfel);
-        alapRendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
-        ment(alapRendelesEntity);
-        MainView.getFomenu().aktualisRendelesekInit();
-    }
-
-    private void ment(RendelesEntity rendelesEntity){
+        ugyfel.setNev(vevoAdatai.getNev().getValue());
+        ugyfel.setEmail(vevoAdatai.getEmail().getValue());
+        ugyfel.setTelefon(vevoAdatai.getTelefon().getValue());
+        rendelesEntity.setUgyfel(ugyfel);
+        rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
+        LOGGER.info(rendelesEntity.toString());
         rendelesRepository.save(rendelesEntity);
+        SpringApplication.setRendelesAzon(null);
     }
 
 }
