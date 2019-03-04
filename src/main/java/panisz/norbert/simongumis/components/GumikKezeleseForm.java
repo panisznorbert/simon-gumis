@@ -114,7 +114,8 @@ public class GumikKezeleseForm extends VerticalLayout {
             meret.setProfil(Integer.valueOf(meret2.getValue()));
             meret.setFelni(Integer.valueOf(meret3.getValue()));
 
-            //vizsgálni hogy van-e mály ilyen méret lementve és ha igen ne mentsunk még egyet le
+            //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
+
             GumiMeretekEntity mentettGumimeret = gumiMeretekRepository.findBySzelessegAndProfilAndFelni(meret.getSzelesseg(), meret.getProfil(), meret.getFelni());
             if (mentettGumimeret != null) {
                 LOGGER.info(mentettGumimeret.toString());
@@ -134,6 +135,7 @@ public class GumikKezeleseForm extends VerticalLayout {
             if(mentettGumi != null){
                 hiba = "Már van ilyen gumi";
             }else{
+                LOGGER.info("Gumi id: " + gumi.getId() + ", Gumi méret id: " + gumi.getMeret().getId());
                 gumikRepository.save(gumi);
 
                 gumikTablaFrissit();
@@ -235,7 +237,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
         String leiras = gumiSzerkesztoForm.validacio();
         if(leiras == null){
-            gumikRepository.save(gumiSzerkesztoForm.beallit(gumikEntity, gumiMeretekRepository));
+            gumikRepository.save(gumiSzerkesztoForm.beallit(gumikEntity));
             gridRefresh();
             gumiSzerkeszto.close();
         }else{

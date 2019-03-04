@@ -6,7 +6,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
@@ -16,9 +18,13 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.logging.Logger;
 
+@UIScope
+@Component
 public class RendelesekForm extends VerticalLayout {
     @Autowired
     private RendelesRepository alapRendelesRepository;
+
+    private MenuForm fomenu  = new MenuForm();
 
     private TextField kereso = new TextField("Név:");
     private Button keres = new Button("Keres");
@@ -37,7 +43,7 @@ public class RendelesekForm extends VerticalLayout {
             }
         }
         keresoSav.setAlignItems(Alignment.END);
-        add(keresoSav, tartalom);
+        add(fomenu, keresoSav, tartalom);
     }
 
     private void ujRendelesSor(RendelesEntity rendelesEntity){

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.*;
-import panisz.norbert.simongumis.repositories.KosarRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.spring.SpringApplication;
 import javax.annotation.PostConstruct;
@@ -26,12 +25,9 @@ public class KosarForm extends HorizontalLayout {
     @Autowired
     private RendelesRepository rendelesRepository;
 
-    @Autowired
-    private KosarRepository kosarRepository;
-
     private MenuForm fomenu  = new MenuForm();
 
-    private RendelesEntity rendelesEntity = new RendelesEntity();
+    private RendelesEntity rendelesEntity;
     private VerticalLayout tartalom = new VerticalLayout();
     private Grid<RendelesiEgysegEntity> rendelesekTabla = new Grid<>();
 
@@ -52,8 +48,8 @@ public class KosarForm extends HorizontalLayout {
         vegosszeg.setSuffixComponent(new Span("Ft"));
         vegosszeg.setReadOnly(true);
 
-        if(kosarRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek().size()>0) {
-            rendelesEntity.setRendelesiEgysegek(kosarRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek());
+        if(SpringApplication.getRendelesAzon() != null) {
+            rendelesEntity = rendelesRepository.findById(SpringApplication.getRendelesAzon()).get();
             rendelesekTablaFeltolt(rendelesEntity.getRendelesiEgysegek());
             rendelesEntity.setVegosszeg(rendelesVegosszeg());
             vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
@@ -85,6 +81,7 @@ public class KosarForm extends HorizontalLayout {
         rendelesEntity.setUgyfel(ugyfel);
         rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
         LOGGER.info(rendelesEntity.toString());
+
         rendelesRepository.save(rendelesEntity);
         SpringApplication.setRendelesAzon(null);
     }

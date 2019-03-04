@@ -15,9 +15,10 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
+import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumikRepository;
-import panisz.norbert.simongumis.repositories.KosarRepository;
+import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.spring.SpringApplication;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class GumikForm extends VerticalLayout {
     private GumikRepository gumikRepository;
 
     @Autowired
-    private KosarRepository kosarRepository;
+    private RendelesRepository rendelesRepository;
 
     private MenuForm fomenu  = new MenuForm();
     @Autowired
@@ -77,7 +78,7 @@ public class GumikForm extends VerticalLayout {
             }
             //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
             if(!darab.isInvalid() && SpringApplication.getRendelesAzon() != null){
-                for(RendelesiEgysegEntity rendeles:kosarRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek()) {
+                for(RendelesiEgysegEntity rendeles: rendelesRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);
@@ -96,6 +97,7 @@ public class GumikForm extends VerticalLayout {
     private void kosarbaRak(GumikEntity gumi, Integer darab){
         RendelesiEgysegEntity rendelesiEgyseg = new RendelesiEgysegEntity();
         RendelesEntity rendeles = new RendelesEntity();
+        rendeles.setStatusz(RendelesStatusz.KOSARBAN);
         rendelesiEgyseg.setGumi(gumi);
         rendelesiEgyseg.setMennyiseg(darab);
         rendelesiEgyseg.setReszosszeg(gumi.getAr()*darab);
@@ -105,7 +107,7 @@ public class GumikForm extends VerticalLayout {
             rendeles.setRendelesiEgysegek(new ArrayList<>());
 
         }else {
-            rendeles = kosarRepository.findById(SpringApplication.getRendelesAzon()).get();
+            rendeles = rendelesRepository.findById(SpringApplication.getRendelesAzon()).get();
         }
 
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendeles.getRendelesiEgysegek()){
@@ -121,7 +123,7 @@ public class GumikForm extends VerticalLayout {
             rendeles.getRendelesiEgysegek().add(rendelesiEgyseg);
         }
 
-        SpringApplication.setRendelesAzon(kosarRepository.save(rendeles).getId());
+        SpringApplication.setRendelesAzon(rendelesRepository.save(rendeles).getId());
     }
 
     private void gumikTablaFeltolt(GumikEntity szures){

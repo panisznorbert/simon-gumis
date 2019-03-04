@@ -7,7 +7,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 
 
 public class GumiSzerkesztoForm extends VerticalLayout {
@@ -17,8 +16,8 @@ public class GumiSzerkesztoForm extends VerticalLayout {
     private TextField meret2 = new TextField("Méret-profil arány");
     private TextField meret3 = new TextField("Méret-felni átmérő");
     private TextField ar = new TextField("Ár");
-    private ComboBox evszak = new ComboBox("Évszak", "Téli", "Nyári");
-    private ComboBox allapot = new ComboBox("Állapot", "Új","Használt");
+    private ComboBox<String> evszak = new ComboBox<>("Évszak", "Téli", "Nyári");
+    private ComboBox<String> allapot = new ComboBox<>("Állapot", "Új","Használt");
     private TextField darab  = new TextField("Raktárkészlet");
 
 
@@ -52,16 +51,15 @@ public class GumiSzerkesztoForm extends VerticalLayout {
         add(new HorizontalLayout(gyarto, meret1), new HorizontalLayout(meret2, meret3), new HorizontalLayout(evszak, allapot), new HorizontalLayout(ar, darab));
     }
 
-    public GumikEntity beallit(GumikEntity gumikEntity, GumiMeretekRepository gumiMeretekRepository){
+    public GumikEntity beallit(GumikEntity gumikEntity){
             gumikEntity.setGyarto(gyarto.getValue());
             GumiMeretekEntity meret = gumikEntity.getMeret();
             meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
             meret.setProfil(Integer.valueOf(meret2.getValue()));
             meret.setFelni(Integer.valueOf(meret3.getValue()));
-            gumiMeretekRepository.save(meret);
             gumikEntity.setMeret(meret);
-            gumikEntity.setEvszak(evszak.getValue().toString());
-            gumikEntity.setAllapot(allapot.getValue().toString());
+            gumikEntity.setEvszak(evszak.getValue());
+            gumikEntity.setAllapot(allapot.getValue());
             gumikEntity.setAr(Integer.valueOf(ar.getValue()));
             gumikEntity.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
 
