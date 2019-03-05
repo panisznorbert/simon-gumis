@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
+import panisz.norbert.simongumis.services.implement.GumiMeretekServiceImpl;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +23,8 @@ import java.util.logging.Logger;
 @Component
 public class GumiKeresoMenu extends HorizontalLayout {
     @Autowired
-    private GumiMeretekRepository gumiMeretekRepository;
+    private GumiMeretekServiceImpl gumiMeretekService;
+
     private GumikEntity kriterium = new GumikEntity();
     private static Integer kezdoAr;
     private static Integer vegAr;
@@ -60,14 +61,14 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
     @PostConstruct
     private void init(){
-        meretFeltolto(gumiMeretekRepository.findAll(), 0, 0, 0);
+        meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
         kriterium.setMeret(new GumiMeretekEntity());
         setMeret(0,0,0);
         kriterium.setGyarto("");
         kriterium.setAllapot("");
         kriterium.setEvszak("");
         kriterium.setMennyisegRaktarban(0);
-        kriterium.setAr(Integer.valueOf(0));
+        kriterium.setAr(0);
         evszak.clear();
         allapot.clear();
         gyarto.clear();
@@ -132,42 +133,42 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
         switch(beallito){
             case 0:{
-                meretFeltolto(gumiMeretekRepository.findAll(), 0, 0, 0);
+                meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
                 setMeret(0, 0, 0);
                 break;
             }
             case 1:{
-                meretFeltolto(gumiMeretekRepository.findAllByFelni(Integer.valueOf(meret3.getValue())), 0, 0, 1);
-                setMeret(0, 0, Integer.valueOf(meret3.getValue()));
+                meretFeltolto(gumiMeretekService.felnireKeres(meret3.getValue()), 0, 0, 1);
+                setMeret(0, 0, meret3.getValue());
                 break;
             }
             case 10:{
-                meretFeltolto(gumiMeretekRepository.findAllByProfil(Integer.valueOf(meret2.getValue())),0 ,1 ,0);
-                setMeret(0, Integer.valueOf(meret2.getValue()), 0);
+                meretFeltolto(gumiMeretekService.profilraKeres(meret2.getValue()),0 ,1 ,0);
+                setMeret(0, meret2.getValue(), 0);
                 break;
             }
             case 11:{
-                meretFeltolto(gumiMeretekRepository.findAllByProfilAndFelni(Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue())),0,1,1);
-                setMeret(0, Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue()));
+                meretFeltolto(gumiMeretekService.profilraEsFelnireKeres(meret2.getValue(), meret3.getValue()),0,1,1);
+                setMeret(0, meret2.getValue(), meret3.getValue());
                 break;
             }
             case 100:{
-                meretFeltolto(gumiMeretekRepository.findAllBySzelesseg(Integer.valueOf(meret1.getValue())), 1, 0, 0);
-                setMeret(Integer.valueOf(meret1.getValue()), 0, 0);
+                meretFeltolto(gumiMeretekService.szelessegreKeres(meret1.getValue()), 1, 0, 0);
+                setMeret(meret1.getValue(), 0, 0);
                 break;
             }
             case 101:{
-                meretFeltolto(gumiMeretekRepository.findAllBySzelessegAndFelni(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret3.getValue())), 1, 0, 1);
-                setMeret(Integer.valueOf(meret1.getValue()), 0, Integer.valueOf(meret3.getValue()));
+                meretFeltolto(gumiMeretekService.szelessegreEsFelnireKeres(meret1.getValue(), meret3.getValue()), 1, 0, 1);
+                setMeret(meret1.getValue(), 0, meret3.getValue());
                 break;
             }
             case 110:{
-                meretFeltolto(gumiMeretekRepository.findAllBySzelessegAndProfil(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue())), 1, 1, 0);
-                setMeret(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue()), 0);
+                meretFeltolto(gumiMeretekService.szelessegreEsProfilraKeres(meret1.getValue(), meret2.getValue()), 1, 1, 0);
+                setMeret(meret1.getValue(), meret2.getValue(), 0);
                 break;
             }
             case 111:{
-                setMeret(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue()));
+                setMeret(meret1.getValue(), meret2.getValue(), meret3.getValue());
                 break;
             }
         }
@@ -180,15 +181,14 @@ public class GumiKeresoMenu extends HorizontalLayout {
     }
 
     private void meretFeltolto(List<GumiMeretekEntity> gumiMeretekEntities, int a, int b, int c){
-        ArrayList<GumiMeretekEntity> gumiMeretek = new ArrayList<>();
-        gumiMeretek.addAll(gumiMeretekEntities);
+        ArrayList<GumiMeretekEntity> gumiMeretek = new ArrayList<>(gumiMeretekEntities);
         Set<Integer> meretSet1 = new HashSet<>();
         Set<Integer> meretSet2 = new HashSet<>();
         Set<Integer> meretSet3 = new HashSet<>();
-        for(int i=0;i<gumiMeretek.size();i++){
-            meretSet1.add(gumiMeretek.get(i).getSzelesseg());
-            meretSet2.add(gumiMeretek.get(i).getProfil());
-            meretSet3.add(gumiMeretek.get(i).getFelni());
+        for (GumiMeretekEntity gumiMeretekEntity : gumiMeretek) {
+            meretSet1.add(gumiMeretekEntity.getSzelesseg());
+            meretSet2.add(gumiMeretekEntity.getProfil());
+            meretSet3.add(gumiMeretekEntity.getFelni());
         }
 
         meret1cb.remove(meret1);meret1 = new ComboBox("Méret-szélesség");meret1.setItems(meretSet1);meret1cb.add(meret1);

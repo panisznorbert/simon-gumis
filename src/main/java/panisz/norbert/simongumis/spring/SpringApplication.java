@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import panisz.norbert.simongumis.views.MainView;
 
 @EnableVaadin("panisz.norbert.simongumis")
-@SpringBootApplication(scanBasePackages = "panisz.norbert.simongumis.components")
+@SpringBootApplication(scanBasePackages = "panisz.norbert.simongumis")
 @EntityScan(basePackages = "panisz.norbert.simongumis.entities")
 @EnableJpaRepositories(basePackages = "panisz.norbert.simongumis")
 

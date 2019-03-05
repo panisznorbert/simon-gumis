@@ -6,14 +6,12 @@ import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import lombok.Data;
 
-@Data
 public class MenuForm extends HorizontalLayout {
-    AppLayout appLayout = new AppLayout();
-    AppLayoutMenu menu = appLayout.createMenu();
+    private AppLayout appLayout = new AppLayout();
 
     public MenuForm(){
+        AppLayoutMenu menu = appLayout.createMenu();
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate("/")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> UI.getCurrent().navigate("szolgaltatasok")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e ->  UI.getCurrent().navigate("gumikkezelese")));
@@ -22,6 +20,7 @@ public class MenuForm extends HorizontalLayout {
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> UI.getCurrent().navigate("kosar")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek")));
         add(appLayout);
+        
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {

@@ -17,8 +17,8 @@ import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.repositories.GumikRepository;
-import panisz.norbert.simongumis.repositories.RendelesRepository;
+import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
+import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 import panisz.norbert.simongumis.spring.SpringApplication;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -28,16 +28,15 @@ import java.util.logging.Logger;
 @Component
 public class GumikForm extends VerticalLayout {
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
-
     @Autowired
-    private GumikRepository gumikRepository;
-
+    private GumikServiceImpl gumikService;
     @Autowired
-    private RendelesRepository rendelesRepository;
-
-    private MenuForm fomenu  = new MenuForm();
+    private RendelesServiceImpl rendelesService;
     @Autowired
     private GumiKeresoMenu menu = new GumiKeresoMenu();
+
+    private MenuForm fomenu  = new MenuForm();
+
     private Grid<GumikEntity> gumik = new Grid<>();
 
     private Dialog darabszamAblak;
@@ -78,7 +77,7 @@ public class GumikForm extends VerticalLayout {
             }
             //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
             if(!darab.isInvalid() && SpringApplication.getRendelesAzon() != null){
-                for(RendelesiEgysegEntity rendeles: rendelesRepository.findById(SpringApplication.getRendelesAzon()).get().getRendelesiEgysegek()) {
+                for(RendelesiEgysegEntity rendeles: rendelesService.idKereses(SpringApplication.getRendelesAzon()).getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);
@@ -107,7 +106,7 @@ public class GumikForm extends VerticalLayout {
             rendeles.setRendelesiEgysegek(new ArrayList<>());
 
         }else {
-            rendeles = rendelesRepository.findById(SpringApplication.getRendelesAzon()).get();
+            rendeles = rendelesService.idKereses(SpringApplication.getRendelesAzon());
         }
 
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendeles.getRendelesiEgysegek()){
@@ -123,11 +122,11 @@ public class GumikForm extends VerticalLayout {
             rendeles.getRendelesiEgysegek().add(rendelesiEgyseg);
         }
 
-        SpringApplication.setRendelesAzon(rendelesRepository.save(rendeles).getId());
+        SpringApplication.setRendelesAzon(rendelesService.ment(rendeles).getId());
     }
 
     private void gumikTablaFeltolt(GumikEntity szures){
-        ArrayList<GumikEntity> osszesGumi = new ArrayList<>(gumikRepository.findAll());
+        ArrayList<GumikEntity> osszesGumi = new ArrayList<>(gumikService.osszes());
         ArrayList<GumikEntity> szurtAdatok = new ArrayList<>(osszesGumi);
         for (GumikEntity gumikEntity : osszesGumi) {
             if (adottSzelessegreSzurtE(gumikEntity.getMeret().getSzelesseg(), szures.getMeret().getSzelesseg())) {
@@ -175,15 +174,15 @@ public class GumikForm extends VerticalLayout {
     }
 
     private boolean adottEvszakraSzurtE(String aktualisEvszak, String szurtEvszak){
-        return szurtEvszak != "" && aktualisEvszak != szurtEvszak;
+        return !szurtEvszak.equals("") && !aktualisEvszak.equals(szurtEvszak);
     }
 
     private boolean adottAllapotraSzurtE(String aktualisAllapot, String szurtAllapot){
-        return szurtAllapot != "" && aktualisAllapot != szurtAllapot;
+        return !szurtAllapot.equals("") && !aktualisAllapot.equals(szurtAllapot);
     }
 
     private boolean adottGyartoraSzurtE(String aktualisGyarto, String szurtGyarto){
-        return szurtGyarto != "" && !aktualisGyarto.equalsIgnoreCase(szurtGyarto);
+        return !szurtGyarto.equals("") && !aktualisGyarto.equalsIgnoreCase(szurtGyarto);
     }
 
     private boolean adottArraSzurtE(Integer aktualisAr){

@@ -13,6 +13,7 @@ import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
+import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 @Component
 public class RendelesekForm extends VerticalLayout {
     @Autowired
-    private RendelesRepository alapRendelesRepository;
+    private RendelesServiceImpl rendelesService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -36,7 +37,7 @@ public class RendelesekForm extends VerticalLayout {
 
     @PostConstruct
     private void init(){
-        List<RendelesEntity> rendelesEntities = alapRendelesRepository.findAll();
+        List<RendelesEntity> rendelesEntities = rendelesService.osszes();
         if(!rendelesEntities.isEmpty()) {
             for (RendelesEntity rendeles : rendelesEntities) {
                 ujRendelesSor(rendeles);

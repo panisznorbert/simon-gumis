@@ -15,8 +15,9 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
-import panisz.norbert.simongumis.repositories.GumikRepository;
+import panisz.norbert.simongumis.services.implement.GumiMeretekServiceImpl;
+import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
+
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -25,9 +26,9 @@ import java.util.logging.Logger;
 @Component
 public class GumikKezeleseForm extends VerticalLayout {
     @Autowired
-    private GumikRepository gumikRepository;
+    private GumikServiceImpl gumikService;
     @Autowired
-    private GumiMeretekRepository gumiMeretekRepository;
+    private GumiMeretekServiceImpl gumiMeretekService;
 
     private MenuForm fomenu = new MenuForm();
     private VerticalLayout layout = new VerticalLayout();
@@ -116,7 +117,7 @@ public class GumikKezeleseForm extends VerticalLayout {
 
             //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
 
-            GumiMeretekEntity mentettGumimeret = gumiMeretekRepository.findBySzelessegAndProfilAndFelni(meret.getSzelesseg(), meret.getProfil(), meret.getFelni());
+            GumiMeretekEntity mentettGumimeret = gumiMeretekService.mindenMeretreKeres(meret.getSzelesseg(), meret.getProfil(), meret.getFelni());
             if (mentettGumimeret != null) {
                 LOGGER.info(mentettGumimeret.toString());
                 meret = mentettGumimeret;
@@ -131,12 +132,12 @@ public class GumikKezeleseForm extends VerticalLayout {
 
             //vizsgálni, hogy van-e már ilyen gumi lementve, és ha igen akkor ne mentsunk még egyet le
 
-            GumikEntity mentettGumi = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapot(gumi.getGyarto(), gumi.getMeret().getSzelesseg(), gumi.getMeret().getProfil(), gumi.getMeret().getFelni(), gumi.getEvszak(), gumi.getAllapot());
+            GumikEntity mentettGumi = gumikService.vanMarIlyen(gumi.getGyarto(), gumi.getMeret().getSzelesseg(), gumi.getMeret().getProfil(), gumi.getMeret().getFelni(), gumi.getEvszak(), gumi.getAllapot());
             if(mentettGumi != null){
                 hiba = "Már van ilyen gumi";
             }else{
                 LOGGER.info("Gumi id: " + gumi.getId() + ", Gumi méret id: " + gumi.getMeret().getId());
-                gumikRepository.save(gumi);
+                gumikService.ment(gumi);
 
                 gumikTablaFrissit();
                 mezokInit();
@@ -196,7 +197,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
     private void gumikTablaFrissit(){
-        grid.setItems(gumikRepository.findAll());
+        grid.setItems(gumikService.osszes());
         grid.getDataProvider().refreshAll();
     }
 
@@ -213,7 +214,7 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private void torles(){
         if(!grid.getSelectedItems().isEmpty()) {
-            gumikRepository.deleteAll(grid.getSelectedItems());
+            gumikService.torolMind(grid.getSelectedItems());
             gridRefresh();
         }else{
             Notification hibaAblak = new HibaJelzes("Nincs kiválasztva módosítandó sor!");
@@ -237,7 +238,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
         String leiras = gumiSzerkesztoForm.validacio();
         if(leiras == null){
-            gumikRepository.save(gumiSzerkesztoForm.beallit(gumikEntity));
+            gumikService.ment(gumiSzerkesztoForm.beallit(gumikEntity));
             gridRefresh();
             gumiSzerkeszto.close();
         }else{
@@ -247,7 +248,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
     public void gridRefresh(){
-        grid.setItems(gumikRepository.findAll());
+        grid.setItems(gumikService.osszes());
         grid.getDataProvider().refreshAll();
     }
 

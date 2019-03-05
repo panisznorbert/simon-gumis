@@ -1,10 +1,12 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
@@ -12,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.*;
-import panisz.norbert.simongumis.repositories.RendelesRepository;
+import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 import panisz.norbert.simongumis.spring.SpringApplication;
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.logging.Logger;
 @Component
 public class KosarForm extends HorizontalLayout {
     @Autowired
-    private RendelesRepository rendelesRepository;
+    private RendelesServiceImpl rendelesService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -49,7 +51,7 @@ public class KosarForm extends HorizontalLayout {
         vegosszeg.setReadOnly(true);
 
         if(SpringApplication.getRendelesAzon() != null) {
-            rendelesEntity = rendelesRepository.findById(SpringApplication.getRendelesAzon()).get();
+            rendelesEntity = rendelesService.idKereses(SpringApplication.getRendelesAzon());
             rendelesekTablaFeltolt(rendelesEntity.getRendelesiEgysegek());
             rendelesEntity.setVegosszeg(rendelesVegosszeg());
             vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
@@ -82,8 +84,9 @@ public class KosarForm extends HorizontalLayout {
         rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
         LOGGER.info(rendelesEntity.toString());
 
-        rendelesRepository.save(rendelesEntity);
+        rendelesService.ment(rendelesEntity);
         SpringApplication.setRendelesAzon(null);
+        UI.getCurrent().navigate("gumik");
     }
 
 }

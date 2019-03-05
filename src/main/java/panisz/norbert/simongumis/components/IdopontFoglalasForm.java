@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.FoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
-import panisz.norbert.simongumis.repositories.FoglalasRepository;
-import panisz.norbert.simongumis.repositories.UgyfelRepository;
+import panisz.norbert.simongumis.services.implement.FoglalasServiceImpl;
+import panisz.norbert.simongumis.services.implement.UgyfelServiceImpl;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,9 +26,10 @@ import java.util.logging.Logger;
 @Component
 public class IdopontFoglalasForm extends VerticalLayout {
     @Autowired
-    private FoglalasRepository foglalasRepository;
+    private FoglalasServiceImpl foglalasService;
     @Autowired
-    private UgyfelRepository ugyfelRepository;
+    private UgyfelServiceImpl ugyfelService;
+
     private MenuForm fomenu = new MenuForm();
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
     private DatePicker idopontokDatum;
@@ -90,10 +91,10 @@ public class IdopontFoglalasForm extends VerticalLayout {
         List<LocalTime> orak = new ArrayList<>();
 
         for(int i=8; i<17; i++){
-            if(foglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))){
+            if(foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))){
                 orak.add(LocalTime.of(i, 0));
             }
-            if(foglalasRepository.findByDatum(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))){
+            if(foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))){
                 orak.add(LocalTime.of(i, 30));
             }
         }
@@ -105,7 +106,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private FoglalasEntity idopontFoglalasAdat(){
         FoglalasEntity foglalasEntity = new FoglalasEntity();
 
-        UgyfelEntity ugyfelEntity = ugyfelRepository.findByNevAndTelefonAndEmail(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue());
+        UgyfelEntity ugyfelEntity = ugyfelService.keresesUgyfeladatokra(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue());
 
         if(ugyfelEntity == null) {
             ugyfelEntity = new UgyfelEntity();
@@ -132,8 +133,8 @@ public class IdopontFoglalasForm extends VerticalLayout {
             Notification hiba = new HibaJelzes("Hibás kitöltés");
             hiba.open();
         }else{
-            foglalasRepository.save(idopontFoglalasAdat());
-            LOGGER.info("Mentett Id: " + ugyfelRepository.findByNevAndTelefonAndEmail(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue()).getId().toString());
+            foglalasService.ment(idopontFoglalasAdat());
+            LOGGER.info("Mentett Id: " + ugyfelService.keresesUgyfeladatokra(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue()).getId().toString());
             alaphelyzetbeAllit();
         }
     }
