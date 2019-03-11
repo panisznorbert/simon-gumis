@@ -35,6 +35,10 @@ public class GumikServiceImpl implements GumikService {
         gumikRepository.delete(gumikEntity);
     }
 
+    public GumikEntity idKereses(Integer id){
+        return gumikRepository.findById(id).get();
+    }
+
     public void torolMind(Set<GumikEntity> gumikEntities){
         gumikRepository.deleteAll(gumikEntities);
     }

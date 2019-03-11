@@ -1,7 +1,6 @@
 package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,9 +9,11 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
+import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
+import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.repositories.RendelesRepository;
+import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
 import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +25,8 @@ import java.util.logging.Logger;
 public class RendelesekForm extends VerticalLayout {
     @Autowired
     private RendelesServiceImpl rendelesService;
+    @Autowired
+    private GumikServiceImpl gumikService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -57,17 +60,46 @@ public class RendelesekForm extends VerticalLayout {
         VerticalLayout ugyfelRendeles = new VerticalLayout(rendelesek);
         TextField ar = new TextField("Ár");
         TextField statusz = new TextField("Státusz:");
-        HorizontalLayout labLec = new HorizontalLayout(ar, statusz);
+        Button modosit = new Button("Leegyeztetve");
+        Button torol = new Button("Megrendelés törlése");
+        HorizontalLayout labLec = new HorizontalLayout(ar, statusz, modosit);
+        labLec.setAlignItems(Alignment.BASELINE);
         nev.setValue(rendelesEntity.getUgyfel().getNev());
         email.setValue(rendelesEntity.getUgyfel().getEmail());
         telefon.setValue(rendelesEntity.getUgyfel().getTelefon());
         ar.setValue(rendelesEntity.getVegosszeg().toString());
         statusz.setValue(rendelesEntity.getStatusz().toString());
+        statusz.setEnabled(false);
         rendelesek.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
         rendelesek.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab").setWidth("100px");
         rendelesek.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Ár").setWidth("100px");
         rendelesek.setItems(rendelesEntity.getRendelesiEgysegek());
         rendelesek.getDataProvider().refreshAll();
+        modosit.addClickListener(e -> {
+            switch (statusz.getValue()){
+                case "MEGRENDELVE": {
+                    for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
+                        GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
+                        gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
+                        gumikService.ment(gumikEntity);
+                    }
+                    statusz.setValue(RendelesStatusz.ATVETELRE_VAR.toString());
+                    modosit.setText("Átvette");
+                }
+                case "ATVETELRE_VAR":{
+                    statusz.setValue(RendelesStatusz.RENDEZVE.toString());
+                    modosit.setVisible(false);
+                }
+            }
+        });
+        torol.addClickListener(e -> {
+            modosit.setVisible(false);
+            statusz.setValue(RendelesStatusz.TOROLVE.toString());
+        });
         tartalom.add(new VerticalLayout(uygfelLeiras, ugyfelRendeles, labLec));
+    }
+
+    private void statuszValtas(RendelesEntity rendelesEntity){
+
     }
 }

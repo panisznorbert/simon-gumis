@@ -6,7 +6,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
@@ -23,7 +22,7 @@ import java.util.logging.Logger;
 @Data
 @UIScope
 @Component
-public class KosarForm extends HorizontalLayout {
+public class KosarForm extends VerticalLayout {
     @Autowired
     private RendelesServiceImpl rendelesService;
 

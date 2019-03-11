@@ -13,7 +13,6 @@ import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.services.implement.GumiMeretekServiceImpl;
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -181,11 +180,10 @@ public class GumiKeresoMenu extends HorizontalLayout {
     }
 
     private void meretFeltolto(List<GumiMeretekEntity> gumiMeretekEntities, int a, int b, int c){
-        ArrayList<GumiMeretekEntity> gumiMeretek = new ArrayList<>(gumiMeretekEntities);
         Set<Integer> meretSet1 = new HashSet<>();
         Set<Integer> meretSet2 = new HashSet<>();
         Set<Integer> meretSet3 = new HashSet<>();
-        for (GumiMeretekEntity gumiMeretekEntity : gumiMeretek) {
+        for (GumiMeretekEntity gumiMeretekEntity : gumiMeretekEntities) {
             meretSet1.add(gumiMeretekEntity.getSzelesseg());
             meretSet2.add(gumiMeretekEntity.getProfil());
             meretSet3.add(gumiMeretekEntity.getFelni());
@@ -195,9 +193,9 @@ public class GumiKeresoMenu extends HorizontalLayout {
         meret2cb.remove(meret2);meret2 = new ComboBox("Méret-profil arány");meret2.setItems(meretSet2);meret2cb.add(meret2);
         meret3cb.remove(meret3);meret3 = new ComboBox("Méret-felni átmérő");meret3.setItems(meretSet3);meret3cb.add(meret3);
 
-        if(a==1){meret1.setValue(gumiMeretek.get(0).getSzelesseg());}
-        if(b==1){meret2.setValue(gumiMeretek.get(0).getProfil());}
-        if(c==1){meret3.setValue(gumiMeretek.get(0).getFelni());}
+        if(a==1){meret1.setValue(gumiMeretekEntities.get(0).getSzelesseg());}
+        if(b==1){meret2.setValue(gumiMeretekEntities.get(0).getProfil());}
+        if(c==1){meret3.setValue(gumiMeretekEntities.get(0).getFelni());}
 
         meret1.addValueChangeListener(e -> szelessegKivalasztas());
         meret2.addValueChangeListener(e -> szelessegKivalasztas());
