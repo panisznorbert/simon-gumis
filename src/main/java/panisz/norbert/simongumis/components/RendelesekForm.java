@@ -61,8 +61,11 @@ public class RendelesekForm extends VerticalLayout {
         TextField ar = new TextField("Ár");
         TextField statusz = new TextField("Státusz:");
         Button modosit = new Button("Leegyeztetve");
+        if(RendelesStatusz.ATVETELRE_VAR.equals(rendelesEntity.getStatusz())){
+            modosit.setText("Átvette");
+        }
         Button torol = new Button("Megrendelés törlése");
-        HorizontalLayout labLec = new HorizontalLayout(ar, statusz, modosit);
+        HorizontalLayout labLec = new HorizontalLayout(ar, statusz, modosit, torol);
         labLec.setAlignItems(Alignment.BASELINE);
         nev.setValue(rendelesEntity.getUgyfel().getNev());
         email.setValue(rendelesEntity.getUgyfel().getEmail());
@@ -75,31 +78,42 @@ public class RendelesekForm extends VerticalLayout {
         rendelesek.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Ár").setWidth("100px");
         rendelesek.setItems(rendelesEntity.getRendelesiEgysegek());
         rendelesek.getDataProvider().refreshAll();
+        if(RendelesStatusz.RENDEZVE.equals(rendelesEntity.getStatusz()) || RendelesStatusz.TOROLVE.equals(rendelesEntity.getStatusz())){
+                modosit.setVisible(false);
+                torol.setVisible(false);
+        }
         modosit.addClickListener(e -> {
             switch (statusz.getValue()){
+                case "ATVETELRE_VAR":{
+                    rendelesEntity.setStatusz(RendelesStatusz.RENDEZVE);
+                    rendelesService.ment(rendelesEntity);
+                    statusz.setValue(RendelesStatusz.RENDEZVE.toString());
+                    modosit.setVisible(false);
+                    break;
+                }
                 case "MEGRENDELVE": {
                     for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
                         GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
                         gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
                         gumikService.ment(gumikEntity);
                     }
+                    rendelesEntity.setStatusz(RendelesStatusz.ATVETELRE_VAR);
+                    rendelesService.ment(rendelesEntity);
                     statusz.setValue(RendelesStatusz.ATVETELRE_VAR.toString());
                     modosit.setText("Átvette");
-                }
-                case "ATVETELRE_VAR":{
-                    statusz.setValue(RendelesStatusz.RENDEZVE.toString());
-                    modosit.setVisible(false);
+                    break;
                 }
             }
         });
         torol.addClickListener(e -> {
             modosit.setVisible(false);
             statusz.setValue(RendelesStatusz.TOROLVE.toString());
+            rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
+            rendelesService.ment(rendelesEntity);
         });
+
         tartalom.add(new VerticalLayout(uygfelLeiras, ugyfelRendeles, labLec));
     }
 
-    private void statuszValtas(RendelesEntity rendelesEntity){
 
-    }
 }
