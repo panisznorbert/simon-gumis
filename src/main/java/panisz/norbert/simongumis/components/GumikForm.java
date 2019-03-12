@@ -70,8 +70,12 @@ public class GumikForm extends VerticalLayout {
         darabszamAblak = new Dialog(leiras, gombok);
         megse.addClickListener(e -> darabszamAblak.close());
         ok.addClickListener( e -> {
-            //Ha rossz érték van beírva vagy több mint amennyi van a raktárban akkor hiba jön
-            if(darab.isInvalid() || Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()){
+            //Ha nincs megadva is hibás
+            if(darab.isEmpty()){
+                hiba.setText("Nem adott meg darabszámot");
+                darab.setInvalid(true);
+                //Ha rossz érték van beírva vagy több mint amennyi van a raktárban akkor hiba jön
+            }else if(darab.isInvalid() || Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()){
                 hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db)");
                 darab.setInvalid(true);
             }

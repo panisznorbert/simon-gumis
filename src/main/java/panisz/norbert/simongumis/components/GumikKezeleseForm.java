@@ -109,18 +109,15 @@ public class GumikKezeleseForm extends VerticalLayout {
     private void ment(){
         String hiba=validacio();
         GumikEntity gumi = new GumikEntity();
-        GumiMeretekEntity meret = new GumiMeretekEntity();
+
         if(hiba == null) {
-            meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
-            meret.setProfil(Integer.valueOf(meret2.getValue()));
-            meret.setFelni(Integer.valueOf(meret3.getValue()));
-
             //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
-
-            GumiMeretekEntity mentettGumimeret = gumiMeretekService.mindenMeretreKeres(meret.getSzelesseg(), meret.getProfil(), meret.getFelni());
-            if (mentettGumimeret != null) {
-                LOGGER.info(mentettGumimeret.toString());
-                meret = mentettGumimeret;
+            GumiMeretekEntity meret = gumiMeretekService.mindenMeretreKeres(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue()));
+            if (meret == null) {
+                meret = new GumiMeretekEntity();
+                meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
+                meret.setProfil(Integer.valueOf(meret2.getValue()));
+                meret.setFelni(Integer.valueOf(meret3.getValue()));
             }
 
             gumi.setGyarto(gyarto.getValue());
@@ -238,7 +235,20 @@ public class GumikKezeleseForm extends VerticalLayout {
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
         String leiras = gumiSzerkesztoForm.validacio();
         if(leiras == null){
-            gumikService.ment(gumiSzerkesztoForm.beallit(gumikEntity));
+            GumikEntity gumi = gumiSzerkesztoForm.beallit(gumikEntity);
+            if(!gumikEntity.getMeret().equals(gumi.getMeret())){
+                //ha már létező gumi van akkor azt megvizsgálni és azzal menteni
+
+                GumiMeretekEntity ujGumiMeret = gumiMeretekService.mindenMeretreKeres(gumi.getMeret().getSzelesseg(), gumi.getMeret().getProfil(), gumi.getMeret().getFelni());
+                if(ujGumiMeret == null) {
+                    ujGumiMeret = new GumiMeretekEntity();
+                    ujGumiMeret.setSzelesseg(gumi.getMeret().getSzelesseg());
+                    ujGumiMeret.setProfil(gumi.getMeret().getProfil());
+                    ujGumiMeret.setFelni(gumi.getMeret().getFelni());
+                }
+                gumi.setMeret(ujGumiMeret);
+            }
+            gumikService.ment(gumi);
             gridRefresh();
             gumiSzerkeszto.close();
         }else{
