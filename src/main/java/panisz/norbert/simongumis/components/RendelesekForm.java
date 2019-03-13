@@ -92,11 +92,6 @@ public class RendelesekForm extends VerticalLayout {
                     break;
                 }
                 case "MEGRENDELVE": {
-                    for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-                        GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
-                        gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
-                        gumikService.ment(gumikEntity);
-                    }
                     rendelesEntity.setStatusz(RendelesStatusz.ATVETELRE_VAR);
                     rendelesService.ment(rendelesEntity);
                     statusz.setValue(RendelesStatusz.ATVETELRE_VAR.toString());
@@ -106,10 +101,19 @@ public class RendelesekForm extends VerticalLayout {
             }
         });
         torol.addClickListener(e -> {
+            //ha már átvételre várt és mégis törölve lesz akkor a lefoglalt darabszám visszakerül a raktárkészletbe
+            if(rendelesEntity.getStatusz().equals(RendelesStatusz.ATVETELRE_VAR)){
+                for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
+                    GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
+                    gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()+rendelesiEgysegEntity.getMennyiseg());
+                    gumikService.ment(gumikEntity);
+                }
+            }
             modosit.setVisible(false);
             statusz.setValue(RendelesStatusz.TOROLVE.toString());
             rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
             rendelesService.ment(rendelesEntity);
+            torol.setVisible(false);
         });
 
         tartalom.add(new VerticalLayout(uygfelLeiras, ugyfelRendeles, labLec));

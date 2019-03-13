@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.*;
+import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
 import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 import panisz.norbert.simongumis.spring.SpringApplication;
 import javax.annotation.PostConstruct;
@@ -25,6 +26,8 @@ import java.util.logging.Logger;
 public class KosarForm extends VerticalLayout {
     @Autowired
     private RendelesServiceImpl rendelesService;
+    @Autowired
+    private GumikServiceImpl gumikService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -33,8 +36,8 @@ public class KosarForm extends VerticalLayout {
     private Grid<RendelesiEgysegEntity> rendelesekTabla = new Grid<>();
 
     private UgyfelMezok vevoAdatai = new UgyfelMezok();
-    private Button tovabb = new Button("Megrendelés");
-    private HorizontalLayout gombok = new HorizontalLayout(tovabb);
+    private Button megrendeles = new Button("Megrendelés");
+    private HorizontalLayout gombok = new HorizontalLayout(megrendeles);
     private TextField vegosszeg = new TextField("Végösszeg:");
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
@@ -56,7 +59,7 @@ public class KosarForm extends VerticalLayout {
             vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
             tartalom.add(new VerticalLayout(rendelesekTabla, vegosszeg), new VerticalLayout(vevoAdatai, gombok));
             add(tartalom);
-            tovabb.addClickListener(e -> megrendeles());
+            megrendeles.addClickListener(e -> megrendeles());
         }
     }
 
@@ -82,7 +85,25 @@ public class KosarForm extends VerticalLayout {
         rendelesEntity.setUgyfel(ugyfel);
         rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
         LOGGER.info(rendelesEntity.toString());
+        //végső vizsgálat hogy a rendelésben szereplő gumikból a kívánt darabszám van-e raktáron
+        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
+            GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
+            if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
+                StringBuilder hiba = new StringBuilder();
+                hiba.append(rendelesiEgysegEntity.getGumi().toString());
+                hiba.append(" típusú gumiból, maximum ");
+                hiba.append(gumikEntity.getMennyisegRaktarban().toString());
+                hiba.append(" db elérhető, de a rendelésében több szerepel!");
+                HibaJelzes hibaJelzes = new HibaJelzes(hiba.toString());
+                hibaJelzes.open();
+            }
 
+        }
+        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
+            GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
+            gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
+            gumikService.ment(gumikEntity);
+        }
         rendelesService.ment(rendelesEntity);
         SpringApplication.setRendelesAzon(null);
         UI.getCurrent().navigate("gumik");

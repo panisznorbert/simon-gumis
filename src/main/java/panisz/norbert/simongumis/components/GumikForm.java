@@ -160,6 +160,10 @@ public class GumikForm extends VerticalLayout {
             if (adottArraSzurtE(gumikEntity.getAr())) {
                 szurtAdatok.remove(gumikEntity);
             }
+            //amiből nulla darab van azt ne jelenítse meg
+            if (gumikEntity.getMennyisegRaktarban().equals(0)){
+                szurtAdatok.remove(gumikEntity);
+            }
         }
         gumik.setItems(szurtAdatok);
         gumik.getDataProvider().refreshAll();
