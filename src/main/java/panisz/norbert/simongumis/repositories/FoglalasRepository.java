@@ -11,4 +11,6 @@ import java.util.List;
 public interface FoglalasRepository extends JpaRepository<FoglalasEntity, Integer> {
 
     FoglalasEntity findByDatum(LocalDateTime localDateTime);
+
+    List<FoglalasEntity> findAllByDatumIs(LocalDate localDate);
 }

@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import panisz.norbert.simongumis.entities.FoglalasEntity;
 import panisz.norbert.simongumis.repositories.FoglalasRepository;
 import panisz.norbert.simongumis.services.FoglalasService;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,6 +20,11 @@ public class FoglalasServiceImpl implements FoglalasService {
     @Override
     public FoglalasEntity keresesDatumra(LocalDateTime localDateTime) {
         return foglalasRepository.findByDatum(localDateTime);
+    }
+
+    @Override
+    public List<FoglalasEntity> keresesNapra(LocalDate localDate) {
+        return foglalasRepository.findAllByDatumIs(localDate);
     }
 
     @Override

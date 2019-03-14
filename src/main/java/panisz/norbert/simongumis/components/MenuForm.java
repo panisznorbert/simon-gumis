@@ -18,6 +18,7 @@ public class MenuForm extends HorizontalLayout {
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> UI.getCurrent().navigate("gumik")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> UI.getCurrent().navigate("idopontfoglalas")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> UI.getCurrent().navigate("kosar")));
+        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR_USER.create(), "Lefoglalt időpontok", e -> UI.getCurrent().navigate("lefoglalt_idopontok")));
         menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek")));
         add(appLayout);
         
