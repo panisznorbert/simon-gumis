@@ -3,6 +3,8 @@ package panisz.norbert.simongumis.components;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,8 @@ import panisz.norbert.simongumis.entities.FoglalasEntity;
 import panisz.norbert.simongumis.services.implement.FoglalasServiceImpl;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 
 import static java.util.Collections.sort;
@@ -45,9 +49,9 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
     private Grid<FoglalasEntity> tablafeltolto(List<FoglalasEntity> foglalasok){
         Grid<FoglalasEntity> tabla = new Grid<>();
         sort(foglalasok);
-        tabla.addColumn(FoglalasEntity::getDatum, "Dátum").setHeader("Időpont");
+        tabla.addColumn(new LocalDateTimeRenderer<>(FoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader("Időpont");
         tabla.addColumn(TemplateRenderer.<FoglalasEntity> of(
-                "<div>[[item.nev]]<br><small>[[item.telefon]]<br>[[item.email]]</small></div>")
+                "<div>Név: [[item.nev]]<br><small>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
 
                         .withProperty("nev",
                                 foglalasEntity -> foglalasEntity.getUgyfel().getNev())
