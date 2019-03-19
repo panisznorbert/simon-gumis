@@ -2,6 +2,7 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,7 +16,6 @@ import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
 import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
-
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.logging.Logger;
@@ -51,31 +51,44 @@ public class RendelesekForm extends VerticalLayout {
     }
 
     private void ujRendelesSor(RendelesEntity rendelesEntity){
-        TextField nev = new TextField("Név:");
-        TextField email = new TextField("E-mail:");
-        TextField telefon = new TextField("Telefon:");
-        HorizontalLayout uygfelLeiras = new HorizontalLayout(nev, email, telefon);
         Grid<RendelesiEgysegEntity> rendelesek = new Grid<>();
+
         rendelesek.setWidth("550px");
         VerticalLayout ugyfelRendeles = new VerticalLayout(rendelesek);
-        TextField ar = new TextField("Ár");
-        TextField statusz = new TextField("Státusz:");
         Button modosit = new Button("Leegyeztetve");
+        Button torol = new Button("Megrendelés törlése");
+        HorizontalLayout gombok = new HorizontalLayout(modosit, torol);
+
         if(RendelesStatusz.ATVETELRE_VAR.equals(rendelesEntity.getStatusz())){
             modosit.setText("Átvette");
         }
-        Button torol = new Button("Megrendelés törlése");
-        HorizontalLayout labLec = new HorizontalLayout(ar, statusz, modosit, torol);
-        labLec.setAlignItems(Alignment.BASELINE);
-        nev.setValue(rendelesEntity.getUgyfel().getNev());
-        email.setValue(rendelesEntity.getUgyfel().getEmail());
-        telefon.setValue(rendelesEntity.getUgyfel().getTelefon());
-        ar.setValue(rendelesEntity.getVegosszeg().toString());
-        statusz.setValue(rendelesEntity.getStatusz().toString());
-        statusz.setEnabled(false);
-        rendelesek.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
-        rendelesek.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab").setWidth("100px");
-        rendelesek.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Ár").setWidth("100px");
+
+        StringBuilder ugyfel = new StringBuilder();
+        ugyfel.append("Név: ");
+        ugyfel.append(rendelesEntity.getUgyfel().getNev());
+        ugyfel.append(", Tel: ");
+        ugyfel.append(rendelesEntity.getUgyfel().getTelefon());
+        ugyfel.append(", E-mail: ");
+        ugyfel.append(rendelesEntity.getUgyfel().getEmail());
+
+
+        Grid.Column<RendelesiEgysegEntity> oszlop1 = rendelesek
+                .addColumn(RendelesiEgysegEntity::getGumi)
+                .setHeader("Gumi")
+                .setWidth("300px");
+        Grid.Column<RendelesiEgysegEntity> oszlop2 = rendelesek
+                .addColumn(RendelesiEgysegEntity::getMennyiseg)
+                .setHeader("Darab")
+                .setWidth("100px");
+        Grid.Column<RendelesiEgysegEntity> oszlop3 = rendelesek
+                .addColumn(RendelesiEgysegEntity::getReszosszeg)
+                .setHeader("Ár")
+                .setWidth("100px");
+
+        rendelesek.prependHeaderRow().getCells().get(0).setComponent(new Label(ugyfel.toString()));
+        rendelesek.appendFooterRow().getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
+        rendelesek.appendFooterRow().join(oszlop1, oszlop2, oszlop3).setComponent(gombok);
+
         rendelesek.setItems(rendelesEntity.getRendelesiEgysegek());
         rendelesek.getDataProvider().refreshAll();
         if(RendelesStatusz.RENDEZVE.equals(rendelesEntity.getStatusz()) || RendelesStatusz.TOROLVE.equals(rendelesEntity.getStatusz())){
@@ -83,18 +96,20 @@ public class RendelesekForm extends VerticalLayout {
                 torol.setVisible(false);
         }
         modosit.addClickListener(e -> {
-            switch (statusz.getValue()){
-                case "ATVETELRE_VAR":{
+            switch (rendelesEntity.getStatusz()){
+                case ATVETELRE_VAR:{
                     rendelesEntity.setStatusz(RendelesStatusz.RENDEZVE);
                     rendelesService.ment(rendelesEntity);
-                    statusz.setValue(RendelesStatusz.RENDEZVE.toString());
+                    rendelesek.getFooterRows().get(0).getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
+
                     modosit.setVisible(false);
+                    torol.setVisible(false);
                     break;
                 }
-                case "MEGRENDELVE": {
+                case MEGRENDELVE: {
                     rendelesEntity.setStatusz(RendelesStatusz.ATVETELRE_VAR);
                     rendelesService.ment(rendelesEntity);
-                    statusz.setValue(RendelesStatusz.ATVETELRE_VAR.toString());
+                    rendelesek.getFooterRows().get(0).getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
                     modosit.setText("Átvette");
                     break;
                 }
@@ -110,13 +125,23 @@ public class RendelesekForm extends VerticalLayout {
                 }
             }
             modosit.setVisible(false);
-            statusz.setValue(RendelesStatusz.TOROLVE.toString());
+            rendelesek.getFooterRows().get(0).getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
             rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
             rendelesService.ment(rendelesEntity);
             torol.setVisible(false);
         });
 
-        tartalom.add(new VerticalLayout(uygfelLeiras, ugyfelRendeles, labLec));
+        tartalom.add(new VerticalLayout(ugyfelRendeles));
+    }
+
+    private String lablecEpit(RendelesEntity rendelesEntity){
+        StringBuilder lablec = new StringBuilder();
+        lablec.append("Végösszeg: ");
+        lablec.append(rendelesEntity.getVegosszeg().toString());
+        lablec.append(", Státusz: ");
+        lablec.append(rendelesEntity.getStatusz().toString());
+
+        return lablec.toString();
     }
 
 
