@@ -11,7 +11,7 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "gumi_meretek")
-public class GumiMeretekEntity extends BaseEntity {
+public class GumiMeretekEntity extends BaseEntity implements Comparable<GumiMeretekEntity>{
     Integer szelesseg;
     Integer profil;
     Integer felni;
@@ -35,5 +35,18 @@ public class GumiMeretekEntity extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), szelesseg, profil, felni);
+    }
+
+    @Override
+    public int compareTo(GumiMeretekEntity o) {
+        if(this.getSzelesseg().compareTo(o.getSzelesseg()) == 0){
+            if(this.getProfil().compareTo(o.getProfil()) == 0){
+                return this.getFelni().compareTo(o.getFelni());
+            }else{
+                return this.getProfil().compareTo(o.getProfil());
+            }
+        }else{
+            return this.getSzelesseg().compareTo(o.getSzelesseg());
+        }
     }
 }

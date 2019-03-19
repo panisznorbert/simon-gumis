@@ -12,5 +12,5 @@ public interface FoglalasRepository extends JpaRepository<FoglalasEntity, Intege
 
     FoglalasEntity findByDatum(LocalDateTime localDateTime);
 
-    List<FoglalasEntity> findAllByDatumIs(LocalDate localDate);
+    List<FoglalasEntity> findAllByDatumAfter(LocalDateTime localDateTime);
 }

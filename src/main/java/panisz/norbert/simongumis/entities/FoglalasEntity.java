@@ -11,10 +11,15 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class FoglalasEntity extends BaseEntity {
+public class FoglalasEntity extends BaseEntity implements Comparable<FoglalasEntity>{
     private LocalDateTime datum;
     @ManyToOne(cascade = CascadeType.ALL)
     private UgyfelEntity ugyfel;
     private String megjegyzes;
 
+
+    @Override
+    public int compareTo(FoglalasEntity o) {
+        return this.getDatum().compareTo((o.getDatum()));
+    }
 }

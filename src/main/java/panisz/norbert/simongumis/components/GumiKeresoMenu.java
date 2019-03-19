@@ -13,9 +13,7 @@ import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.services.implement.GumiMeretekServiceImpl;
 import javax.annotation.PostConstruct;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 @UIScope
@@ -35,7 +33,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private HorizontalLayout meret2cb = new HorizontalLayout(meret2);
     private HorizontalLayout meret3cb = new HorizontalLayout(meret3);
 
-    private ComboBox evszak = new ComboBox("Évszak", "Téli", "Nyári");
+    private ComboBox evszak = new ComboBox("Évszak", "Téli", "Nyári", "Négyévszakos");
     private ComboBox allapot = new ComboBox("Állapot", "Új","Használt");
 
     private TextField gyarto = new TextField("Gyártó");
@@ -180,9 +178,9 @@ public class GumiKeresoMenu extends HorizontalLayout {
     }
 
     private void meretFeltolto(List<GumiMeretekEntity> gumiMeretekEntities, int a, int b, int c){
-        Set<Integer> meretSet1 = new HashSet<>();
-        Set<Integer> meretSet2 = new HashSet<>();
-        Set<Integer> meretSet3 = new HashSet<>();
+        SortedSet<Integer> meretSet1 = new TreeSet<>();
+        SortedSet<Integer> meretSet2 = new TreeSet<>();
+        SortedSet<Integer> meretSet3 = new TreeSet<>();
         for (GumiMeretekEntity gumiMeretekEntity : gumiMeretekEntities) {
             meretSet1.add(gumiMeretekEntity.getSzelesseg());
             meretSet2.add(gumiMeretekEntity.getProfil());

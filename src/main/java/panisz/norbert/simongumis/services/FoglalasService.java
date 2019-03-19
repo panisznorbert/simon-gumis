@@ -10,5 +10,5 @@ public interface FoglalasService extends BaseServices<FoglalasEntity> {
 
     FoglalasEntity keresesDatumra(LocalDateTime localDateTime);
 
-    List<FoglalasEntity> keresesNapra(LocalDate localDate);
+    List<FoglalasEntity> keresesNaptol(LocalDate localDate);
 }

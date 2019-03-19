@@ -52,7 +52,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     private TextField meret2 = new TextField("Méret-profil arány");
     private TextField meret3 = new TextField("Méret-felni átmérő");
     private TextField ar = new TextField("Ár");
-    private ComboBox<String> evszak = new ComboBox<>("Évszak", "Téli", "Nyári");
+    private ComboBox<String> evszak = new ComboBox<>("Évszak", "Téli", "Nyári", "Négyévszakos");
     private ComboBox<String> allapot = new ComboBox<>("Állapot", "Új","Használt");
     private TextField darab  = new TextField("Raktárkészlet");
 
@@ -181,17 +181,13 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
     private void gumikTablaInit(){
-        grid.addColumn(GumikEntity::getGyarto).setHeader("Gyártó");
-        grid.addColumn(GumikEntity::getMeret).setHeader("Méret");
-        grid.addColumn(GumikEntity::getEvszak).setHeader("Évszak");
-        grid.addColumn(GumikEntity::getAllapot).setHeader("Állapot");
-        grid.addColumn(GumikEntity::getAr).setHeader("Ár");
-        grid.addColumn(GumikEntity::getMennyisegRaktarban).setHeader("Raktáron (db)");
+        GumiGridBeallitas.gumiGridBeallitas(grid);
 
-        //if(gumikRepository.findAll().size()>0){
+        if(gumikService.osszes().size()>0){
             gumikTablaFrissit();
-       // }
+        }
     }
+
 
     private void gumikTablaFrissit(){
         grid.setItems(gumikService.osszes());

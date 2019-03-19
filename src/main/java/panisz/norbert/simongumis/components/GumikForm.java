@@ -44,14 +44,10 @@ public class GumikForm extends VerticalLayout {
 
     @PostConstruct
     public void init(){
-        gumik.addColumn(GumikEntity::getGyarto).setHeader("Gyártó");
-        gumik.addColumn(GumikEntity::getMeret).setHeader("Méret");
-        gumik.addColumn(GumikEntity::getEvszak).setHeader("Évszak");
-        gumik.addColumn(GumikEntity::getAllapot).setHeader("Állapot");
-        gumik.addColumn(GumikEntity::getAr).setHeader("Ár");
-        gumik.addColumn(GumikEntity::getMennyisegRaktarban).setHeader("Raktáron (db)");
+        GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
         gumik.setWidth("950px");
+
         gumikTablaFeltolt(menu.getKriterium());
         add(fomenu, menu, gumik);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));

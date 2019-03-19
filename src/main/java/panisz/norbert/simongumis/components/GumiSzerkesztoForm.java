@@ -16,7 +16,7 @@ public class GumiSzerkesztoForm extends VerticalLayout {
     private TextField meret2 = new TextField("Méret-profil arány");
     private TextField meret3 = new TextField("Méret-felni átmérő");
     private TextField ar = new TextField("Ár");
-    private ComboBox<String> evszak = new ComboBox<>("Évszak", "Téli", "Nyári");
+    private ComboBox<String> evszak = new ComboBox<>("Évszak", "Téli", "Nyári", "Négyévszakos");
     private ComboBox<String> allapot = new ComboBox<>("Állapot", "Új","Használt");
     private TextField darab  = new TextField("Raktárkészlet");
 

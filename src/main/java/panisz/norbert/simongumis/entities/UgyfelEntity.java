@@ -13,4 +13,8 @@ public class UgyfelEntity extends BaseEntity {
     private String telefon;
     private String email;
 
+    @Override
+    public String toString() {
+        return nev + ", " + telefon + ", " + email;
+    }
 }

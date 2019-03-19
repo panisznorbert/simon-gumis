@@ -9,6 +9,7 @@ import panisz.norbert.simongumis.services.FoglalasService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -23,8 +24,8 @@ public class FoglalasServiceImpl implements FoglalasService {
     }
 
     @Override
-    public List<FoglalasEntity> keresesNapra(LocalDate localDate) {
-        return foglalasRepository.findAllByDatumIs(localDate);
+    public List<FoglalasEntity> keresesNaptol(LocalDate localDate) {
+        return foglalasRepository.findAllByDatumAfter(LocalDateTime.of(localDate, LocalTime.of(0, 0)));
     }
 
     @Override
