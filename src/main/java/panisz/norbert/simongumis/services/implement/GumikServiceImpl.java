@@ -40,8 +40,6 @@ public class GumikServiceImpl implements GumikService {
     public String ment(GumikEntity gumikEntity) {
         String hiba = null;
         TransactionAspectSupport.currentTransactionStatus();
-
-
         //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
         GumiMeretekEntity meret = gumiMeretekRepository.findBySzelessegAndProfilAndFelni(
                 gumikEntity.getMeret().getSzelesseg(),
@@ -51,6 +49,7 @@ public class GumikServiceImpl implements GumikService {
             gumikEntity.setMeret(meret);
         }
         //vizsgálni, hogy van-e már ilyen gumi lementve, és ha igen akkor ne mentsunk még egyet le
+        //módosítás esetén vizsgálva van hogy a módosítandón kívül van-e már ilyen
         GumikEntity mentettGumi = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapot(
                 gumikEntity.getGyarto(),
                 gumikEntity.getMeret().getSzelesseg(),
@@ -66,7 +65,6 @@ public class GumikServiceImpl implements GumikService {
             }catch(Exception e){
                 hiba = "Mentés sikertelen";
             }
-
         }
 
         return hiba;
@@ -82,6 +80,9 @@ public class GumikServiceImpl implements GumikService {
     }
 
     public void torolMind(Set<GumikEntity> gumikEntities){
+        for(GumikEntity gumi : gumikEntities){
+            gumi.setMeret(null);
+        }
         gumikRepository.deleteAll(gumikEntities);
     }
 }
