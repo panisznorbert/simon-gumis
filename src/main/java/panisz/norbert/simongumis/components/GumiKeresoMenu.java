@@ -130,37 +130,37 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
         switch(beallito){
             case 0:{
-                meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
+                meretFeltolto(gumiMeretekService.osszesMenuhoz(), 0, 0, 0);
                 setMeret(0, 0, 0);
                 break;
             }
             case 1:{
-                meretFeltolto(gumiMeretekService.felnireKeres(meret3.getValue()), 0, 0, 1);
+                meretFeltolto(gumiMeretekService.felnireKeresMenuhoz(meret3.getValue()), 0, 0, 1);
                 setMeret(0, 0, meret3.getValue());
                 break;
             }
             case 10:{
-                meretFeltolto(gumiMeretekService.profilraKeres(meret2.getValue()),0 ,1 ,0);
+                meretFeltolto(gumiMeretekService.profilraKeresMenuhoz(meret2.getValue()),0 ,1 ,0);
                 setMeret(0, meret2.getValue(), 0);
                 break;
             }
             case 11:{
-                meretFeltolto(gumiMeretekService.profilraEsFelnireKeres(meret2.getValue(), meret3.getValue()),0,1,1);
+                meretFeltolto(gumiMeretekService.profilraEsFelnireKeresMenuhoz(meret2.getValue(), meret3.getValue()),0,1,1);
                 setMeret(0, meret2.getValue(), meret3.getValue());
                 break;
             }
             case 100:{
-                meretFeltolto(gumiMeretekService.szelessegreKeres(meret1.getValue()), 1, 0, 0);
+                meretFeltolto(gumiMeretekService.szelessegreKeresMenuhoz(meret1.getValue()), 1, 0, 0);
                 setMeret(meret1.getValue(), 0, 0);
                 break;
             }
             case 101:{
-                meretFeltolto(gumiMeretekService.szelessegreEsFelnireKeres(meret1.getValue(), meret3.getValue()), 1, 0, 1);
+                meretFeltolto(gumiMeretekService.szelessegreEsFelnireKeresMenuhoz(meret1.getValue(), meret3.getValue()), 1, 0, 1);
                 setMeret(meret1.getValue(), 0, meret3.getValue());
                 break;
             }
             case 110:{
-                meretFeltolto(gumiMeretekService.szelessegreEsProfilraKeres(meret1.getValue(), meret2.getValue()), 1, 1, 0);
+                meretFeltolto(gumiMeretekService.szelessegreEsProfilraKeresMenuhoz(meret1.getValue(), meret2.getValue()), 1, 1, 0);
                 setMeret(meret1.getValue(), meret2.getValue(), 0);
                 break;
             }

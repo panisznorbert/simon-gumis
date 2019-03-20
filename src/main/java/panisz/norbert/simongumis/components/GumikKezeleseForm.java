@@ -12,6 +12,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
@@ -19,6 +21,7 @@ import panisz.norbert.simongumis.services.implement.GumiMeretekServiceImpl;
 import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transaction;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -111,14 +114,10 @@ public class GumikKezeleseForm extends VerticalLayout {
         GumikEntity gumi = new GumikEntity();
 
         if(hiba == null) {
-            //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
-            GumiMeretekEntity meret = gumiMeretekService.mindenMeretreKeres(Integer.valueOf(meret1.getValue()), Integer.valueOf(meret2.getValue()), Integer.valueOf(meret3.getValue()));
-            if (meret == null) {
-                meret = new GumiMeretekEntity();
-                meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
-                meret.setProfil(Integer.valueOf(meret2.getValue()));
-                meret.setFelni(Integer.valueOf(meret3.getValue()));
-            }
+            GumiMeretekEntity meret = new GumiMeretekEntity();
+            meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
+            meret.setProfil(Integer.valueOf(meret2.getValue()));
+            meret.setFelni(Integer.valueOf(meret3.getValue()));
 
             gumi.setGyarto(gyarto.getValue());
             gumi.setMeret(meret);
@@ -127,24 +126,16 @@ public class GumikKezeleseForm extends VerticalLayout {
             gumi.setAllapot(allapot.getValue());
             gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
 
-            //vizsgálni, hogy van-e már ilyen gumi lementve, és ha igen akkor ne mentsunk még egyet le
-
-            GumikEntity mentettGumi = gumikService.vanMarIlyen(gumi.getGyarto(), gumi.getMeret().getSzelesseg(), gumi.getMeret().getProfil(), gumi.getMeret().getFelni(), gumi.getEvszak(), gumi.getAllapot());
-            if(mentettGumi != null){
-                hiba = "Már van ilyen gumi";
-            }else{
-                LOGGER.info("Gumi id: " + gumi.getId() + ", Gumi méret id: " + gumi.getMeret().getId());
-                gumikService.ment(gumi);
-
-                gumikTablaFrissit();
-                mezokInit();
-            }
-
+            hiba = gumikService.ment(gumi);
         }
         if(hiba != null){
             Notification hibaAblak = new HibaJelzes(hiba);
             hibaAblak.open();
+        }else{
+            gumikTablaFrissit();
+            mezokInit();
         }
+
     }
 
     private String validacio() {
@@ -232,24 +223,14 @@ public class GumikKezeleseForm extends VerticalLayout {
         String leiras = gumiSzerkesztoForm.validacio();
         if(leiras == null){
             GumikEntity gumi = gumiSzerkesztoForm.beallit(gumikEntity);
-            if(!gumikEntity.getMeret().equals(gumi.getMeret())){
-                //ha már létező gumi van akkor azt megvizsgálni és azzal menteni
-
-                GumiMeretekEntity ujGumiMeret = gumiMeretekService.mindenMeretreKeres(gumi.getMeret().getSzelesseg(), gumi.getMeret().getProfil(), gumi.getMeret().getFelni());
-                if(ujGumiMeret == null) {
-                    ujGumiMeret = new GumiMeretekEntity();
-                    ujGumiMeret.setSzelesseg(gumi.getMeret().getSzelesseg());
-                    ujGumiMeret.setProfil(gumi.getMeret().getProfil());
-                    ujGumiMeret.setFelni(gumi.getMeret().getFelni());
-                }
-                gumi.setMeret(ujGumiMeret);
-            }
-            gumikService.ment(gumi);
-            gridRefresh();
-            gumiSzerkeszto.close();
-        }else{
+            leiras = gumikService.ment(gumi);
+        }
+        if(leiras != null){
             Notification hibaAblak = new HibaJelzes(leiras);
             hibaAblak.open();
+        }else{
+            gridRefresh();
+            gumiSzerkeszto.close();
         }
     }
 

@@ -130,6 +130,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
             ugyfelEntity.setEmail(ugyfelAdatok.getEmail().getValue());
         }
 
+        foglalasService.ment(foglalasEntity);
         foglalasEntity.setUgyfel(ugyfelEntity);
 
         foglalasEntity.setDatum(LocalDateTime.of(idopontokDatum.getValue(), foglalhatoOrak.getValue()));

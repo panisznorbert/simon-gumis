@@ -5,7 +5,7 @@ import java.util.List;
 public interface BaseServices<T> {
     List<T> osszes();
 
-    T ment(T t);
+    Object ment(T t);
 
     void torol(T t);
 }

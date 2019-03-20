@@ -5,13 +5,11 @@ import java.util.List;
 
 public interface GumiMeretekService extends BaseServices<GumiMeretekEntity> {
 
-    List<GumiMeretekEntity> szelessegreKeres(Integer szelesseg);
-    List<GumiMeretekEntity> profilraKeres(Integer profil);
-    List<GumiMeretekEntity> felnireKeres(Integer felni);
+    List<GumiMeretekEntity> szelessegreKeresMenuhoz(Integer szelesseg);
+    List<GumiMeretekEntity> profilraKeresMenuhoz(Integer profil);
+    List<GumiMeretekEntity> felnireKeresMenuhoz(Integer felni);
 
-    List<GumiMeretekEntity> szelessegreEsProfilraKeres(Integer szelesseg, Integer profil);
-    List<GumiMeretekEntity> szelessegreEsFelnireKeres(Integer szelesseg, Integer felni);
-    List<GumiMeretekEntity> profilraEsFelnireKeres(Integer profil, Integer felni);
-
-    GumiMeretekEntity mindenMeretreKeres(Integer szelesseg, Integer profil, Integer felni);
+    List<GumiMeretekEntity> szelessegreEsProfilraKeresMenuhoz(Integer szelesseg, Integer profil);
+    List<GumiMeretekEntity> szelessegreEsFelnireKeresMenuhoz(Integer szelesseg, Integer felni);
+    List<GumiMeretekEntity> profilraEsFelnireKeresMenuhoz(Integer profil, Integer felni);
 }

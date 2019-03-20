@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
+import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import java.util.List;
 
@@ -14,40 +15,39 @@ public class GumiMeretekServiceImpl implements GumiMeretekService {
     @Autowired
     GumiMeretekRepository gumiMeretekRepository;
 
+    @Autowired
+    GumikRepository gumikRepository;
+
     @Override
-    public List<GumiMeretekEntity> szelessegreKeres(Integer szelesseg) {
-        return gumiMeretekRepository.findAllBySzelesseg(szelesseg);
+    public List<GumiMeretekEntity> szelessegreKeresMenuhoz(Integer szelesseg) {
+        return amihezVanGumi(gumiMeretekRepository.findAllBySzelesseg(szelesseg));
     }
 
     @Override
-    public List<GumiMeretekEntity> profilraKeres(Integer profil) {
-        return gumiMeretekRepository.findAllByProfil(profil);
+    public List<GumiMeretekEntity> profilraKeresMenuhoz(Integer profil) {
+        return amihezVanGumi(gumiMeretekRepository.findAllByProfil(profil));
     }
 
     @Override
-    public List<GumiMeretekEntity> felnireKeres(Integer felni) {
-        return gumiMeretekRepository.findAllByFelni(felni);
+    public List<GumiMeretekEntity> felnireKeresMenuhoz(Integer felni) {
+        return amihezVanGumi(gumiMeretekRepository.findAllByFelni(felni));
     }
 
     @Override
-    public List<GumiMeretekEntity> szelessegreEsProfilraKeres(Integer szelesseg, Integer profil) {
-        return gumiMeretekRepository.findAllBySzelessegAndProfil(szelesseg, profil);
+    public List<GumiMeretekEntity> szelessegreEsProfilraKeresMenuhoz(Integer szelesseg, Integer profil) {
+        return amihezVanGumi(gumiMeretekRepository.findAllBySzelessegAndProfil(szelesseg, profil));
     }
 
     @Override
-    public List<GumiMeretekEntity> szelessegreEsFelnireKeres(Integer szelesseg, Integer felni) {
-        return gumiMeretekRepository.findAllBySzelessegAndFelni(szelesseg, felni);
+    public List<GumiMeretekEntity> szelessegreEsFelnireKeresMenuhoz(Integer szelesseg, Integer felni) {
+        return amihezVanGumi(gumiMeretekRepository.findAllBySzelessegAndFelni(szelesseg, felni));
     }
 
     @Override
-    public List<GumiMeretekEntity> profilraEsFelnireKeres(Integer profil, Integer felni) {
-        return gumiMeretekRepository.findAllByProfilAndFelni(profil, felni);
+    public List<GumiMeretekEntity> profilraEsFelnireKeresMenuhoz(Integer profil, Integer felni) {
+        return amihezVanGumi(gumiMeretekRepository.findAllByProfilAndFelni(profil, felni));
     }
 
-    @Override
-    public GumiMeretekEntity mindenMeretreKeres(Integer szelesseg, Integer profil, Integer felni) {
-        return gumiMeretekRepository.findBySzelessegAndProfilAndFelni(szelesseg, profil, felni);
-    }
 
     @Override
     public List<GumiMeretekEntity> osszes() {
@@ -62,5 +62,18 @@ public class GumiMeretekServiceImpl implements GumiMeretekService {
     @Override
     public void torol(GumiMeretekEntity gumiMeretekEntity) {
         gumiMeretekRepository.delete(gumiMeretekEntity);
+    }
+
+    public List<GumiMeretekEntity> osszesMenuhoz() {
+        return amihezVanGumi(gumiMeretekRepository.findAll());
+    }
+
+    public List<GumiMeretekEntity> amihezVanGumi(List<GumiMeretekEntity> gumiMeretek){
+        for(GumiMeretekEntity gumiMeret : gumiMeretek){
+            if(gumikRepository.findAllByMeretId(gumiMeret.getId()) == null){
+                gumiMeretek.remove(gumiMeret);
+            }
+        }
+        return gumiMeretek;
     }
 }
