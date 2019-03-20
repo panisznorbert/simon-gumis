@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.components;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private MenuForm fomenu  = new MenuForm();
 
+    private Grid<FoglalasEntity> tabla = new Grid<>();
+
     private VerticalLayout mai = new VerticalLayout();
     private VerticalLayout tobbiFoglalas = new VerticalLayout();
 
@@ -44,7 +47,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
 
     private Grid<FoglalasEntity> tablafeltolto(List<FoglalasEntity> foglalasok){
-        Grid<FoglalasEntity> tabla = new Grid<>();
+
         sort(foglalasok);
         tabla.addColumn(new LocalDateTimeRenderer<>(FoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont");
         tabla.addColumn(TemplateRenderer.<FoglalasEntity> of(
@@ -57,10 +60,17 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
                         .withProperty("email",
                                 foglalasEntity -> foglalasEntity.getUgyfel().getEmail()),
                 "nev", "telefon", "email").setHeader("Ügyfél");
+        tabla.addColumn(new NativeButtonRenderer<>("Töröl", this::idopontTorlese));
         //Ha van megjegyzés egy ikon jelezze
         tabla.setItems(foglalasok);
 
         return tabla;
+    }
+
+    private void idopontTorlese(FoglalasEntity foglalasEntity){
+        foglalasService.torol(foglalasEntity);
+        tabla.setItems(foglalasService.osszes());
+        tabla.getDataProvider().refreshAll();
     }
 
     private void megjegyzesNezet(){
