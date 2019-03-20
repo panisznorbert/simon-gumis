@@ -14,7 +14,6 @@ import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.FoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.services.implement.FoglalasServiceImpl;
-import panisz.norbert.simongumis.services.implement.UgyfelServiceImpl;
 import javax.annotation.PostConstruct;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -28,8 +27,6 @@ import java.util.logging.Logger;
 public class IdopontFoglalasForm extends VerticalLayout {
     @Autowired
     private FoglalasServiceImpl foglalasService;
-    @Autowired
-    private UgyfelServiceImpl ugyfelService;
 
     private MenuForm fomenu = new MenuForm();
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
@@ -82,14 +79,16 @@ public class IdopontFoglalasForm extends VerticalLayout {
         if(LocalTime.now().isBefore(LocalTime.of(16, 30))){
             idopontokDatum.setMin(LocalDate.now());
             idopontokDatum.setValue(LocalDate.now());
+            orakFeltoltese(LocalDate.now());
         }else{
             idopontokDatum.setMin(LocalDate.now().plusDays(1));
             idopontokDatum.setValue(LocalDate.now().plusDays(1));
+            orakFeltoltese(LocalDate.now().plusDays(1));
         }
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
         idopontokDatum.setI18n(magyarDatumInit());
-        orakFeltoltese(LocalDate.now());
+        ugyfelAdatok.alaphelyzet();
     }
 
     private void orakFeltoltese(LocalDate kivalasztottDatum){
@@ -117,24 +116,16 @@ public class IdopontFoglalasForm extends VerticalLayout {
         }
     }
 
-
     private FoglalasEntity idopontFoglalasAdat(){
         FoglalasEntity foglalasEntity = new FoglalasEntity();
+        UgyfelEntity ugyfelEntity = new UgyfelEntity();
 
-        UgyfelEntity ugyfelEntity = ugyfelService.keresesUgyfeladatokra(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue());
+        ugyfelEntity.setNev(ugyfelAdatok.getNev().getValue());
+        ugyfelEntity.setTelefon(ugyfelAdatok.getTelefon().getValue());
+        ugyfelEntity.setEmail(ugyfelAdatok.getEmail().getValue());
 
-        if(ugyfelEntity == null) {
-            ugyfelEntity = new UgyfelEntity();
-            ugyfelEntity.setNev(ugyfelAdatok.getNev().getValue());
-            ugyfelEntity.setTelefon(ugyfelAdatok.getTelefon().getValue());
-            ugyfelEntity.setEmail(ugyfelAdatok.getEmail().getValue());
-        }
-
-        foglalasService.ment(foglalasEntity);
         foglalasEntity.setUgyfel(ugyfelEntity);
-
         foglalasEntity.setDatum(LocalDateTime.of(idopontokDatum.getValue(), foglalhatoOrak.getValue()));
-
         foglalasEntity.setMegjegyzes(megjegyzes.getValue());
 
         return foglalasEntity;
@@ -150,17 +141,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
             hiba.open();
         }else{
             foglalasService.ment(idopontFoglalasAdat());
-            LOGGER.info("Mentett Id: " + ugyfelService.keresesUgyfeladatokra(ugyfelAdatok.getNev().getValue(), ugyfelAdatok.getTelefon().getValue(), ugyfelAdatok.getEmail().getValue()).getId().toString());
-            alaphelyzetbeAllit();
+            alapBeallitas();
         }
-    }
-
-    private void alaphelyzetbeAllit(){
-        idopontokDatum.setMin(LocalDate.now());
-        idopontokDatum.setValue(LocalDate.now());
-        orakFeltoltese(LocalDate.now());
-        ugyfelAdatok.alaphelyzet();
-        megjegyzes.setValue("");
-        idopontokDatum.setMin(LocalDate.now());
     }
 }

@@ -12,16 +12,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.services.implement.GumiMeretekServiceImpl;
 import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
-
 import javax.annotation.PostConstruct;
-import javax.transaction.Transaction;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -30,8 +25,6 @@ import java.util.logging.Logger;
 public class GumikKezeleseForm extends VerticalLayout {
     @Autowired
     private GumikServiceImpl gumikService;
-    @Autowired
-    private GumiMeretekServiceImpl gumiMeretekService;
 
     private MenuForm fomenu = new MenuForm();
     private VerticalLayout layout = new VerticalLayout();
@@ -59,7 +52,6 @@ public class GumikKezeleseForm extends VerticalLayout {
     private ComboBox<String> allapot = new ComboBox<>("Állapot", "Új","Használt");
     private TextField darab  = new TextField("Raktárkészlet");
 
-
     private Dialog gumiSzerkeszto;
 
 
@@ -76,7 +68,6 @@ public class GumikKezeleseForm extends VerticalLayout {
         }});
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
     }
-
 
     @PostConstruct
     private void init(){
@@ -108,7 +99,6 @@ public class GumikKezeleseForm extends VerticalLayout {
         add(fomenu, layout);
     }
 
-
     private void ment(){
         String hiba=validacio();
         GumikEntity gumi = new GumikEntity();
@@ -135,7 +125,6 @@ public class GumikKezeleseForm extends VerticalLayout {
             gumikTablaFrissit();
             mezokInit();
         }
-
     }
 
     private String validacio() {
@@ -179,7 +168,6 @@ public class GumikKezeleseForm extends VerticalLayout {
         }
     }
 
-
     private void gumikTablaFrissit(){
         grid.setItems(gumikService.osszes());
         grid.getDataProvider().refreshAll();
@@ -217,7 +205,6 @@ public class GumikKezeleseForm extends VerticalLayout {
             ment.addClickListener(e -> szerkesztesMentese(gumikEntity, adatok));
             gumiSzerkeszto.open();
     }
-
 
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
         String leiras = gumiSzerkesztoForm.validacio();
