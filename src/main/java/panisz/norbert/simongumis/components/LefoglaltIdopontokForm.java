@@ -1,9 +1,7 @@
 package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -30,7 +28,6 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private VerticalLayout mai = new VerticalLayout();
     private VerticalLayout tobbiFoglalas = new VerticalLayout();
-    private VaadinIcon Icon;
 
     @PostConstruct
     private void init(){
@@ -49,7 +46,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
     private Grid<FoglalasEntity> tablafeltolto(List<FoglalasEntity> foglalasok){
         Grid<FoglalasEntity> tabla = new Grid<>();
         sort(foglalasok);
-        tabla.addColumn(new LocalDateTimeRenderer<>(FoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))).setHeader("Időpont");
+        tabla.addColumn(new LocalDateTimeRenderer<>(FoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont");
         tabla.addColumn(TemplateRenderer.<FoglalasEntity> of(
                 "<div>Név: [[item.nev]]<br><small>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
 

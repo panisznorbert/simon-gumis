@@ -16,6 +16,7 @@ import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.services.implement.FoglalasServiceImpl;
 import panisz.norbert.simongumis.services.implement.UgyfelServiceImpl;
 import javax.annotation.PostConstruct;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -78,30 +79,44 @@ public class IdopontFoglalasForm extends VerticalLayout {
     @PostConstruct
     private void alapBeallitas(){
         megjegyzes.setValue("");
-        idopontokDatum.setMin(LocalDate.now());
+        if(LocalTime.now().isBefore(LocalTime.of(16, 30))){
+            idopontokDatum.setMin(LocalDate.now());
+            idopontokDatum.setValue(LocalDate.now());
+        }else{
+            idopontokDatum.setMin(LocalDate.now().plusDays(1));
+            idopontokDatum.setValue(LocalDate.now().plusDays(1));
+        }
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
-        idopontokDatum.setValue(LocalDate.now());
         idopontokDatum.setI18n(magyarDatumInit());
         orakFeltoltese(LocalDate.now());
     }
 
     private void orakFeltoltese(LocalDate kivalasztottDatum){
         idopontok.remove(foglalhatoOrak);
-        List<LocalTime> orak = new ArrayList<>();
-
-        for(int i=8; i<17; i++){
-            if(foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))){
-                orak.add(LocalTime.of(i, 0));
+        if(DayOfWeek.SUNDAY.equals(kivalasztottDatum.getDayOfWeek())){
+            idopontokDatum.setInvalid(true);
+            idopontokDatum.setErrorMessage("Vasárnap zárva vagyunk.");
+        }else {
+            List<LocalTime> orak = new ArrayList<>();
+            int munkaidoVege = 17;
+            if (DayOfWeek.SATURDAY.equals(kivalasztottDatum.getDayOfWeek())) {
+                    munkaidoVege = 12;
+                }
+            for (int i = 8; i < munkaidoVege; i++) {
+                if (foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
+                    orak.add(LocalTime.of(i, 0));
+                }
+                if (foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
+                    orak.add(LocalTime.of(i, 30));
+                }
             }
-            if(foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))){
-                orak.add(LocalTime.of(i, 30));
-            }
+            Collections.sort(orak);
+            foglalhatoOrak = new ComboBox<>("Szabad időpontok", orak);
+            idopontok.add(foglalhatoOrak);
         }
-        Collections.sort(orak);
-        foglalhatoOrak = new ComboBox<>("Szabad időpontok", orak);
-        idopontok.add(foglalhatoOrak);
     }
+
 
     private FoglalasEntity idopontFoglalasAdat(){
         FoglalasEntity foglalasEntity = new FoglalasEntity();
