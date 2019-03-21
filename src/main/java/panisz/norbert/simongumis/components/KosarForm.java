@@ -21,14 +21,11 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.logging.Logger;
 
-@Data
 @UIScope
 @Component
 public class KosarForm extends VerticalLayout {
     @Autowired
     private RendelesServiceImpl rendelesService;
-    @Autowired
-    private GumikServiceImpl gumikService;
 
     private MenuForm fomenu  = new MenuForm();
 

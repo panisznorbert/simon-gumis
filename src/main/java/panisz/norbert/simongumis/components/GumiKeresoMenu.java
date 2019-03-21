@@ -76,7 +76,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
         menu2.removeAll();
         menu2.add(egyeb, alaphelyzet, keres);
         menu2.setAlignItems(Alignment.BASELINE);
-        menu.setHeight("200px");
+        menu.setHeight("160px");
         menu.removeAll();
         menu.add(menu1, menu2);
         add(menu);
@@ -116,7 +116,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
     }
 
 
-    private void szelessegKivalasztas(){
+    private void meretKivalasztas(){
         Integer beallito = 111;
         if(meret1.isEmpty()){
             beallito = beallito - 100;
@@ -195,15 +195,15 @@ public class GumiKeresoMenu extends HorizontalLayout {
         if(b==1){meret2.setValue(gumiMeretekEntities.get(0).getProfil());}
         if(c==1){meret3.setValue(gumiMeretekEntities.get(0).getFelni());}
 
-        meret1.addValueChangeListener(e -> szelessegKivalasztas());
-        meret2.addValueChangeListener(e -> szelessegKivalasztas());
-        meret3.addValueChangeListener(e -> szelessegKivalasztas());
+        meret1.addValueChangeListener(e -> meretKivalasztas());
+        meret2.addValueChangeListener(e -> meretKivalasztas());
+        meret3.addValueChangeListener(e -> meretKivalasztas());
     }
 
     private void tovabbiFeltetelek(){
         menu2.removeAll();
         menu2.add(gyarto, artol, arig, alaphelyzet, keres);
-        menu.setHeight("300px");
+        menu.setHeight("230px");
     }
 
 

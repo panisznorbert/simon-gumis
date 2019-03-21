@@ -41,15 +41,19 @@ public class RendelesekForm extends VerticalLayout {
         this.setAlignItems(Alignment.CENTER);
         List<RendelesEntity> rendelesEntities = rendelesService.osszes();
         if(!rendelesEntities.isEmpty()) {
-            for (RendelesEntity rendeles : rendelesEntities) {
-                ujRendelesSor(rendeles);
+            int darab = rendelesEntities.size();
+            for(int i=0;i<darab-1;i=i+2){
+                tartalom.add(new HorizontalLayout(ujRendelesSor(rendelesEntities.get(i)), ujRendelesSor(rendelesEntities.get(i+1))));
+            }
+            if(darab%2 != 0){
+                tartalom.add(new HorizontalLayout(ujRendelesSor(rendelesEntities.get(darab-1))));
             }
         }
         keresoSav.setAlignItems(Alignment.END);
-        add(fomenu, keresoSav, tartalom);
+        add(fomenu, keresoSav, new HorizontalLayout(tartalom));
     }
 
-    private void ujRendelesSor(RendelesEntity rendelesEntity){
+    private Grid ujRendelesSor(RendelesEntity rendelesEntity){
         Grid<RendelesiEgysegEntity> rendelesek = new Grid<>();
 
         rendelesek.setWidth("550px");
@@ -122,7 +126,7 @@ public class RendelesekForm extends VerticalLayout {
         });
 
         rendelesek.setHeightByRows(true);
-        tartalom.add(new HorizontalLayout(ugyfelRendeles));
+        return rendelesek;
     }
 
 
