@@ -1,6 +1,5 @@
 package panisz.norbert.simongumis.components;
 
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
@@ -15,6 +14,6 @@ public class HibaJelzes  extends Notification {
         add(tartalom);
         kilep.addClickListener(event -> close());
         this.setPosition(Notification.Position.MIDDLE);
-        open();
+        this.setDuration(6000);
     }
 }

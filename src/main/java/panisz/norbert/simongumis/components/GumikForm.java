@@ -63,7 +63,7 @@ public class GumikForm extends VerticalLayout {
         TextField darab = new TextField();
         darab.setPattern("[0-9]*");
         darab.setSuffixComponent(new Span("Db"));
-        VerticalLayout leiras = new VerticalLayout(tipus, hiba, darab);
+        VerticalLayout leiras = new VerticalLayout(hiba, tipus, darab);
         Button megse  = new Button("Mégse");
         Button ok  = new Button("Ok");
         HorizontalLayout gombok = new HorizontalLayout(ok, megse);

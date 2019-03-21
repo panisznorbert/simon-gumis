@@ -149,7 +149,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
 
     private void idopontFoglalas(){
         if(kitoltottseg()){
-            Notification hiba = new HibaJelzes("Hibás kitöltés");
+            Notification hiba = new HibaJelzes("Hibás kitöltés. A megjegyzésen kívül minden mező kitöltése kötelező!");
             hiba.open();
         }else{
             foglalasService.ment(idopontFoglalasAdat());
