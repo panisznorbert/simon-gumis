@@ -39,6 +39,7 @@ public class GumikForm extends VerticalLayout {
 
     private Grid<GumikEntity> gumik = new Grid<>();
 
+
     private Dialog darabszamAblak;
 
 
@@ -47,9 +48,12 @@ public class GumikForm extends VerticalLayout {
         GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
         gumik.setWidth("950px");
+        gumik.setHeightByRows(true);
 
         gumikTablaFeltolt(menu.getKriterium());
-        add(fomenu, menu, gumik);
+        add(fomenu, menu, new HorizontalLayout(gumik));
+        this.setAlignItems(Alignment.CENTER);
+
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }
 

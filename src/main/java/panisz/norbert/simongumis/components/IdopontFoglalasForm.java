@@ -40,9 +40,11 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private UgyfelMezok ugyfelAdatok = new UgyfelMezok();
 
     private TextField megjegyzes = new TextField("Megjegyzés:");
+    private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
 
     public IdopontFoglalasForm(){
+
         init();
     }
 
@@ -60,7 +62,6 @@ public class IdopontFoglalasForm extends VerticalLayout {
         magyarDatum.setWeekdays(Arrays.asList(nap));
         String[] napRov = {"Va", "Hé", "Ke", "Sze", "Csü", "Pé", "Szo"};
         magyarDatum.setWeekdaysShort(Arrays.asList(napRov));
-
         return magyarDatum;
     }
 
@@ -68,8 +69,9 @@ public class IdopontFoglalasForm extends VerticalLayout {
         idopontokDatum = new DatePicker("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
-        add(fomenu, idopontok, ugyfelAdatok, megjegyzes, gombsor);
-        idopontokDatum.addValueChangeListener(e -> orakFeltoltese(e.getValue()));
+        add(fomenu, idopontok, ugyfelAdatok, egyeb, gombsor);
+        this.setAlignItems(Alignment.CENTER);
+        idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue()));
         foglal.addClickListener(e -> idopontFoglalas());
     }
 
@@ -91,11 +93,21 @@ public class IdopontFoglalasForm extends VerticalLayout {
         ugyfelAdatok.alaphelyzet();
     }
 
+    private void kivalasztottDatum(LocalDate kivalasztottDatum){
+        if(!idopontokDatum.isInvalid()){
+            orakFeltoltese(kivalasztottDatum);
+        }else{
+            foglalhatoOrak.clear();
+            idopontok.remove(foglalhatoOrak);
+        }
+    }
+
     private void orakFeltoltese(LocalDate kivalasztottDatum){
         idopontok.remove(foglalhatoOrak);
         if(DayOfWeek.SUNDAY.equals(kivalasztottDatum.getDayOfWeek())){
             idopontokDatum.setInvalid(true);
-            idopontokDatum.setErrorMessage("Vasárnap zárva vagyunk.");
+            Notification hibaAblak = new HibaJelzes("Vasárnap zárva vagyunk.");
+            hibaAblak.open();
         }else {
             List<LocalTime> orak = new ArrayList<>();
             int munkaidoVege = 17;

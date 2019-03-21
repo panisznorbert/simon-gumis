@@ -1,6 +1,7 @@
 package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
@@ -29,29 +30,33 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private Grid<FoglalasEntity> tabla = new Grid<>();
 
-    private VerticalLayout mai = new VerticalLayout();
-    private VerticalLayout tobbiFoglalas = new VerticalLayout();
+    private HorizontalLayout keresoSor = new HorizontalLayout();
+
+    private HorizontalLayout foglalasok = new HorizontalLayout();
 
     @PostConstruct
     private void init(){
+        this.setAlignItems(Alignment.CENTER);
+        tabla.setWidth("600px");
+        tabla.setHeightByRows(true);
         add(fomenu);
         List<FoglalasEntity> tobbiFoglalasok = foglalasService.keresesNaptol(LocalDate.now());
-        if(tobbiFoglalasok != null){
+        if(tobbiFoglalasok != null && !tobbiFoglalasok.isEmpty()){
 
-            Grid<FoglalasEntity> foglalasLista = tablafeltolto(tobbiFoglalasok);
-            tobbiFoglalas.add(foglalasLista);
+            tabla = tablafeltolto(tobbiFoglalasok);
+            foglalasok.add(tabla);
         }
 
-        add(mai, tobbiFoglalas);
+        add(keresoSor, foglalasok);
     }
 
 
     private Grid<FoglalasEntity> tablafeltolto(List<FoglalasEntity> foglalasok){
 
         sort(foglalasok);
-        tabla.addColumn(new LocalDateTimeRenderer<>(FoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont");
+        tabla.addColumn(new LocalDateTimeRenderer<>(FoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont").setWidth("150px");
         tabla.addColumn(TemplateRenderer.<FoglalasEntity> of(
-                "<div>Név: [[item.nev]]<br><small>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
+                "<div><small>Név: [[item.nev]]<br>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
 
                         .withProperty("nev",
                                 foglalasEntity -> foglalasEntity.getUgyfel().getNev())
@@ -59,7 +64,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
                                 foglalasEntity -> foglalasEntity.getUgyfel().getTelefon())
                         .withProperty("email",
                                 foglalasEntity -> foglalasEntity.getUgyfel().getEmail()),
-                "nev", "telefon", "email").setHeader("Ügyfél");
+                "nev", "telefon", "email").setHeader("Ügyfél").setWidth("250px");
         tabla.addColumn(new NativeButtonRenderer<>("Töröl", this::idopontTorlese));
         //Ha van megjegyzés egy ikon jelezze
         tabla.setItems(foglalasok);

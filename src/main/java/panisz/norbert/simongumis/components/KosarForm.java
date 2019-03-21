@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -44,7 +45,9 @@ public class KosarForm extends VerticalLayout {
 
     @PostConstruct
     private void init(){
+        this.setAlignItems(Alignment.CENTER);
         add(fomenu);
+        rendelesekTabla.setHeightByRows(true);
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Összeg");
@@ -58,7 +61,7 @@ public class KosarForm extends VerticalLayout {
             rendelesEntity.setVegosszeg(rendelesVegosszeg());
             vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
             tartalom.add(new VerticalLayout(rendelesekTabla, vegosszeg), new VerticalLayout(vevoAdatai, gombok));
-            add(tartalom);
+            add(new HorizontalLayout(tartalom));
             megrendeles.addClickListener(e -> megrendeles());
         }
     }
@@ -84,29 +87,15 @@ public class KosarForm extends VerticalLayout {
         ugyfel.setTelefon(vevoAdatai.getTelefon().getValue());
         rendelesEntity.setUgyfel(ugyfel);
         rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
-        LOGGER.info(rendelesEntity.toString());
-        //végső vizsgálat hogy a rendelésben szereplő gumikból a kívánt darabszám van-e raktáron
-        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-            GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
-            if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
-                StringBuilder hiba = new StringBuilder();
-                hiba.append(rendelesiEgysegEntity.getGumi().toString());
-                hiba.append(" típusú gumiból, maximum ");
-                hiba.append(gumikEntity.getMennyisegRaktarban().toString());
-                hiba.append(" db elérhető, de a rendelésében több szerepel!");
-                HibaJelzes hibaJelzes = new HibaJelzes(hiba.toString());
-                hibaJelzes.open();
-            }
+        String hiba = rendelesService.mentKosarbol(rendelesEntity);
+        if(hiba != null){
+            Notification hibaAblak = new HibaJelzes(hiba);
+            hibaAblak.open();
+        }else{
+            SpringApplication.setRendelesAzon(null);
+            UI.getCurrent().navigate("gumik");
+        }
 
-        }
-        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-            GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
-            gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
-            gumikService.ment(gumikEntity);
-        }
-        rendelesService.ment(rendelesEntity);
-        SpringApplication.setRendelesAzon(null);
-        UI.getCurrent().navigate("gumik");
     }
 
 }

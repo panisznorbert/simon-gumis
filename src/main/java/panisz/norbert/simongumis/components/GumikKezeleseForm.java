@@ -4,11 +4,13 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridContextMenu;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,9 +38,6 @@ public class GumikKezeleseForm extends VerticalLayout {
     private Button hozzaad  = new Button("Hozzáad");
     private Button torol  = new Button("Töröl");
 
-    private Button eltavolit  = new Button("Eltávolít");
-    private Button modosit  = new Button("Módosít");
-
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     private Grid<GumikEntity> grid = new Grid<>();
@@ -54,18 +53,13 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private Dialog gumiSzerkeszto;
 
+    private Button szerkeszt = new Button("Szerkeszt");
 
     public GumikKezeleseForm(){
+        this.setAlignItems(Alignment.CENTER);
+        grid.setHeightByRows(true);
         hozzaad.addClickListener(e -> ment());
         torol.addClickListener(e -> mezokInit());
-        eltavolit.addClickListener(e -> torles());
-        modosit.addClickListener(e -> {
-            if(!grid.getSelectedItems().isEmpty()){
-                szerkesztes(new ArrayList<>(grid.getSelectedItems()).get(0));
-            }else{
-                Notification hibaAblak = new HibaJelzes("Nincs kiválasztva módosítandó sor!");
-                hibaAblak.open();
-        }});
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
     }
 
@@ -95,8 +89,37 @@ public class GumikKezeleseForm extends VerticalLayout {
         adatokBevitel.add(gyarto, meret1, meret2, meret3, evszak, allapot, ar, darab);
         adatokBevitel.setHeight("100px");
         adatokMegjelenites.add(grid);
-        layout.add(gombok, adatokBevitel, adatokMegjelenites, new HorizontalLayout(eltavolit, modosit));
+        layout.add(gombok, adatokBevitel, adatokMegjelenites);
         add(fomenu, layout);
+
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+        gridhezMenu();
+
+    }
+
+    private void gridhezMenu(){
+        GridContextMenu<GumikEntity> contextMenu = new GridContextMenu<>(grid);
+        contextMenu.addItem("Szerkeszt", event -> szerkesztes(event.getItem().get()));
+        contextMenu.addItem("Töröl", event -> torles(event.getItem().get()));
+
+    }
+
+    private void torles(GumikEntity gumikEntity){
+        gumikService.torol(gumikEntity);
+        gridRefresh();
+    }
+
+    private void szerkesztes(GumikEntity gumikEntity){
+        GumiSzerkesztoForm adatok = new GumiSzerkesztoForm(gumikEntity);
+        Button megse  = new Button("Mégse");
+        Button ment  = new Button("Módosít");
+        HorizontalLayout gombok = new HorizontalLayout(ment, megse);
+        gumiSzerkeszto = new Dialog(adatok, gombok);
+        gumiSzerkeszto.setCloseOnOutsideClick(false);
+        megse.addClickListener(e -> gumiSzerkeszto.close());
+        ment.addClickListener(e -> szerkesztesMentese(gumikEntity, adatok));
+        gumiSzerkeszto.open();
+
     }
 
     private void ment(){
@@ -182,28 +205,6 @@ public class GumikKezeleseForm extends VerticalLayout {
         evszak.setValue("Nyári");
         allapot.setValue("Új");
         darab.clear();
-    }
-
-    private void torles(){
-        if(!grid.getSelectedItems().isEmpty()) {
-            gumikService.torolMind(grid.getSelectedItems());
-            gridRefresh();
-        }else{
-            Notification hibaAblak = new HibaJelzes("Nincs kiválasztva módosítandó sor!");
-            hibaAblak.open();
-        }
-    }
-
-    private void szerkesztes(GumikEntity gumikEntity){
-            GumiSzerkesztoForm adatok = new GumiSzerkesztoForm(gumikEntity);
-            Button megse  = new Button("Mégse");
-            Button ment  = new Button("Módosít");
-            HorizontalLayout gombok = new HorizontalLayout(ment, megse);
-            gumiSzerkeszto = new Dialog(adatok, gombok);
-            gumiSzerkeszto.setCloseOnOutsideClick(false);
-            megse.addClickListener(e -> gumiSzerkeszto.close());
-            ment.addClickListener(e -> szerkesztesMentese(gumikEntity, adatok));
-            gumiSzerkeszto.open();
     }
 
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){

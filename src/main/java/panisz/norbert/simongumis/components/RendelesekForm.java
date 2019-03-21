@@ -25,8 +25,6 @@ import java.util.logging.Logger;
 public class RendelesekForm extends VerticalLayout {
     @Autowired
     private RendelesServiceImpl rendelesService;
-    @Autowired
-    private GumikServiceImpl gumikService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -40,6 +38,7 @@ public class RendelesekForm extends VerticalLayout {
 
     @PostConstruct
     private void init(){
+        this.setAlignItems(Alignment.CENTER);
         List<RendelesEntity> rendelesEntities = rendelesService.osszes();
         if(!rendelesEntities.isEmpty()) {
             for (RendelesEntity rendeles : rendelesEntities) {
@@ -70,7 +69,6 @@ public class RendelesekForm extends VerticalLayout {
         ugyfel.append(rendelesEntity.getUgyfel().getTelefon());
         ugyfel.append(", E-mail: ");
         ugyfel.append(rendelesEntity.getUgyfel().getEmail());
-
 
         Grid.Column<RendelesiEgysegEntity> oszlop1 = rendelesek
                 .addColumn(RendelesiEgysegEntity::getGumi)
@@ -116,23 +114,17 @@ public class RendelesekForm extends VerticalLayout {
             }
         });
         torol.addClickListener(e -> {
-            //ha már átvételre várt és mégis törölve lesz akkor a lefoglalt darabszám visszakerül a raktárkészletbe
-            if(rendelesEntity.getStatusz().equals(RendelesStatusz.ATVETELRE_VAR)){
-                for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-                    GumikEntity gumikEntity = gumikService.idKereses(rendelesiEgysegEntity.getGumi().getId());
-                    gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()+rendelesiEgysegEntity.getMennyiseg());
-                    gumikService.ment(gumikEntity);
-                }
-            }
+            rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
             modosit.setVisible(false);
             rendelesek.getFooterRows().get(0).getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
-            rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
-            rendelesService.ment(rendelesEntity);
+            rendelesService.rendelesTrolese(rendelesEntity);
             torol.setVisible(false);
         });
 
-        tartalom.add(new VerticalLayout(ugyfelRendeles));
+        rendelesek.setHeightByRows(true);
+        tartalom.add(new HorizontalLayout(ugyfelRendeles));
     }
+
 
     private String lablecEpit(RendelesEntity rendelesEntity){
         StringBuilder lablec = new StringBuilder();

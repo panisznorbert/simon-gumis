@@ -79,10 +79,4 @@ public class GumikServiceImpl implements GumikService {
         return gumikRepository.findById(id).get();
     }
 
-    public void torolMind(Set<GumikEntity> gumikEntities){
-        for(GumikEntity gumi : gumikEntities){
-            gumi.setMeret(null);
-        }
-        gumikRepository.deleteAll(gumikEntities);
-    }
 }
