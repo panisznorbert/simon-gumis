@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.services.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.components.HibaJelzes;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
@@ -12,6 +13,7 @@ import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.services.RendelesService;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @Transactional
@@ -20,6 +22,8 @@ public class RendelesServiceImpl implements RendelesService {
     RendelesRepository rendelesRepository;
     @Autowired
     GumikRepository gumikRepository;
+
+    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     @Override
     public List<RendelesEntity> osszes() {
@@ -39,7 +43,6 @@ public class RendelesServiceImpl implements RendelesService {
             if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
                 hiba = (rendelesiEgysegEntity.getGumi().toString() + " típusú gumiból, maximum " + gumikEntity.getMennyisegRaktarban().toString() + " db elérhető, de a rendelésében több szerepel!");
             }
-
         }
         //megrendelésnél a raktárkészlatből a gumik levonása
         if(hiba == null){
@@ -52,7 +55,7 @@ public class RendelesServiceImpl implements RendelesService {
                     hiba = "Mentés sikertelen";
                 }
             }
-            rendelesRepository.save(rendelesEntity);
+            LOGGER.info(rendelesRepository.save(rendelesEntity).toString());
         }
         if(hiba == null){
             try{

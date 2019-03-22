@@ -11,9 +11,9 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
-import panisz.norbert.simongumis.entities.FoglalasEntity;
+import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
-import panisz.norbert.simongumis.services.implement.FoglalasServiceImpl;
+import panisz.norbert.simongumis.services.implement.IdopontIdopontFoglalasServiceImpl;
 import javax.annotation.PostConstruct;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -26,10 +26,9 @@ import java.util.logging.Logger;
 @Component
 public class IdopontFoglalasForm extends VerticalLayout {
     @Autowired
-    private FoglalasServiceImpl foglalasService;
+    private IdopontIdopontFoglalasServiceImpl foglalasService;
 
     private MenuForm fomenu = new MenuForm();
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
     private DatePicker idopontokDatum;
     private ComboBox<LocalTime> foglalhatoOrak;
     private HorizontalLayout idopontok = new HorizontalLayout();
@@ -128,19 +127,19 @@ public class IdopontFoglalasForm extends VerticalLayout {
         }
     }
 
-    private FoglalasEntity idopontFoglalasAdat(){
-        FoglalasEntity foglalasEntity = new FoglalasEntity();
+    private IdopontFoglalasEntity idopontFoglalasAdat(){
+        IdopontFoglalasEntity idopontFoglalasEntity = new IdopontFoglalasEntity();
         UgyfelEntity ugyfelEntity = new UgyfelEntity();
 
         ugyfelEntity.setNev(ugyfelAdatok.getNev().getValue());
         ugyfelEntity.setTelefon(ugyfelAdatok.getTelefon().getValue());
         ugyfelEntity.setEmail(ugyfelAdatok.getEmail().getValue());
 
-        foglalasEntity.setUgyfel(ugyfelEntity);
-        foglalasEntity.setDatum(LocalDateTime.of(idopontokDatum.getValue(), foglalhatoOrak.getValue()));
-        foglalasEntity.setMegjegyzes(megjegyzes.getValue());
+        idopontFoglalasEntity.setUgyfel(ugyfelEntity);
+        idopontFoglalasEntity.setDatum(LocalDateTime.of(idopontokDatum.getValue(), foglalhatoOrak.getValue()));
+        idopontFoglalasEntity.setMegjegyzes(megjegyzes.getValue());
 
-        return foglalasEntity;
+        return idopontFoglalasEntity;
     }
 
     private boolean kitoltottseg(){

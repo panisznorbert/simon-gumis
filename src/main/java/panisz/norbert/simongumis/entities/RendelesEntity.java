@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "rendelesek")
 public class RendelesEntity extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private UgyfelEntity ugyfel;

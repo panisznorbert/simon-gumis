@@ -34,12 +34,8 @@ public class GumikForm extends VerticalLayout {
     private RendelesServiceImpl rendelesService;
     @Autowired
     private GumiKeresoMenu menu = new GumiKeresoMenu();
-
     private MenuForm fomenu  = new MenuForm();
-
     private Grid<GumikEntity> gumik = new Grid<>();
-
-
     private Dialog darabszamAblak;
 
 

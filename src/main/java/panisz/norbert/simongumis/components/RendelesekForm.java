@@ -10,11 +10,9 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
-import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
 import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -55,9 +53,7 @@ public class RendelesekForm extends VerticalLayout {
 
     private Grid ujRendelesSor(RendelesEntity rendelesEntity){
         Grid<RendelesiEgysegEntity> rendelesek = new Grid<>();
-
         rendelesek.setWidth("550px");
-        VerticalLayout ugyfelRendeles = new VerticalLayout(rendelesek);
         Button modosit = new Button("Leegyeztetve");
         Button torol = new Button("Megrendelés törlése");
         HorizontalLayout gombok = new HorizontalLayout(modosit, torol);
@@ -77,18 +73,22 @@ public class RendelesekForm extends VerticalLayout {
         Grid.Column<RendelesiEgysegEntity> oszlop1 = rendelesek
                 .addColumn(RendelesiEgysegEntity::getGumi)
                 .setHeader("Gumi")
-                .setWidth("300px");
+                .setWidth("300px")
+                .setFooter("Státusz: " + rendelesEntity.getStatusz().toString());
         Grid.Column<RendelesiEgysegEntity> oszlop2 = rendelesek
                 .addColumn(RendelesiEgysegEntity::getMennyiseg)
                 .setHeader("Darab")
-                .setWidth("100px");
+                .setWidth("100px")
+                .setFooter("Végösszeg:");
         Grid.Column<RendelesiEgysegEntity> oszlop3 = rendelesek
                 .addColumn(RendelesiEgysegEntity::getReszosszeg)
                 .setHeader("Ár")
-                .setWidth("100px");
+                .setWidth("100px")
+                .setFooter(rendelesEntity.getVegosszeg() + " Ft");
 
-        rendelesek.prependHeaderRow().getCells().get(0).setComponent(new Label(ugyfel.toString()));
-        rendelesek.appendFooterRow().getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
+
+        rendelesek.prependHeaderRow().join(oszlop1, oszlop2, oszlop3).setComponent(new Label(ugyfel.toString()));
+
         rendelesek.appendFooterRow().join(oszlop1, oszlop2, oszlop3).setComponent(gombok);
 
         rendelesek.setItems(rendelesEntity.getRendelesiEgysegek());
@@ -102,7 +102,8 @@ public class RendelesekForm extends VerticalLayout {
                 case ATVETELRE_VAR:{
                     rendelesEntity.setStatusz(RendelesStatusz.RENDEZVE);
                     rendelesService.ment(rendelesEntity);
-                    rendelesek.getFooterRows().get(0).getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
+                    rendelesek.getFooterRows().get(0).getCell(oszlop1).setComponent(new Label("Státusz: " + rendelesEntity.getStatusz().toString()));
+
 
                     modosit.setVisible(false);
                     torol.setVisible(false);
@@ -111,7 +112,7 @@ public class RendelesekForm extends VerticalLayout {
                 case MEGRENDELVE: {
                     rendelesEntity.setStatusz(RendelesStatusz.ATVETELRE_VAR);
                     rendelesService.ment(rendelesEntity);
-                    rendelesek.getFooterRows().get(0).getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
+                    rendelesek.getFooterRows().get(0).getCell(oszlop1).setComponent(new Label("Státusz: " + rendelesEntity.getStatusz().toString()));
                     modosit.setText("Átvette");
                     break;
                 }
@@ -120,7 +121,7 @@ public class RendelesekForm extends VerticalLayout {
         torol.addClickListener(e -> {
             rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
             modosit.setVisible(false);
-            rendelesek.getFooterRows().get(0).getCells().get(0).setComponent(new Label(lablecEpit(rendelesEntity)));
+            rendelesek.getFooterRows().get(0).getCell(oszlop1).setComponent(new Label("Státusz: " + rendelesEntity.getStatusz().toString()));
             rendelesService.rendelesTrolese(rendelesEntity);
             torol.setVisible(false);
         });
@@ -128,17 +129,5 @@ public class RendelesekForm extends VerticalLayout {
         rendelesek.setHeightByRows(true);
         return rendelesek;
     }
-
-
-    private String lablecEpit(RendelesEntity rendelesEntity){
-        StringBuilder lablec = new StringBuilder();
-        lablec.append("Végösszeg: ");
-        lablec.append(rendelesEntity.getVegosszeg().toString());
-        lablec.append(", Státusz: ");
-        lablec.append(rendelesEntity.getStatusz().toString());
-
-        return lablec.toString();
-    }
-
 
 }
