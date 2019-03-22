@@ -16,6 +16,7 @@ import panisz.norbert.simongumis.entities.*;
 import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 import panisz.norbert.simongumis.spring.SpringApplication;
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -82,6 +83,7 @@ public class KosarForm extends VerticalLayout {
         ugyfel.setTelefon(vevoAdatai.getTelefon().getValue());
         rendelesEntity.setUgyfel(ugyfel);
         rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
+        rendelesEntity.setDatum(LocalDate.now());
         String hiba = rendelesService.mentKosarbol(rendelesEntity);
         if(hiba != null){
             Notification hibaAblak = new HibaJelzes(hiba);

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -21,4 +22,6 @@ public class RendelesEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private RendelesStatusz statusz;
+
+    private LocalDate datum;
 }

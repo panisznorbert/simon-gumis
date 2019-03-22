@@ -69,21 +69,24 @@ public class RendelesekForm extends VerticalLayout {
         ugyfel.append(rendelesEntity.getUgyfel().getTelefon());
         ugyfel.append(", E-mail: ");
         ugyfel.append(rendelesEntity.getUgyfel().getEmail());
+        ugyfel.append(" (");
+        ugyfel.append(rendelesEntity.getDatum());
+        ugyfel.append(")");
 
         Grid.Column<RendelesiEgysegEntity> oszlop1 = rendelesek
                 .addColumn(RendelesiEgysegEntity::getGumi)
                 .setHeader("Gumi")
-                .setWidth("300px")
+                .setWidth("330px")
                 .setFooter("Státusz: " + rendelesEntity.getStatusz().toString());
         Grid.Column<RendelesiEgysegEntity> oszlop2 = rendelesek
                 .addColumn(RendelesiEgysegEntity::getMennyiseg)
                 .setHeader("Darab")
-                .setWidth("100px")
+                .setWidth("85px")
                 .setFooter("Végösszeg:");
         Grid.Column<RendelesiEgysegEntity> oszlop3 = rendelesek
                 .addColumn(RendelesiEgysegEntity::getReszosszeg)
                 .setHeader("Ár")
-                .setWidth("100px")
+                .setWidth("85px")
                 .setFooter(rendelesEntity.getVegosszeg() + " Ft");
 
 
