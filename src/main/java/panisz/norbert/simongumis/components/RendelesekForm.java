@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.components;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,6 +16,7 @@ import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -26,9 +28,11 @@ public class RendelesekForm extends VerticalLayout {
 
     private MenuForm fomenu  = new MenuForm();
 
-    private TextField kereso = new TextField("Név:");
-    private Button keres = new Button("Keres");
-    private HorizontalLayout keresoSav = new HorizontalLayout(kereso, keres);
+    private HorizontalLayout rendelesekTartalom;
+
+    private TextField nevKereso = new TextField("Név:");
+    private Button nevreKeres = new Button("Keres");
+    private HorizontalLayout keresoSav = new HorizontalLayout(nevKereso, nevreKeres);
     private VerticalLayout tartalom = new VerticalLayout();
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
@@ -37,18 +41,39 @@ public class RendelesekForm extends VerticalLayout {
     @PostConstruct
     private void init(){
         this.setAlignItems(Alignment.CENTER);
-        List<RendelesEntity> rendelesEntities = rendelesService.osszes();
-        if(!rendelesEntities.isEmpty()) {
-            int darab = rendelesEntities.size();
+        adatBetoltes(rendelesService.osszes());
+        keresoSav.setAlignItems(Alignment.END);
+        nevreKeres.addClickListener(e -> keresesNevre(nevKereso.getValue()));
+        rendelesekTartalom = new HorizontalLayout(tartalom);
+        add(fomenu, keresoSav, rendelesekTartalom);
+    }
+
+    private void keresesNevre(String nev){
+        tartalom.removeAll();
+        remove(rendelesekTartalom);
+        if(!nev.isEmpty()){
+            adatBetoltes(rendelesService.ugyfelNevreKeres(nev));
+        }else{
+            adatBetoltes(rendelesService.osszes());
+        }
+        rendelesekTartalom = new HorizontalLayout(tartalom);
+        add(rendelesekTartalom);
+    }
+
+    private void adatBetoltes(List<RendelesEntity> rendelesek){
+        if(!rendelesek.isEmpty()) {
+            Collections.sort(rendelesek);
+            int darab = rendelesek.size();
             for(int i=0;i<darab-1;i=i+2){
-                tartalom.add(new HorizontalLayout(ujRendelesSor(rendelesEntities.get(i)), ujRendelesSor(rendelesEntities.get(i+1))));
+                tartalom.add(new HorizontalLayout(ujRendelesSor(rendelesek.get(i)), ujRendelesSor(rendelesek.get(i+1))));
             }
             if(darab%2 != 0){
-                tartalom.add(new HorizontalLayout(ujRendelesSor(rendelesEntities.get(darab-1))));
+                tartalom.add(new HorizontalLayout(ujRendelesSor(rendelesek.get(darab-1))));
             }
+        }else if(!nevKereso.getValue().isEmpty()){
+            Notification hibaAblak = new HibaJelzes("A megadott feltétel alapján a keresés nem hozott eredményt.");
+            hibaAblak.open();
         }
-        keresoSav.setAlignItems(Alignment.END);
-        add(fomenu, keresoSav, new HorizontalLayout(tartalom));
     }
 
     private Grid ujRendelesSor(RendelesEntity rendelesEntity){

@@ -12,6 +12,8 @@ import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.services.RendelesService;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -85,5 +87,7 @@ public class RendelesServiceImpl implements RendelesService {
     public RendelesEntity idKereses(Integer id){
         return rendelesRepository.findById(id).get();
     }
+
+    public List<RendelesEntity> ugyfelNevreKeres(String nev){return rendelesRepository.findAllByUgyfel_Nev(nev);}
 
 }

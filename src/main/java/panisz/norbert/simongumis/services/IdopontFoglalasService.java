@@ -10,5 +10,5 @@ public interface IdopontFoglalasService extends BaseServices<IdopontFoglalasEnti
 
     IdopontFoglalasEntity keresesDatumra(LocalDateTime localDateTime);
 
-    List<IdopontFoglalasEntity> keresesNaptol(LocalDate localDate);
+    List<IdopontFoglalasEntity> keresesNaptol(LocalDateTime localDateTime);
 }

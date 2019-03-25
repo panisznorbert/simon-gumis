@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "rendelesek")
-public class RendelesEntity extends BaseEntity {
+public class RendelesEntity extends BaseEntity implements Comparable<RendelesEntity>{
     @OneToOne(cascade = CascadeType.ALL)
     private UgyfelEntity ugyfel;
 
@@ -24,4 +24,9 @@ public class RendelesEntity extends BaseEntity {
     private RendelesStatusz statusz;
 
     private LocalDate datum;
+
+    @Override
+    public int compareTo(RendelesEntity o) {
+        return this.getDatum().compareTo(o.getDatum());
+    }
 }

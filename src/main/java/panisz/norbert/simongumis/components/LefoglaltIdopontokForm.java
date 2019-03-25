@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
 import panisz.norbert.simongumis.services.implement.IdopontIdopontFoglalasServiceImpl;
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
@@ -40,9 +40,8 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
         tabla.setWidth("600px");
         tabla.setHeightByRows(true);
         add(fomenu);
-        List<IdopontFoglalasEntity> tobbiFoglalasok = foglalasService.keresesNaptol(LocalDate.now());
+        List<IdopontFoglalasEntity> tobbiFoglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
         if(tobbiFoglalasok != null && !tobbiFoglalasok.isEmpty()){
-
             tabla = tablafeltolto(tobbiFoglalasok);
             foglalasok.add(tabla);
         }
