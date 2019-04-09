@@ -5,22 +5,23 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
-import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
+import panisz.norbert.simongumis.exceptions.LetezoGumiException;
+import panisz.norbert.simongumis.services.GumiMeretekService;
+import panisz.norbert.simongumis.services.GumikService;
+import panisz.norbert.simongumis.services.RendelesService;
 import panisz.norbert.simongumis.spring.SpringApplication;
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -28,30 +29,29 @@ import java.util.logging.Logger;
 @Component
 public class GumikForm extends VerticalLayout {
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
-    @Autowired
-    private GumikServiceImpl gumikService;
-    @Autowired
-    private RendelesServiceImpl rendelesService;
-    @Autowired
-    private GumiKeresoMenu menu = new GumiKeresoMenu();
-    private MenuForm fomenu  = new MenuForm();
+
+    private GumikService gumikService;
+    private RendelesService rendelesService;
+
+    private GumiKeresoMenu menu;
     private Grid<GumikEntity> gumik = new Grid<>();
     private Dialog darabszamAblak;
+    private MenuForm fomenu  = new MenuForm();
 
-
-    @PostConstruct
-    public void init(){
+    public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService){
+        this.gumikService = gumikService;
+        this.rendelesService = rendelesService;
+        menu = new GumiKeresoMenu(gumiMeretekService);
         GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
         gumik.setWidth("950px");
         gumik.setHeightByRows(true);
-
         gumikTablaFeltolt(menu.getKriterium());
-        add(fomenu, menu, new HorizontalLayout(gumik));
+        add(fomenu); add( menu, new HorizontalLayout(gumik));
         this.setAlignItems(Alignment.CENTER);
-
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }
+
 
     private void kosarbahelyezesAblak(GumikEntity gumi){
         Label tipus = new Label(gumi.toString() + " típusú gumiból");
@@ -122,7 +122,13 @@ public class GumikForm extends VerticalLayout {
             rendeles.getRendelesiEgysegek().add(rendelesiEgyseg);
         }
 
-        SpringApplication.setRendelesAzon(rendelesService.ment(rendeles).getId());
+        try{
+            SpringApplication.setRendelesAzon(rendelesService.ment(rendeles).getId());
+        }catch(LetezoGumiException ex){
+        Notification hibaAblak = new HibaJelzes(ex.getMessage());
+        hibaAblak.open();
+    }
+
     }
 
     private void gumikTablaFeltolt(GumikEntity szures){

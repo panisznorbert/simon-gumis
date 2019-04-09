@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class IdopontIdopontFoglalasServiceImpl implements IdopontFoglalasService {
+public class IdopontFoglalasServiceImpl implements IdopontFoglalasService {
     @Autowired
     IdopontFoglalasRepository idopontFoglalasRepository;
     @Autowired
@@ -35,8 +35,7 @@ public class IdopontIdopontFoglalasServiceImpl implements IdopontFoglalasService
     }
 
     @Override
-    public String ment(IdopontFoglalasEntity idopontFoglalasEntity) {
-        String hiba = null;
+    public IdopontFoglalasEntity ment(IdopontFoglalasEntity idopontFoglalasEntity) {
         //Megvizsgálni, hogy van-e már ilyen ügyfél és ha van akkor azt használni
         UgyfelEntity ugyfelEntity = ugyfelRepository.findByNevAndTelefonAndEmail(
                 idopontFoglalasEntity.getUgyfel().getNev(),
@@ -45,12 +44,7 @@ public class IdopontIdopontFoglalasServiceImpl implements IdopontFoglalasService
         if(ugyfelEntity != null) {
             idopontFoglalasEntity.setUgyfel(ugyfelEntity);
         }
-        try{
-            idopontFoglalasRepository.save(idopontFoglalasEntity);
-        }catch(Exception e){
-            hiba = "Mentés sikertelen";
-        }
-        return hiba;
+        return idopontFoglalasRepository.save(idopontFoglalasEntity);
     }
 
     @Override

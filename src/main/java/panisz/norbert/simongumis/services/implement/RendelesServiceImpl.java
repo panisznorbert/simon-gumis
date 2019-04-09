@@ -37,6 +37,7 @@ public class RendelesServiceImpl implements RendelesService {
         return rendelesRepository.save(rendelesEntity);
     }
 
+    @Override
     public String mentKosarbol(RendelesEntity rendelesEntity) {
         String hiba = null;
         //végső vizsgálat hogy a rendelésben szereplő gumikból a kívánt darabszám van-e raktáron
@@ -75,6 +76,7 @@ public class RendelesServiceImpl implements RendelesService {
         rendelesRepository.delete(rendelesEntity);
     }
 
+    @Override
     public void rendelesTrolese(RendelesEntity rendelesEntity){
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
             GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
@@ -84,10 +86,12 @@ public class RendelesServiceImpl implements RendelesService {
         rendelesRepository.save(rendelesEntity);
     }
 
+    @Override
     public RendelesEntity idKereses(Integer id){
         return rendelesRepository.findById(id).get();
     }
 
+    @Override
     public List<RendelesEntity> ugyfelNevreKeres(String nev){return rendelesRepository.findAllByUgyfel_Nev(nev);}
 
 }

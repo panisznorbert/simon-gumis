@@ -1,16 +1,18 @@
 package panisz.norbert.simongumis.services.implement;
 
+import com.vaadin.flow.component.notification.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import panisz.norbert.simongumis.components.HibaJelzes;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
+import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.services.GumikService;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -37,8 +39,7 @@ public class GumikServiceImpl implements GumikService {
     }
 
     @Override
-    public String ment(GumikEntity gumikEntity) {
-        String hiba = null;
+    public GumikEntity ment(GumikEntity gumikEntity) throws LetezoGumiException{
         TransactionAspectSupport.currentTransactionStatus();
         //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
         GumiMeretekEntity meret = gumiMeretekRepository.findBySzelessegAndProfilAndFelni(
@@ -56,27 +57,19 @@ public class GumikServiceImpl implements GumikService {
                 gumikEntity.getMeret().getProfil(),
                 gumikEntity.getMeret().getFelni(),
                 gumikEntity.getEvszak(),
-                gumikEntity.getAllapot());
-        if((mentettGumi != null) && (gumikEntity.getId() != mentettGumi.getId())){
-            hiba = "Már van ilyen gumi";
-        }else {
-            try{
-                gumikRepository.save(gumikEntity);
-            }catch(Exception e){
-                hiba = "Mentés sikertelen";
-            }
-        }
+                gumikEntity.getAllapot()
+        );
 
-        return hiba;
+        if((mentettGumi != null) && (gumikEntity.getId() != mentettGumi.getId())) {
+            throw new LetezoGumiException();
+        }else{
+            return gumikRepository.save(gumikEntity);
+        }
     }
 
     @Override
     public void torol(GumikEntity gumikEntity) {
         gumikRepository.delete(gumikEntity);
-    }
-
-    public GumikEntity idKereses(Integer id){
-        return gumikRepository.findById(id).get();
     }
 
 }

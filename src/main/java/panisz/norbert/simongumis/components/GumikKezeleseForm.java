@@ -10,23 +10,19 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.services.implement.GumikServiceImpl;
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
+import panisz.norbert.simongumis.exceptions.LetezoGumiException;
+import panisz.norbert.simongumis.services.GumikService;
 import java.util.logging.Logger;
 
 @UIScope
 @Component
 public class GumikKezeleseForm extends VerticalLayout {
-    @Autowired
-    private GumikServiceImpl gumikService;
+    private GumikService gumikService;
 
     private MenuForm fomenu = new MenuForm();
     private VerticalLayout layout = new VerticalLayout();
@@ -53,17 +49,18 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private Dialog gumiSzerkeszto;
 
-    private Button szerkeszt = new Button("Szerkeszt");
 
-    public GumikKezeleseForm(){
+    public GumikKezeleseForm(GumikService gumikService){
+        this.gumikService = gumikService;
         this.setAlignItems(Alignment.CENTER);
         grid.setHeightByRows(true);
         hozzaad.addClickListener(e -> ment());
         torol.addClickListener(e -> mezokInit());
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
+        init();
     }
 
-    @PostConstruct
+
     private void init(){
         ar.setPattern("\\d*(\\.\\d*)?");
         ar.setPreventInvalidInput(true);
@@ -138,16 +135,17 @@ public class GumikKezeleseForm extends VerticalLayout {
             gumi.setEvszak(evszak.getValue());
             gumi.setAllapot(allapot.getValue());
             gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
-
-            hiba = gumikService.ment(gumi);
         }
-        if(hiba != null){
-            Notification hibaAblak = new HibaJelzes(hiba);
-            hibaAblak.open();
-        }else{
+
+        try{
+            gumikService.ment(gumi);
             gumikTablaFrissit();
             mezokInit();
+        }catch(LetezoGumiException ex){
+            Notification hibaAblak = new HibaJelzes(ex.getMessage());
+            hibaAblak.open();
         }
+
     }
 
     private String validacio() {
@@ -209,17 +207,20 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
         String leiras = gumiSzerkesztoForm.validacio();
+        GumikEntity gumi = new GumikEntity();
         if(leiras == null){
-            GumikEntity gumi = gumiSzerkesztoForm.beallit(gumikEntity);
-            leiras = gumikService.ment(gumi);
+            gumi = gumiSzerkesztoForm.beallit(gumikEntity);
         }
-        if(leiras != null){
-            Notification hibaAblak = new HibaJelzes(leiras);
-            hibaAblak.open();
-        }else{
+
+        try{
+            gumikService.ment(gumi);
             gridRefresh();
             gumiSzerkeszto.close();
+        }catch(LetezoGumiException ex){
+            Notification hibaAblak = new HibaJelzes(ex.getMessage());
+            hibaAblak.open();
         }
+
     }
 
     public void gridRefresh(){

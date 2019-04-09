@@ -10,7 +10,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
-import panisz.norbert.simongumis.services.implement.IdopontIdopontFoglalasServiceImpl;
+import panisz.norbert.simongumis.services.implement.IdopontFoglalasServiceImpl;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +24,7 @@ import static java.util.Collections.sort;
 public class LefoglaltIdopontokForm extends VerticalLayout {
 
     @Autowired
-    private IdopontIdopontFoglalasServiceImpl foglalasService;
+    private IdopontFoglalasServiceImpl foglalasService;
 
     private MenuForm fomenu  = new MenuForm();
 

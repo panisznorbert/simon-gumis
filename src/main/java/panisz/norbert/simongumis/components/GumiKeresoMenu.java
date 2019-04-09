@@ -6,21 +6,19 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.services.implement.GumiMeretekServiceImpl;
-import javax.annotation.PostConstruct;
+import panisz.norbert.simongumis.services.GumiMeretekService;
 import java.util.*;
 import java.util.logging.Logger;
 
 @UIScope
 @Component
 public class GumiKeresoMenu extends HorizontalLayout {
-    @Autowired
-    private GumiMeretekServiceImpl gumiMeretekService;
+
+    private GumiMeretekService gumiMeretekService;
 
     private GumikEntity kriterium = new GumikEntity();
     private static Integer kezdoAr;
@@ -50,14 +48,17 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public GumiKeresoMenu(){
+    public GumiKeresoMenu(GumiMeretekService gumiMeretekService){
+        this.gumiMeretekService = gumiMeretekService;
         egyeb.addClickListener(e -> tovabbiFeltetelek());
         alaphelyzet.addClickListener(e -> init());
         keres.addClickListener(e -> adatokBeallitasa());
+        init();
     }
 
-    @PostConstruct
+
     private void init(){
+        LOGGER.info("GumiKeresoMenu-be init belépett");
         meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
         kriterium.setMeret(new GumiMeretekEntity());
         setMeret(0,0,0);

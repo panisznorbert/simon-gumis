@@ -8,27 +8,23 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
-import panisz.norbert.simongumis.services.implement.IdopontIdopontFoglalasServiceImpl;
-import javax.annotation.PostConstruct;
+import panisz.norbert.simongumis.exceptions.LetezoGumiException;
+import panisz.norbert.simongumis.services.IdopontFoglalasService;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.logging.Logger;
 
 @UIScope
 @Component
 public class IdopontFoglalasForm extends VerticalLayout {
-    @Autowired
-    private IdopontIdopontFoglalasServiceImpl foglalasService;
 
-    private MenuForm fomenu = new MenuForm();
+    private IdopontFoglalasService idopontFoglalasService;
+
     private DatePicker idopontokDatum;
     private ComboBox<LocalTime> foglalhatoOrak;
     private HorizontalLayout idopontok = new HorizontalLayout();
@@ -42,9 +38,17 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
 
-    public IdopontFoglalasForm(){
+    public IdopontFoglalasForm(IdopontFoglalasService idopontFoglalasService){
+        this.idopontFoglalasService=idopontFoglalasService;
+        idopontokDatum = new DatePicker("Dátum:");
+        foglalhatoOrak = new ComboBox<>("Szabad időpontok");
+        idopontok.add(idopontokDatum, foglalhatoOrak);
+        add(new MenuForm(), idopontok, ugyfelAdatok, egyeb, gombsor);
+        this.setAlignItems(Alignment.CENTER);
+        idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue()));
+        foglal.addClickListener(e -> idopontFoglalas());
 
-        init();
+        alapBeallitas();
     }
 
     private DatePicker.DatePickerI18n magyarDatumInit(){
@@ -64,17 +68,8 @@ public class IdopontFoglalasForm extends VerticalLayout {
         return magyarDatum;
     }
 
-    private void init(){
-        idopontokDatum = new DatePicker("Dátum:");
-        foglalhatoOrak = new ComboBox<>("Szabad időpontok");
-        idopontok.add(idopontokDatum, foglalhatoOrak);
-        add(fomenu, idopontok, ugyfelAdatok, egyeb, gombsor);
-        this.setAlignItems(Alignment.CENTER);
-        idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue()));
-        foglal.addClickListener(e -> idopontFoglalas());
-    }
 
-    @PostConstruct
+
     private void alapBeallitas(){
         megjegyzes.setValue("");
         if(LocalTime.now().isBefore(LocalTime.of(16, 30))){
@@ -114,10 +109,10 @@ public class IdopontFoglalasForm extends VerticalLayout {
                     munkaidoVege = 12;
                 }
             for (int i = 8; i < munkaidoVege; i++) {
-                if (foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
+                if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
                     orak.add(LocalTime.of(i, 0));
                 }
-                if (foglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
+                if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
                     orak.add(LocalTime.of(i, 30));
                 }
             }
@@ -151,8 +146,14 @@ public class IdopontFoglalasForm extends VerticalLayout {
             Notification hiba = new HibaJelzes("Hibás kitöltés. A megjegyzésen kívül minden mező kitöltése kötelező!");
             hiba.open();
         }else{
-            foglalasService.ment(idopontFoglalasAdat());
-            alapBeallitas();
+            try{
+                idopontFoglalasService.ment(idopontFoglalasAdat());
+                alapBeallitas();
+            }catch(LetezoGumiException ex){
+                Notification hibaAblak = new HibaJelzes(ex.getMessage());
+                hibaAblak.open();
+            }
+
         }
     }
 }
