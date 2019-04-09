@@ -1,17 +1,17 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
-import panisz.norbert.simongumis.services.implement.IdopontFoglalasServiceImpl;
-import javax.annotation.PostConstruct;
+import panisz.norbert.simongumis.services.IdopontFoglalasService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -23,8 +23,7 @@ import static java.util.Collections.sort;
 @Component
 public class LefoglaltIdopontokForm extends VerticalLayout {
 
-    @Autowired
-    private IdopontFoglalasServiceImpl foglalasService;
+    private IdopontFoglalasService foglalasService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -34,8 +33,8 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private HorizontalLayout foglalasok = new HorizontalLayout();
 
-    @PostConstruct
-    private void init(){
+    public LefoglaltIdopontokForm(IdopontFoglalasService foglalasService){
+        this.foglalasService = foglalasService;
         this.setAlignItems(Alignment.CENTER);
         tabla.setWidth("650px");
         tabla.setHeightByRows(true);
@@ -72,11 +71,14 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
             return icon;
         }));
         tabla.addColumn(new NativeButtonRenderer<>("Töröl", this::idopontTorlese));
-        tabla.setItemDetailsRenderer(TemplateRenderer.<IdopontFoglalasEntity> of(
-                "<div><b>[[item.megjegyzes]]</b></div>")
-                .withProperty("megjegyzes", IdopontFoglalasEntity::getMegjegyzes)
-                .withEventHandler("handleClick", foglalasEntity -> tabla.getDataProvider().refreshItem(foglalasEntity)));
-
+        tabla.addItemClickListener(e -> {
+            if(!"".equals(e.getItem().getMegjegyzes())){
+                Label szoveg = new Label(e.getItem().getMegjegyzes());
+                Dialog megjegyzes = new Dialog(szoveg);
+                megjegyzes.setCloseOnOutsideClick(true);
+                megjegyzes.open();
+            }
+        });
         tabla.setItems(foglalasok);
 
         return tabla;

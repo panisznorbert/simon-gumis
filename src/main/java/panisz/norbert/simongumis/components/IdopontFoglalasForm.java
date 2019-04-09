@@ -37,13 +37,15 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private TextField megjegyzes = new TextField("Megjegyzés:");
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
+    private MenuForm fomenu  = new MenuForm();
+
 
     public IdopontFoglalasForm(IdopontFoglalasService idopontFoglalasService){
         this.idopontFoglalasService=idopontFoglalasService;
         idopontokDatum = new DatePicker("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
-        add(new MenuForm(), idopontok, ugyfelAdatok, egyeb, gombsor);
+        add(fomenu, idopontok, ugyfelAdatok, egyeb, gombsor);
         this.setAlignItems(Alignment.CENTER);
         idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue()));
         foglal.addClickListener(e -> idopontFoglalas());

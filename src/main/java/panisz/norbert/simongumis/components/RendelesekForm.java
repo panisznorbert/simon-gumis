@@ -8,14 +8,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
-import javax.annotation.PostConstruct;
+import panisz.norbert.simongumis.services.RendelesService;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,8 +21,7 @@ import java.util.logging.Logger;
 @UIScope
 @Component
 public class RendelesekForm extends VerticalLayout {
-    @Autowired
-    private RendelesServiceImpl rendelesService;
+    private RendelesService rendelesService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -37,9 +34,8 @@ public class RendelesekForm extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-
-    @PostConstruct
-    private void init(){
+    public RendelesekForm(RendelesService rendelesService){
+        this.rendelesService = rendelesService;
         this.setAlignItems(Alignment.CENTER);
         adatBetoltes(rendelesService.osszes());
         keresoSav.setAlignItems(Alignment.END);
@@ -47,6 +43,7 @@ public class RendelesekForm extends VerticalLayout {
         rendelesekTartalom = new HorizontalLayout(tartalom);
         add(fomenu, keresoSav, rendelesekTartalom);
     }
+
 
     private void keresesNevre(String nev){
         tartalom.removeAll();
@@ -129,7 +126,10 @@ public class RendelesekForm extends VerticalLayout {
             switch (rendelesEntity.getStatusz()){
                 case ATVETELRE_VAR:{
                     rendelesEntity.setStatusz(RendelesStatusz.RENDEZVE);
-                    rendelesService.ment(rendelesEntity);
+                    try{
+                        rendelesService.ment(rendelesEntity);
+                    }catch(Exception ex){}
+
                     rendelesek.getFooterRows().get(0).getCell(oszlop1).setComponent(new Label("Státusz: " + rendelesEntity.getStatusz().toString()));
 
 
@@ -139,7 +139,9 @@ public class RendelesekForm extends VerticalLayout {
                 }
                 case MEGRENDELVE: {
                     rendelesEntity.setStatusz(RendelesStatusz.ATVETELRE_VAR);
-                    rendelesService.ment(rendelesEntity);
+                    try{
+                        rendelesService.ment(rendelesEntity);
+                    }catch(Exception ex){}
                     rendelesek.getFooterRows().get(0).getCell(oszlop1).setComponent(new Label("Státusz: " + rendelesEntity.getStatusz().toString()));
                     modosit.setText("Átvette");
                     break;
