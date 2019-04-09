@@ -51,6 +51,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
         foglal.addClickListener(e -> idopontFoglalas());
 
         alapBeallitas();
+        fomenu.getIdoponfoglalas().getStyle().set("color", "blue");
     }
 
     private DatePicker.DatePickerI18n magyarDatumInit(){

@@ -42,6 +42,7 @@ public class RendelesekForm extends VerticalLayout {
         nevreKeres.addClickListener(e -> keresesNevre(nevKereso.getValue()));
         rendelesekTartalom = new HorizontalLayout(tartalom);
         add(fomenu, keresoSav, rendelesekTartalom);
+        fomenu.getRendelesek().getStyle().set("color", "blue");
     }
 
 

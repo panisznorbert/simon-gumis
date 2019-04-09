@@ -5,6 +5,8 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -50,6 +52,7 @@ public class GumikForm extends VerticalLayout {
         add(fomenu); add( menu, new HorizontalLayout(gumik));
         this.setAlignItems(Alignment.CENTER);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
+        fomenu.getGumik().getStyle().set("color", "blue");
     }
 
 
@@ -124,6 +127,8 @@ public class GumikForm extends VerticalLayout {
 
         try{
             SpringApplication.setRendelesAzon(rendelesService.ment(rendeles).getId());
+            fomenu.getKosar().getStyle().set("color", "red");
+            fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
         }catch(LetezoGumiException ex){
         Notification hibaAblak = new HibaJelzes(ex.getMessage());
         hibaAblak.open();

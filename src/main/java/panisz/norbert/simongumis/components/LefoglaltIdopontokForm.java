@@ -47,6 +47,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
         }
 
         add(keresoSor, foglalasok);
+        fomenu.getLefoglaltIdopontok().getStyle().set("color", "blue");
     }
 
 

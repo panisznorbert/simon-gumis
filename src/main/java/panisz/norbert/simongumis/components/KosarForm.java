@@ -60,6 +60,7 @@ public class KosarForm extends VerticalLayout {
             add(new HorizontalLayout(tartalom));
             megrendeles.addClickListener(e -> megrendeles());
         }
+        fomenu.getKosar().getStyle().set("color", "blue");
     }
 
     private Integer rendelesVegosszeg(){

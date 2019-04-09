@@ -4,29 +4,48 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import lombok.Data;
+import panisz.norbert.simongumis.spring.SpringApplication;
 
+@Data
 public class MenuForm extends HorizontalLayout {
     private AppLayout appLayout = new AppLayout();
+    private AppLayoutMenuItem rendelesek = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek"));
+    private AppLayoutMenuItem lefoglaltIdopontok = new AppLayoutMenuItem(VaadinIcon.CALENDAR_USER.create(), "Lefoglalt időpontok", e -> UI.getCurrent().navigate("lefoglalt_idopontok"));
+    private AppLayoutMenuItem idoponfoglalas = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> UI.getCurrent().navigate("idopontfoglalas"));
+    private AppLayoutMenuItem kosar = new AppLayoutMenuItem(VaadinIcon.CART_O.create(), "Kosár", e -> UI.getCurrent().navigate("kosar"));
+    private AppLayoutMenuItem gumik = new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> UI.getCurrent().navigate("gumik"));
+    private AppLayoutMenuItem gumikKezelese = new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e ->  UI.getCurrent().navigate("gumikkezelese"));
+    private AppLayoutMenuItem szolgaltatasok = new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> UI.getCurrent().navigate("szolgaltatasok"));
+    private AppLayoutMenuItem kezdolap = new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate("/"));
 
     public MenuForm(){
         AppLayoutMenu menu = appLayout.createMenu();
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate("/")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> UI.getCurrent().navigate("szolgaltatasok")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e ->  UI.getCurrent().navigate("gumikkezelese")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> UI.getCurrent().navigate("gumik")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> UI.getCurrent().navigate("idopontfoglalas")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CART.create(), "Kosár", e -> UI.getCurrent().navigate("kosar")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.CALENDAR_USER.create(), "Lefoglalt időpontok", e -> UI.getCurrent().navigate("lefoglalt_idopontok")));
-        menuElemeinekBeallitasa(menu, new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek")));
+
+        if(SpringApplication.getRendelesAzon()!=null){
+            this.kosar.getStyle().set("color", "red");
+            this.kosar.setIcon(new Icon(VaadinIcon.CART));
+        }
+
+        menuElemeinekBeallitasa(menu, kezdolap);
+        menuElemeinekBeallitasa(menu, szolgaltatasok);
+        menuElemeinekBeallitasa(menu, gumikKezelese);
+        menuElemeinekBeallitasa(menu, gumik);
+        menuElemeinekBeallitasa(menu, idoponfoglalas);
+        menuElemeinekBeallitasa(menu, kosar);
+        menuElemeinekBeallitasa(menu, lefoglaltIdopontok);
+        menuElemeinekBeallitasa(menu, rendelesek);
         add(appLayout);
-        
+
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {
         menuItem.getElement().setAttribute("theme", "icon-on-top");
         menu.addMenuItem(menuItem);
     }
+
 
 }

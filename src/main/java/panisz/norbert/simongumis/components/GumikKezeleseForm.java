@@ -58,6 +58,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         torol.addClickListener(e -> mezokInit());
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
         init();
+        fomenu.getGumikKezelese().getStyle().set("color", "blue");
     }
 
 
