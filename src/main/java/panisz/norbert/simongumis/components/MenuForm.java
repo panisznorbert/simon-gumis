@@ -8,8 +8,10 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import panisz.norbert.simongumis.spring.SpringApplication;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class MenuForm extends HorizontalLayout {
     private AppLayout appLayout = new AppLayout();
@@ -20,7 +22,7 @@ public class MenuForm extends HorizontalLayout {
     private AppLayoutMenuItem gumik = new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> UI.getCurrent().navigate("gumik"));
     private AppLayoutMenuItem gumikKezelese = new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e ->  UI.getCurrent().navigate("gumikkezelese"));
     private AppLayoutMenuItem szolgaltatasok = new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> UI.getCurrent().navigate("szolgaltatasok"));
-    private AppLayoutMenuItem kezdolap = new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate("/"));
+    private AppLayoutMenuItem kezdolap = new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate(""));
 
     public MenuForm(){
         AppLayoutMenu menu = appLayout.createMenu();
