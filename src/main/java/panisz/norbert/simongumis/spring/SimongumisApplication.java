@@ -1,7 +1,7 @@
 package panisz.norbert.simongumis.spring;
 
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -13,12 +13,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EntityScan(basePackages = "panisz.norbert.simongumis.entities")
 @EnableJpaRepositories(basePackages = "panisz.norbert.simongumis")
 @EnableTransactionManagement
-
-public class SpringApplication extends SpringBootServletInitializer {
+public class SimongumisApplication {
     private static Integer rendelesAzon = null;
 
     public static void main(String[] args) {
-        org.springframework.boot.SpringApplication.run(SpringApplication.class, args);
+        SpringApplication.run(SimongumisApplication.class, args);
     }
 
     public static Integer getRendelesAzon() {
@@ -26,7 +25,7 @@ public class SpringApplication extends SpringBootServletInitializer {
     }
 
     public static void setRendelesAzon(Integer rendelesAzon) {
-        SpringApplication.rendelesAzon = rendelesAzon;
+        SimongumisApplication.rendelesAzon = rendelesAzon;
     }
 }
 

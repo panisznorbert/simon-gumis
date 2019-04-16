@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <start-class>panisz.norbert.simongumis.spring.SpringApplication</start-class>
+        <start-class>panisz.norbert.simongumis.spring.SimongumisApplication</start-class>
         <dir.codequality>${project.basedir}/code-quality</dir.codequality>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,10 +71,10 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
 

@@ -9,14 +9,17 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import panisz.norbert.simongumis.LoggerExample;
-import panisz.norbert.simongumis.spring.SpringApplication;
+import panisz.norbert.simongumis.spring.SimongumisApplication;
 
 import java.util.logging.Logger;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-class MenuForm extends VerticalLayout {
+
+public class MenuForm extends VerticalLayout {
     private AppLayout appLayout = new AppLayout();
     private AppLayoutMenuItem rendelesek = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek"));
     private AppLayoutMenuItem lefoglaltIdopontok = new AppLayoutMenuItem(VaadinIcon.CALENDAR_USER.create(), "Lefoglalt időpontok", e -> UI.getCurrent().navigate("lefoglalt_idopontok"));
@@ -29,26 +32,32 @@ class MenuForm extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    MenuForm(){
+    public MenuForm(){
         AppLayoutMenu menu = appLayout.createMenu();
 
-        if(SpringApplication.getRendelesAzon()!=null){
+        if(SimongumisApplication.getRendelesAzon()!=null){
             this.kosar.getStyle().set("color", "red");
             this.kosar.setIcon(new Icon(VaadinIcon.CART));
         }
+        //bejelentkezéshez kötött menüpontok
+        //if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()){}
 
         menuElemeinekBeallitasa(menu, kezdolap);
         menuElemeinekBeallitasa(menu, szolgaltatasok);
-        menuElemeinekBeallitasa(menu, gumikKezelese);
         menuElemeinekBeallitasa(menu, gumik);
         menuElemeinekBeallitasa(menu, idoponfoglalas);
         menuElemeinekBeallitasa(menu, kosar);
+
+        menuElemeinekBeallitasa(menu, gumikKezelese);
         menuElemeinekBeallitasa(menu, lefoglaltIdopontok);
         menuElemeinekBeallitasa(menu, rendelesek);
+
         add(appLayout);
 
         this.setHeight("60px");
         this.appLayout.getElement().getStyle().set("height", "60px");
+        this.appLayout.getElement().getStyle().set("padding", "0px");
+        this.appLayout.getElement().getStyle().set("margin", "0px");
         this.getStyle().set("z-index", "99999");
 
     }

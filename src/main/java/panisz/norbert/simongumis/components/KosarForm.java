@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.*;
 import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
-import panisz.norbert.simongumis.spring.SpringApplication;
+import panisz.norbert.simongumis.spring.SimongumisApplication;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
@@ -51,8 +51,8 @@ public class KosarForm extends VerticalLayout {
         vegosszeg.setSuffixComponent(new Span("Ft"));
         vegosszeg.setReadOnly(true);
 
-        if(SpringApplication.getRendelesAzon() != null) {
-            rendelesEntity = rendelesService.idKereses(SpringApplication.getRendelesAzon());
+        if(SimongumisApplication.getRendelesAzon() != null) {
+            rendelesEntity = rendelesService.idKereses(SimongumisApplication.getRendelesAzon());
             rendelesekTablaFeltolt(rendelesEntity.getRendelesiEgysegek());
             rendelesEntity.setVegosszeg(rendelesVegosszeg());
             vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
@@ -90,7 +90,7 @@ public class KosarForm extends VerticalLayout {
             Notification hibaAblak = new HibaJelzes(hiba);
             hibaAblak.open();
         }else{
-            SpringApplication.setRendelesAzon(null);
+            SimongumisApplication.setRendelesAzon(null);
             UI.getCurrent().navigate("gumik");
         }
 

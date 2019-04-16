@@ -23,7 +23,7 @@ import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
-import panisz.norbert.simongumis.spring.SpringApplication;
+import panisz.norbert.simongumis.spring.SimongumisApplication;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -79,8 +79,8 @@ public class GumikForm extends VerticalLayout {
                 darab.setInvalid(true);
             }
             //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
-            if(!darab.isInvalid() && SpringApplication.getRendelesAzon() != null){
-                for(RendelesiEgysegEntity rendeles: rendelesService.idKereses(SpringApplication.getRendelesAzon()).getRendelesiEgysegek()) {
+            if(!darab.isInvalid() && SimongumisApplication.getRendelesAzon() != null){
+                for(RendelesiEgysegEntity rendeles: rendelesService.idKereses(SimongumisApplication.getRendelesAzon()).getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);
@@ -105,11 +105,11 @@ public class GumikForm extends VerticalLayout {
         rendelesiEgyseg.setReszosszeg(gumi.getAr()*darab);
         boolean meglevo = false;
         //Az aktuális rendelés azonosító tárolása, mely később cookie-ban lesz
-        if(SpringApplication.getRendelesAzon() == null){
+        if(SimongumisApplication.getRendelesAzon() == null){
             rendeles.setRendelesiEgysegek(new ArrayList<>());
 
         }else {
-            rendeles = rendelesService.idKereses(SpringApplication.getRendelesAzon());
+            rendeles = rendelesService.idKereses(SimongumisApplication.getRendelesAzon());
         }
 
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendeles.getRendelesiEgysegek()){
@@ -126,7 +126,7 @@ public class GumikForm extends VerticalLayout {
         }
 
         try{
-            SpringApplication.setRendelesAzon(rendelesService.ment(rendeles).getId());
+            SimongumisApplication.setRendelesAzon(rendelesService.ment(rendeles).getId());
             fomenu.getKosar().getStyle().set("color", "red");
             fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
         }catch(LetezoGumiException ex){

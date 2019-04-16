@@ -93,10 +93,12 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private void kivalasztottDatum(LocalDate kivalasztottDatum){
         if(!idopontokDatum.isInvalid()){
             orakFeltoltese(kivalasztottDatum);
-        }else{
-            foglalhatoOrak.clear();
-            idopontok.remove(foglalhatoOrak);
+            return;
         }
+
+        foglalhatoOrak.clear();
+        idopontok.remove(foglalhatoOrak);
+
     }
 
     private void orakFeltoltese(LocalDate kivalasztottDatum){
@@ -105,24 +107,26 @@ public class IdopontFoglalasForm extends VerticalLayout {
             idopontokDatum.setInvalid(true);
             Notification hibaAblak = new HibaJelzes("Vasárnap zárva vagyunk.");
             hibaAblak.open();
-        }else {
-            List<LocalTime> orak = new ArrayList<>();
-            int munkaidoVege = 17;
-            if (DayOfWeek.SATURDAY.equals(kivalasztottDatum.getDayOfWeek())) {
-                    munkaidoVege = 12;
-                }
-            for (int i = 8; i < munkaidoVege; i++) {
-                if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
-                    orak.add(LocalTime.of(i, 0));
-                }
-                if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
-                    orak.add(LocalTime.of(i, 30));
-                }
-            }
-            Collections.sort(orak);
-            foglalhatoOrak = new ComboBox<>("Szabad időpontok", orak);
-            idopontok.add(foglalhatoOrak);
+            return;
         }
+
+        List<LocalTime> orak = new ArrayList<>();
+        int munkaidoVege = 17;
+        if (DayOfWeek.SATURDAY.equals(kivalasztottDatum.getDayOfWeek())) {
+                munkaidoVege = 12;
+            }
+        for (int i = 8; i < munkaidoVege; i++) {
+            if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
+                orak.add(LocalTime.of(i, 0));
+            }
+            if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
+                orak.add(LocalTime.of(i, 30));
+            }
+        }
+        Collections.sort(orak);
+        foglalhatoOrak = new ComboBox<>("Szabad időpontok", orak);
+        idopontok.add(foglalhatoOrak);
+
     }
 
     private IdopontFoglalasEntity idopontFoglalasAdat(){

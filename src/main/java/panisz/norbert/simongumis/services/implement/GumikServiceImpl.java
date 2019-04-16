@@ -1,11 +1,8 @@
 package panisz.norbert.simongumis.services.implement;
 
-import com.vaadin.flow.component.notification.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import panisz.norbert.simongumis.components.HibaJelzes;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.exceptions.LetezoGumiException;
@@ -18,10 +15,10 @@ import java.util.List;
 @Transactional
 public class GumikServiceImpl implements GumikService {
     @Autowired
-    GumikRepository gumikRepository;
+    private GumikRepository gumikRepository;
 
     @Autowired
-    GumiMeretekRepository gumiMeretekRepository;
+    private GumiMeretekRepository gumiMeretekRepository;
 
     @Override
     public GumikEntity vanMarIlyen(String gyarto, Integer szelesseg, Integer profil, Integer felni, String evszak, String allapot) {
@@ -40,7 +37,7 @@ public class GumikServiceImpl implements GumikService {
 
     @Override
     public GumikEntity ment(GumikEntity gumikEntity) throws LetezoGumiException{
-        TransactionAspectSupport.currentTransactionStatus();
+
         //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
         GumiMeretekEntity meret = gumiMeretekRepository.findBySzelessegAndProfilAndFelni(
                 gumikEntity.getMeret().getSzelesseg(),
@@ -60,11 +57,12 @@ public class GumikServiceImpl implements GumikService {
                 gumikEntity.getAllapot()
         );
 
-        if((mentettGumi != null) && (gumikEntity.getId() != mentettGumi.getId())) {
+        if((mentettGumi != null) && (gumikEntity.getId().equals(mentettGumi.getId()))) {
             throw new LetezoGumiException();
-        }else{
-            return gumikRepository.save(gumikEntity);
         }
+
+        return gumikRepository.save(gumikEntity);
+
     }
 
     @Override
