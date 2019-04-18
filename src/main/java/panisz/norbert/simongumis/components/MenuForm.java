@@ -9,17 +9,15 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import panisz.norbert.simongumis.LoggerExample;
-import panisz.norbert.simongumis.spring.SimongumisApplication;
 
+import javax.annotation.PostConstruct;
 import java.util.logging.Logger;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-
 public class MenuForm extends VerticalLayout {
+
     private AppLayout appLayout = new AppLayout();
     private AppLayoutMenuItem rendelesek = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek"));
     private AppLayoutMenuItem lefoglaltIdopontok = new AppLayoutMenuItem(VaadinIcon.CALENDAR_USER.create(), "Lefoglalt időpontok", e -> UI.getCurrent().navigate("lefoglalt_idopontok"));
@@ -35,10 +33,12 @@ public class MenuForm extends VerticalLayout {
     public MenuForm(){
         AppLayoutMenu menu = appLayout.createMenu();
 
-        if(SimongumisApplication.getRendelesAzon()!=null){
+
+        if(KosarForm.vaneKosartartalom()){
             this.kosar.getStyle().set("color", "red");
             this.kosar.setIcon(new Icon(VaadinIcon.CART));
         }
+
         //bejelentkezéshez kötött menüpontok
         //if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()){}
 
@@ -60,6 +60,11 @@ public class MenuForm extends VerticalLayout {
         this.appLayout.getElement().getStyle().set("margin", "0px");
         this.getStyle().set("z-index", "99999");
 
+    }
+
+    @PostConstruct
+    private void asd(){
+        LOGGER.info("**************POST-ba belépett******************");
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {

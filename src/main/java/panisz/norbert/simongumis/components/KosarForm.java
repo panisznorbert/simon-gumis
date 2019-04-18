@@ -9,13 +9,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.*;
-import panisz.norbert.simongumis.services.implement.RendelesServiceImpl;
-import panisz.norbert.simongumis.spring.SimongumisApplication;
-import javax.annotation.PostConstruct;
+import panisz.norbert.simongumis.services.RendelesService;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,8 +21,8 @@ import java.util.logging.Logger;
 @UIScope
 @Component
 public class KosarForm extends VerticalLayout {
-    @Autowired
-    private RendelesServiceImpl rendelesService;
+
+    private static RendelesService alapRendelesService;
 
     private MenuForm fomenu  = new MenuForm();
 
@@ -39,8 +37,9 @@ public class KosarForm extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    @PostConstruct
-    private void init(){
+    public KosarForm(RendelesService rendelesService){
+        alapRendelesService = rendelesService;
+        LOGGER.info("********TOKEN: " + UI.getCurrent().getSession().getCsrfToken());
         this.setAlignItems(Alignment.CENTER);
         add(fomenu);
         rendelesekTabla.setHeightByRows(true);
@@ -51,8 +50,9 @@ public class KosarForm extends VerticalLayout {
         vegosszeg.setSuffixComponent(new Span("Ft"));
         vegosszeg.setReadOnly(true);
 
-        if(SimongumisApplication.getRendelesAzon() != null) {
-            rendelesEntity = rendelesService.idKereses(SimongumisApplication.getRendelesAzon());
+        if(alapRendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()) != null) {
+            rendelesEntity = alapRendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken());
+            LOGGER.info(rendelesEntity.toString());
             rendelesekTablaFeltolt(rendelesEntity.getRendelesiEgysegek());
             rendelesEntity.setVegosszeg(rendelesVegosszeg());
             vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
@@ -62,6 +62,7 @@ public class KosarForm extends VerticalLayout {
         }
         fomenu.getKosar().getStyle().set("color", "blue");
     }
+
 
     private Integer rendelesVegosszeg(){
         Integer osszeg = 0;
@@ -85,15 +86,24 @@ public class KosarForm extends VerticalLayout {
         rendelesEntity.setUgyfel(ugyfel);
         rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
         rendelesEntity.setDatum(LocalDate.now());
-        String hiba = rendelesService.mentKosarbol(rendelesEntity);
+        String hiba = alapRendelesService.mentKosarbol(rendelesEntity);
         if(hiba != null){
             Notification hibaAblak = new HibaJelzes(hiba);
             hibaAblak.open();
         }else{
-            SimongumisApplication.setRendelesAzon(null);
+
             UI.getCurrent().navigate("gumik");
         }
 
+    }
+
+    public static boolean vaneKosartartalom(){
+        try{
+            LOGGER.info(alapRendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()).toString());
+            return true;
+        }catch(NullPointerException e){
+            return false;
+        }
     }
 
 }

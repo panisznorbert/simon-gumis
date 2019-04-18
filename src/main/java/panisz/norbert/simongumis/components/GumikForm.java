@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -23,7 +24,8 @@ import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
-import panisz.norbert.simongumis.spring.SimongumisApplication;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -57,6 +59,7 @@ public class GumikForm extends VerticalLayout {
 
 
     private void kosarbahelyezesAblak(GumikEntity gumi){
+        LOGGER.info("********TOKEN: " + UI.getCurrent().getSession().getCsrfToken());
         Label tipus = new Label(gumi.toString() + " típusú gumiból");
         Label hiba = new Label();
         TextField darab = new TextField();
@@ -78,9 +81,10 @@ public class GumikForm extends VerticalLayout {
                 hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db)");
                 darab.setInvalid(true);
             }
+
             //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
-            if(!darab.isInvalid() && SimongumisApplication.getRendelesAzon() != null){
-                for(RendelesiEgysegEntity rendeles: rendelesService.idKereses(SimongumisApplication.getRendelesAzon()).getRendelesiEgysegek()) {
+            if(!darab.isInvalid() && rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()) != null){
+                for(RendelesiEgysegEntity rendeles: rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()).getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);
@@ -100,16 +104,18 @@ public class GumikForm extends VerticalLayout {
         RendelesiEgysegEntity rendelesiEgyseg = new RendelesiEgysegEntity();
         RendelesEntity rendeles = new RendelesEntity();
         rendeles.setStatusz(RendelesStatusz.KOSARBAN);
+        rendeles.setToken(UI.getCurrent().getSession().getCsrfToken());
+        rendeles.setDatum(LocalDate.now());
         rendelesiEgyseg.setGumi(gumi);
         rendelesiEgyseg.setMennyiseg(darab);
         rendelesiEgyseg.setReszosszeg(gumi.getAr()*darab);
         boolean meglevo = false;
         //Az aktuális rendelés azonosító tárolása, mely később cookie-ban lesz
-        if(SimongumisApplication.getRendelesAzon() == null){
+        if(rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()) == null){
             rendeles.setRendelesiEgysegek(new ArrayList<>());
 
         }else {
-            rendeles = rendelesService.idKereses(SimongumisApplication.getRendelesAzon());
+            rendeles = rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken());
         }
 
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendeles.getRendelesiEgysegek()){
@@ -126,7 +132,7 @@ public class GumikForm extends VerticalLayout {
         }
 
         try{
-            SimongumisApplication.setRendelesAzon(rendelesService.ment(rendeles).getId());
+            rendelesService.ment(rendeles);
             fomenu.getKosar().getStyle().set("color", "red");
             fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
         }catch(LetezoGumiException ex){

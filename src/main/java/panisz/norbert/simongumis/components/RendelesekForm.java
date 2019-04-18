@@ -37,7 +37,8 @@ public class RendelesekForm extends VerticalLayout {
     public RendelesekForm(RendelesService rendelesService){
         this.rendelesService = rendelesService;
         this.setAlignItems(Alignment.CENTER);
-        adatBetoltes(rendelesService.osszes());
+        List<RendelesEntity> rendelesek = rendelesService.rendelesekreKeres(RendelesStatusz.KOSARBAN);
+        adatBetoltes(rendelesService.rendelesekreKeres(RendelesStatusz.KOSARBAN));
         keresoSav.setAlignItems(Alignment.END);
         nevreKeres.addClickListener(e -> keresesNevre(nevKereso.getValue()));
         rendelesekTartalom = new HorizontalLayout(tartalom);
@@ -84,6 +85,7 @@ public class RendelesekForm extends VerticalLayout {
         if(RendelesStatusz.ATVETELRE_VAR.equals(rendelesEntity.getStatusz())){
             modosit.setText("Átvette");
         }
+
 
         StringBuilder ugyfel = new StringBuilder();
         ugyfel.append("Név: ");

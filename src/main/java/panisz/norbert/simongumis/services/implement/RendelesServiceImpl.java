@@ -92,6 +92,14 @@ public class RendelesServiceImpl implements RendelesService {
     }
 
     @Override
+    public RendelesEntity tokenreKeres(String token){
+        return rendelesRepository.findByToken(token);
+    }
+
+    @Override
     public List<RendelesEntity> ugyfelNevreKeres(String nev){return rendelesRepository.findAllByUgyfel_Nev(nev);}
+
+    @Override
+    public List<RendelesEntity> rendelesekreKeres(RendelesStatusz statusz){return rendelesRepository.findAllByStatuszIsNot(statusz);}
 
 }
