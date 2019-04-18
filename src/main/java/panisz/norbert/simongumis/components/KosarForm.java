@@ -4,6 +4,8 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -39,7 +41,6 @@ public class KosarForm extends VerticalLayout {
 
     public KosarForm(RendelesService rendelesService){
         alapRendelesService = rendelesService;
-        LOGGER.info("********TOKEN: " + UI.getCurrent().getSession().getCsrfToken());
         this.setAlignItems(Alignment.CENTER);
         add(fomenu);
         rendelesekTabla.setHeightByRows(true);
@@ -59,6 +60,9 @@ public class KosarForm extends VerticalLayout {
             tartalom.add(new VerticalLayout(rendelesekTabla, vegosszeg), new VerticalLayout(vevoAdatai, gombok));
             add(new HorizontalLayout(tartalom));
             megrendeles.addClickListener(e -> megrendeles());
+        }
+        if(KosarForm.vaneKosartartalom()){
+            fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
         }
         fomenu.getKosar().getStyle().set("color", "blue");
     }
@@ -91,7 +95,7 @@ public class KosarForm extends VerticalLayout {
             Notification hibaAblak = new HibaJelzes(hiba);
             hibaAblak.open();
         }else{
-
+            UI.getCurrent().getSession().close();
             UI.getCurrent().navigate("gumik");
         }
 
