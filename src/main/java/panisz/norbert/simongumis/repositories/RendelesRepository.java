@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
+import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface RendelesRepository extends JpaRepository<RendelesEntity, Intege
     RendelesEntity findByToken(String token);
 
     List<RendelesEntity> findAllByStatuszIsNot(RendelesStatusz statusz);
+
 }

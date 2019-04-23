@@ -87,11 +87,6 @@ public class RendelesServiceImpl implements RendelesService {
     }
 
     @Override
-    public RendelesEntity idKereses(Integer id){
-        return rendelesRepository.findById(id).get();
-    }
-
-    @Override
     public RendelesEntity tokenreKeres(String token){
         return rendelesRepository.findByToken(token);
     }

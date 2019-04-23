@@ -103,6 +103,11 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
     private void torles(GumikEntity gumikEntity){
+        if(grid.getSelectedItems().isEmpty()){
+            Notification hibaAblak = new HibaJelzes("Nincs kiválasztva sor");
+            hibaAblak.open();
+            return;
+        }
         gumikService.torol(gumikEntity);
         gridRefresh();
     }

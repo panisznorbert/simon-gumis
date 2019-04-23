@@ -10,6 +10,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.LoggerExample;
@@ -47,7 +48,7 @@ public class KosarForm extends VerticalLayout {
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getMennyiseg).setHeader("Darab");
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getReszosszeg).setHeader("Összeg");
-        rendelesekTabla.setWidth("600px");
+        rendelesekTabla.setWidth("700px");
         vegosszeg.setSuffixComponent(new Span("Ft"));
         vegosszeg.setReadOnly(true);
 
@@ -79,7 +80,25 @@ public class KosarForm extends VerticalLayout {
 
     private void rendelesekTablaFeltolt(List<RendelesiEgysegEntity> rendelesiEgysegek){
         rendelesekTabla.setItems(rendelesiEgysegek);
+        rendelesekTabla.addColumn(new NativeButtonRenderer<>("Töröl", this::torlesMegrendelesbol));
         rendelesekTabla.getDataProvider().refreshAll();
+    }
+
+    private void torlesMegrendelesbol(RendelesiEgysegEntity rendeles){
+        if(rendelesEntity.getRendelesiEgysegek().size()>1){
+            rendelesEntity.getRendelesiEgysegek().remove(rendeles);
+            int osszeg = 0;
+            for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
+                osszeg += rendelesiEgysegEntity.getReszosszeg();
+            }
+            rendelesEntity.setVegosszeg(osszeg);
+            vegosszeg.setValue(rendelesEntity.getVegosszeg().toString());
+            rendelesekTabla.getDataProvider().refreshAll();
+        }else {
+            alapRendelesService.torol(rendelesEntity);
+            UI.getCurrent().navigate("gumik");
+        }
+
     }
 
     private void megrendeles(){
