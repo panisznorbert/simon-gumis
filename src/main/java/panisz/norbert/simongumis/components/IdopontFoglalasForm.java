@@ -115,7 +115,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
         if (DayOfWeek.SATURDAY.equals(kivalasztottDatum.getDayOfWeek())) {
                 munkaidoVege = 12;
             }
-        for (int i = 8; i < munkaidoVege; i++) {
+        for (int i = 7; i < munkaidoVege; i++) {
             if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
                 orak.add(LocalTime.of(i, 0));
             }
