@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.services.implement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.exceptions.LetezoGumiException;
@@ -10,10 +11,12 @@ import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.services.GumikService;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @Transactional
 public class GumikServiceImpl implements GumikService {
+    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
     @Autowired
     private GumikRepository gumikRepository;
 
@@ -57,7 +60,7 @@ public class GumikServiceImpl implements GumikService {
                 gumikEntity.getAllapot()
         );
 
-        if((mentettGumi != null) && (gumikEntity.getId().equals(mentettGumi.getId()))) {
+        if( mentettGumi != null && !mentettGumi.getId().equals(gumikEntity.getId())) {
             throw new LetezoGumiException();
         }
 
