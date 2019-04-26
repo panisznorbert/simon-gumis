@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,15 +19,38 @@ public class LoginForm extends VerticalLayout {
 
     private PasswordField jelszo = new PasswordField("Jelszó:");
 
-    private Label hiba = new Label("1");
+    private Button belep = new Button("Belépés");
 
-    private HorizontalLayout belepes = new HorizontalLayout(felhasznalo, jelszo);
+    private Label hiba = new Label();
+
+    private HorizontalLayout belepesMezok = new HorizontalLayout(felhasznalo, jelszo,  belep );
+
+    private VerticalLayout tartalom = new VerticalLayout(belepesMezok, hiba);
 
     public LoginForm(){
-        belepes.getStyle().set("margin-top","15%");
-        belepes.getStyle().set("margin-top","10%");
+        hiba.setText("");
+        hiba.getStyle().set("color","red");
+        felhasznalo.setRequired(true);
+        felhasznalo.setValue("");
+        jelszo.setRequired(true);
+        jelszo.setValue("");
+        belepesMezok.getStyle().set("margin-top","50px");
+        belepesMezok.setAlignItems(Alignment.BASELINE);
+        hiba.getStyle().set("margin-top","30px");
+        tartalom.setAlignItems(Alignment.CENTER);
+        belep.addClickListener(e -> belepes());
+        add(fomenu, tartalom);
+    }
 
-
-        add(fomenu, new VerticalLayout(belepes, hiba));
+    private void belepes(){
+        if(felhasznalo.isEmpty()){
+            hiba.setText("A felhasználó kitöltése kötelező!");
+            return;
+        }
+        if(jelszo.isEmpty()){
+            hiba.setText("A jelszó kitöltése kötelező!");
+            return;
+        }
+        hiba.setText("");
     }
 }

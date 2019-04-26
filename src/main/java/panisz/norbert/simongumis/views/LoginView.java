@@ -5,7 +5,7 @@ import com.vaadin.flow.router.Route;
 import panisz.norbert.simongumis.components.LoginForm;
 import javax.annotation.PostConstruct;
 
-@Route("admin")
+@Route("belepes")
 public class LoginView extends VerticalLayout {
     @PostConstruct
     public void init() { this.initializeView();
