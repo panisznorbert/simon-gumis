@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class MenuForm extends VerticalLayout {
+public class FoMenu extends VerticalLayout {
 
     private AppLayout appLayout = new AppLayout();
     private AppLayoutMenuItem rendelesek = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek"));
@@ -30,7 +30,7 @@ public class MenuForm extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public MenuForm(){
+    public FoMenu(){
         AppLayoutMenu menu = appLayout.createMenu();
 
 

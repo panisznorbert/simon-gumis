@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @UIScope
 @Component
 public class KezdolapForm extends VerticalLayout {
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
     private Image szorolap = new Image("gumi1.jpg", "");
 

@@ -14,7 +14,7 @@ public class SzolgaltatsokForm extends VerticalLayout {
     final String[] szolgaltatsok = {"Kerékszerelés", "Defekt javítás", "Kerék kiegyensúlyozás", "GUMIHOTEL", "Kellék anyagok értékesítése", "Gumiabroncs értékesítés (Új és Használt)"};
     final String[] kerekszerelesek = {"személy gépjármű", "kisteher gépjármű", "mezőgazdasági", "munkagép", "teher"};
 
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
     private Label ujpont;
 

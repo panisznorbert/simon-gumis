@@ -25,7 +25,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private IdopontFoglalasService foglalasService;
 
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
     private Grid<IdopontFoglalasEntity> tabla = new Grid<>();
 

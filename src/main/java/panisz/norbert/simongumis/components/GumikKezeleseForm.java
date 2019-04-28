@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class GumikKezeleseForm extends VerticalLayout {
     private GumikService gumikService;
 
-    private MenuForm fomenu = new MenuForm();
+    private FoMenu fomenu = new FoMenu();
     private VerticalLayout layout = new VerticalLayout();
 
     private HorizontalLayout gombok = new HorizontalLayout();
@@ -104,7 +104,7 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private void torles(GumikEntity gumikEntity){
         if(grid.getSelectedItems().isEmpty()){
-            Notification hibaAblak = new HibaJelzes("Nincs kiválasztva sor");
+            Notification hibaAblak = new Hibajelzes("Nincs kiválasztva sor");
             hibaAblak.open();
             return;
         }
@@ -113,7 +113,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
     private void szerkesztes(GumikEntity gumikEntity){
-        GumiSzerkesztoForm adatok = new GumiSzerkesztoForm(gumikEntity);
+        GumiSzerkeszto adatok = new GumiSzerkeszto(gumikEntity);
         Button megse  = new Button("Mégse");
         Button ment  = new Button("Módosít");
         HorizontalLayout gombok = new HorizontalLayout(ment, megse);
@@ -148,7 +148,7 @@ public class GumikKezeleseForm extends VerticalLayout {
             gumikTablaFrissit();
             mezokInit();
         }catch(LetezoGumiException ex){
-            Notification hibaAblak = new HibaJelzes(ex.getMessage());
+            Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();
         }
 
@@ -211,19 +211,19 @@ public class GumikKezeleseForm extends VerticalLayout {
         darab.clear();
     }
 
-    private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkesztoForm gumiSzerkesztoForm){
-        String leiras = gumiSzerkesztoForm.validacio();
+    private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkeszto gumiSzerkeszto){
+        String leiras = gumiSzerkeszto.validacio();
         GumikEntity gumi = new GumikEntity();
         if(leiras == null){
-            gumi = gumiSzerkesztoForm.beallit(gumikEntity);
+            gumi = gumiSzerkeszto.beallit(gumikEntity);
         }
 
         try{
             gumikService.ment(gumi);
             gridRefresh();
-            gumiSzerkeszto.close();
+            this.gumiSzerkeszto.close();
         }catch(LetezoGumiException ex){
-            Notification hibaAblak = new HibaJelzes(ex.getMessage());
+            Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();
         }
 

@@ -37,7 +37,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private TextField megjegyzes = new TextField("Megjegyzés:");
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
 
     public IdopontFoglalasForm(IdopontFoglalasService idopontFoglalasService){
@@ -105,7 +105,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
         idopontok.remove(foglalhatoOrak);
         if(DayOfWeek.SUNDAY.equals(kivalasztottDatum.getDayOfWeek())){
             idopontokDatum.setInvalid(true);
-            Notification hibaAblak = new HibaJelzes("Vasárnap zárva vagyunk.");
+            Notification hibaAblak = new Hibajelzes("Vasárnap zárva vagyunk.");
             hibaAblak.open();
             return;
         }
@@ -150,14 +150,14 @@ public class IdopontFoglalasForm extends VerticalLayout {
 
     private void idopontFoglalas(){
         if(kitoltottseg()){
-            Notification hiba = new HibaJelzes("Hibás kitöltés. A megjegyzésen kívül minden mező kitöltése kötelező!");
+            Notification hiba = new Hibajelzes("Hibás kitöltés. A megjegyzésen kívül minden mező kitöltése kötelező!");
             hiba.open();
         }else{
             try{
                 idopontFoglalasService.ment(idopontFoglalasAdat());
                 alapBeallitas();
             }catch(LetezoGumiException ex){
-                Notification hibaAblak = new HibaJelzes(ex.getMessage());
+                Notification hibaAblak = new Hibajelzes(ex.getMessage());
                 hibaAblak.open();
             }
 

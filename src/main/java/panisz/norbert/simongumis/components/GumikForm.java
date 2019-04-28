@@ -40,7 +40,7 @@ public class GumikForm extends VerticalLayout {
     private GumiKeresoMenu menu;
     private Grid<GumikEntity> gumik = new Grid<>();
     private Dialog darabszamAblak;
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
     public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService){
         this.gumikService = gumikService;
@@ -136,7 +136,7 @@ public class GumikForm extends VerticalLayout {
             fomenu.getKosar().getStyle().set("color", "red");
             fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
         }catch(LetezoGumiException ex){
-        Notification hibaAblak = new HibaJelzes(ex.getMessage());
+        Notification hibaAblak = new Hibajelzes(ex.getMessage());
         hibaAblak.open();
     }
 

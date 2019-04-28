@@ -9,7 +9,7 @@ import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 
 
-public class GumiSzerkesztoForm extends VerticalLayout {
+public class GumiSzerkeszto extends VerticalLayout {
 
     private TextField gyarto = new TextField("Gyártó");
     private TextField meret1 = new TextField("Méret-szélesség");
@@ -21,7 +21,7 @@ public class GumiSzerkesztoForm extends VerticalLayout {
     private TextField darab  = new TextField("Raktárkészlet");
 
 
-    public GumiSzerkesztoForm(GumikEntity gumikEntity){
+    public GumiSzerkeszto(GumikEntity gumikEntity){
 
         ar.setPattern("\\d*(\\.\\d*)?");
         ar.setPreventInvalidInput(true);

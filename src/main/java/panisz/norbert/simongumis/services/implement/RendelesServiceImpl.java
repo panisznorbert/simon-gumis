@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import panisz.norbert.simongumis.LoggerExample;
-import panisz.norbert.simongumis.components.HibaJelzes;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
@@ -13,7 +12,6 @@ import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.services.RendelesService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 

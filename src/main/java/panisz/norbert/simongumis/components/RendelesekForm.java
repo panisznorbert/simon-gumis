@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class RendelesekForm extends VerticalLayout {
     private RendelesService rendelesService;
 
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
     private HorizontalLayout rendelesekTartalom;
 
@@ -70,7 +70,7 @@ public class RendelesekForm extends VerticalLayout {
                 tartalom.add(new HorizontalLayout(ujRendelesSor(rendelesek.get(darab-1))));
             }
         }else if(!nevKereso.getValue().isEmpty()){
-            Notification hibaAblak = new HibaJelzes("A megadott feltétel alapján a keresés nem hozott eredményt.");
+            Notification hibaAblak = new Hibajelzes("A megadott feltétel alapján a keresés nem hozott eredményt.");
             hibaAblak.open();
         }
     }

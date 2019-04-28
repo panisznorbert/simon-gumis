@@ -27,7 +27,7 @@ public class KosarForm extends VerticalLayout {
 
     private static RendelesService alapRendelesService;
 
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
     private RendelesEntity rendelesEntity;
     private VerticalLayout tartalom = new VerticalLayout();
@@ -111,7 +111,7 @@ public class KosarForm extends VerticalLayout {
         rendelesEntity.setDatum(LocalDate.now());
         String hiba = alapRendelesService.mentKosarbol(rendelesEntity);
         if(hiba != null){
-            Notification hibaAblak = new HibaJelzes(hiba);
+            Notification hibaAblak = new Hibajelzes(hiba);
             hibaAblak.open();
         }else{
             UI.getCurrent().getSession().close();

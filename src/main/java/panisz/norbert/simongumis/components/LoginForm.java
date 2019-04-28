@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginForm extends VerticalLayout {
 
-    private MenuForm fomenu  = new MenuForm();
+    private FoMenu fomenu  = new FoMenu();
 
     private TextField felhasznalo = new TextField("Felhasználó:");
 
