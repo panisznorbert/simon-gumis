@@ -25,7 +25,7 @@ public class RendelesEntity extends BaseEntity implements Comparable<RendelesEnt
 
     private LocalDate datum;
 
-    private String token;
+    private String session;
 
     @Override
     public int compareTo(RendelesEntity o) {

@@ -6,4 +6,6 @@ import panisz.norbert.simongumis.entities.AdminEntity;
 
 @Repository
 public interface AdminRepository extends JpaRepository<AdminEntity, Integer> {
+    AdminEntity findBySession(String session);
+    AdminEntity findByNevAndJelszo(String nev, String jelszo);
 }

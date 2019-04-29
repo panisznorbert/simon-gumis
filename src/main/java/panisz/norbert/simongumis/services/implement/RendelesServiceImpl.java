@@ -1,9 +1,9 @@
 package panisz.norbert.simongumis.services.implement;
 
+import com.vaadin.flow.component.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
@@ -11,9 +11,7 @@ import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.repositories.GumikRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.services.RendelesService;
-
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 @Transactional
@@ -22,8 +20,6 @@ public class RendelesServiceImpl implements RendelesService {
     RendelesRepository rendelesRepository;
     @Autowired
     GumikRepository gumikRepository;
-
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     @Override
     public List<RendelesEntity> osszes() {
@@ -56,12 +52,13 @@ public class RendelesServiceImpl implements RendelesService {
                     hiba = "Mentés sikertelen";
                 }
             }
-            LOGGER.info(rendelesRepository.save(rendelesEntity).toString());
         }
         if(hiba == null){
             try{
+                rendelesEntity.setSession("");
                 rendelesRepository.save(rendelesEntity);
             }catch(Exception e){
+                rendelesEntity.setSession(UI.getCurrent().getSession().getSession().getId());
                 hiba = "Mentés sikertelen";
             }
         }
@@ -85,8 +82,8 @@ public class RendelesServiceImpl implements RendelesService {
     }
 
     @Override
-    public RendelesEntity tokenreKeres(String token){
-        return rendelesRepository.findByToken(token);
+    public RendelesEntity sessionreKeres(String session){
+        return rendelesRepository.findBySession(session);
     }
 
     @Override

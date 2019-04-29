@@ -14,6 +14,8 @@ import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.services.RendelesService;
+import panisz.norbert.simongumis.views.BaseView;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -22,8 +24,6 @@ import java.util.logging.Logger;
 @Component
 public class RendelesekForm extends VerticalLayout {
     private RendelesService rendelesService;
-
-    private FoMenu fomenu  = new FoMenu();
 
     private HorizontalLayout rendelesekTartalom;
 
@@ -42,8 +42,8 @@ public class RendelesekForm extends VerticalLayout {
         keresoSav.setAlignItems(Alignment.END);
         nevreKeres.addClickListener(e -> keresesNevre(nevKereso.getValue()));
         rendelesekTartalom = new HorizontalLayout(tartalom);
-        add(fomenu, keresoSav, rendelesekTartalom);
-        fomenu.getRendelesek().getStyle().set("color", "blue");
+        add(keresoSav, rendelesekTartalom);
+
     }
 
 

@@ -33,7 +33,7 @@ public class GumikEntity extends BaseEntity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         GumikEntity that = (GumikEntity) o;
-        return gyarto.equals(that.gyarto) &&
+        return gyarto.equalsIgnoreCase(that.gyarto) &&
                 meret.equals(that.meret) &&
                 evszak.equals(that.evszak) &&
                 allapot.equals(that.allapot);

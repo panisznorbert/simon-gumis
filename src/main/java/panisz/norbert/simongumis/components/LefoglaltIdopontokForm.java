@@ -12,6 +12,8 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
 import panisz.norbert.simongumis.services.IdopontFoglalasService;
+import panisz.norbert.simongumis.views.BaseView;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -25,8 +27,6 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private IdopontFoglalasService foglalasService;
 
-    private FoMenu fomenu  = new FoMenu();
-
     private Grid<IdopontFoglalasEntity> tabla = new Grid<>();
 
     private HorizontalLayout keresoSor = new HorizontalLayout();
@@ -39,7 +39,6 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
         tabla.setWidth("650px");
         tabla.setHeightByRows(true);
         tabla.setVerticalScrollingEnabled(false);
-        add(fomenu);
         List<IdopontFoglalasEntity> tobbiFoglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
         if(tobbiFoglalasok != null && !tobbiFoglalasok.isEmpty()){
             tabla = tablafeltolto(tobbiFoglalasok);
@@ -47,7 +46,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
         }
 
         add(keresoSor, foglalasok);
-        fomenu.getLefoglaltIdopontok().getStyle().set("color", "blue");
+
     }
 
 

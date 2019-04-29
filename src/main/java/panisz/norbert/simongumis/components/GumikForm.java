@@ -15,51 +15,46 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
-import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 @UIScope
 @Component
 public class GumikForm extends VerticalLayout {
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
-
     private GumikService gumikService;
     private RendelesService rendelesService;
 
     private GumiKeresoMenu menu;
     private Grid<GumikEntity> gumik = new Grid<>();
     private Dialog darabszamAblak;
-    private FoMenu fomenu  = new FoMenu();
 
-    public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService){
+    private FoMenu foMenu;
+
+    public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService, FoMenu foMenu){
         this.gumikService = gumikService;
         this.rendelesService = rendelesService;
+        this.foMenu = foMenu;
         menu = new GumiKeresoMenu(gumiMeretekService);
         GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
         gumik.setWidth("950px");
         gumik.setHeightByRows(true);
         gumikTablaFeltolt(menu.getKriterium());
-        add(fomenu); add( menu, new HorizontalLayout(gumik));
+        add( menu, new HorizontalLayout(gumik));
         this.setAlignItems(Alignment.CENTER);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
-        fomenu.getGumik().getStyle().set("color", "blue");
+
     }
 
 
     private void kosarbahelyezesAblak(GumikEntity gumi){
-        LOGGER.info("********TOKEN: " + UI.getCurrent().getSession().getCsrfToken());
         Label tipus = new Label(gumi.toString() + " típusú gumiból");
         Label hiba = new Label();
         TextField darab = new TextField();
@@ -83,8 +78,8 @@ public class GumikForm extends VerticalLayout {
             }
 
             //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
-            if(!darab.isInvalid() && rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()) != null){
-                for(RendelesiEgysegEntity rendeles: rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()).getRendelesiEgysegek()) {
+            if(!darab.isInvalid() && rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
+                for(RendelesiEgysegEntity rendeles: rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()).getRendelesiEgysegek()) {
                     if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);
@@ -104,18 +99,18 @@ public class GumikForm extends VerticalLayout {
         RendelesiEgysegEntity rendelesiEgyseg = new RendelesiEgysegEntity();
         RendelesEntity rendeles = new RendelesEntity();
         rendeles.setStatusz(RendelesStatusz.KOSARBAN);
-        rendeles.setToken(UI.getCurrent().getSession().getCsrfToken());
+        rendeles.setSession(UI.getCurrent().getSession().getSession().getId());
         rendeles.setDatum(LocalDate.now());
         rendelesiEgyseg.setGumi(gumi);
         rendelesiEgyseg.setMennyiseg(darab);
         rendelesiEgyseg.setReszosszeg(gumi.getAr()*darab);
         boolean meglevo = false;
         //Az aktuális rendelés azonosító tárolása, mely később cookie-ban lesz
-        if(rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken()) == null){
+        if(rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) == null){
             rendeles.setRendelesiEgysegek(new ArrayList<>());
 
         }else {
-            rendeles = rendelesService.tokenreKeres(UI.getCurrent().getSession().getCsrfToken());
+            rendeles = rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId());
         }
 
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendeles.getRendelesiEgysegek()){
@@ -133,9 +128,9 @@ public class GumikForm extends VerticalLayout {
 
         try{
             rendelesService.ment(rendeles);
-            fomenu.getKosar().getStyle().set("color", "red");
-            fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
-        }catch(LetezoGumiException ex){
+            foMenu.getKosar().getStyle().set("color", "red");
+            foMenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
+        }catch(Exception ex){
         Notification hibaAblak = new Hibajelzes(ex.getMessage());
         hibaAblak.open();
     }

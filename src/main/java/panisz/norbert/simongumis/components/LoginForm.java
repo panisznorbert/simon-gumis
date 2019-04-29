@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -8,12 +9,18 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
+import panisz.norbert.simongumis.LoggerExample;
+import panisz.norbert.simongumis.entities.AdminEntity;
+import panisz.norbert.simongumis.services.AdminService;
+import panisz.norbert.simongumis.views.BaseView;
+
+import java.util.logging.Logger;
 
 @UIScope
 @Component
 public class LoginForm extends VerticalLayout {
 
-    private FoMenu fomenu  = new FoMenu();
+    private AdminService adminService;
 
     private TextField felhasznalo = new TextField("Felhasználó:");
 
@@ -27,7 +34,10 @@ public class LoginForm extends VerticalLayout {
 
     private VerticalLayout tartalom = new VerticalLayout(belepesMezok, hiba);
 
-    public LoginForm(){
+    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
+
+    public LoginForm(AdminService adminService){
+        this.adminService = adminService;
         hiba.setText("");
         hiba.getStyle().set("color","red");
         felhasznalo.setRequired(true);
@@ -39,7 +49,7 @@ public class LoginForm extends VerticalLayout {
         hiba.getStyle().set("margin-top","30px");
         tartalom.setAlignItems(Alignment.CENTER);
         belep.addClickListener(e -> belepes());
-        add(fomenu, tartalom);
+        add(tartalom);
     }
 
     private void belepes(){
@@ -51,6 +61,22 @@ public class LoginForm extends VerticalLayout {
             hiba.setText("A jelszó kitöltése kötelező!");
             return;
         }
+
+        AdminEntity adminEntity = adminService.adminraKeres(felhasznalo.getValue(), jelszo.getValue());
+
+        if(adminEntity == null){
+            hiba.setText("Hibás felhasználó név vagy jelszó!");
+            return;
+        }
+
+        adminEntity.setSession(UI.getCurrent().getSession().getSession().getId());
+        try {
+            adminService.ment(adminEntity);
+        }catch(Exception ex){
+            hiba.setText("Hiba a belépésnél, kérem próbálja újra.");
+        }
+        LOGGER.info("LOGIN SESSION: " + UI.getCurrent().getSession().getSession().getId());
+        UI.getCurrent().navigate("");
         hiba.setText("");
     }
 }

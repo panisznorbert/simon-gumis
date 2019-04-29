@@ -1,3 +1,4 @@
+INSERT INTO adminok (id, nev, jelszo) VALUES ( 100, 'admin', 'admin' );
 INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 9991, 255, 60, 19 );
 INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 9992, 205, 60, 21 );
 INSERT INTO gumi_meretek (id, szelesseg, profil, felni) VALUES ( 9993, 215, 40, 21 );

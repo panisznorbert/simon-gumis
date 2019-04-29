@@ -13,6 +13,8 @@ import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.IdopontFoglalasService;
+import panisz.norbert.simongumis.views.BaseView;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,21 +39,19 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private TextField megjegyzes = new TextField("Megjegyzés:");
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
-    private FoMenu fomenu  = new FoMenu();
-
 
     public IdopontFoglalasForm(IdopontFoglalasService idopontFoglalasService){
         this.idopontFoglalasService=idopontFoglalasService;
         idopontokDatum = new DatePicker("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
-        add(fomenu, idopontok, ugyfelAdatok, egyeb, gombsor);
+        add(idopontok, ugyfelAdatok, egyeb, gombsor);
         this.setAlignItems(Alignment.CENTER);
         idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue()));
         foglal.addClickListener(e -> idopontFoglalas());
 
         alapBeallitas();
-        fomenu.getIdoponfoglalas().getStyle().set("color", "blue");
+
     }
 
     private DatePicker.DatePickerI18n magyarDatumInit(){
@@ -156,7 +156,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
             try{
                 idopontFoglalasService.ment(idopontFoglalasAdat());
                 alapBeallitas();
-            }catch(LetezoGumiException ex){
+            }catch(Exception ex){
                 Notification hibaAblak = new Hibajelzes(ex.getMessage());
                 hibaAblak.open();
             }

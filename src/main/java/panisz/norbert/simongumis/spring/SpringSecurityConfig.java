@@ -18,7 +18,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(MEGENGEDETT_URLEK).permitAll()
-                .anyRequest().permitAll()
-                .antMatchers("/gumikkezelese").authenticated().and().formLogin().loginPage("/").loginProcessingUrl("login");
+                .antMatchers("/gumikkezelese", "/rendelesek", "/lefoglalt_idopontok").fullyAuthenticated();
     }
 }

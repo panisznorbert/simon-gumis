@@ -17,6 +17,8 @@ import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumikService;
+import panisz.norbert.simongumis.views.BaseView;
+
 import java.util.logging.Logger;
 
 @UIScope
@@ -24,7 +26,6 @@ import java.util.logging.Logger;
 public class GumikKezeleseForm extends VerticalLayout {
     private GumikService gumikService;
 
-    private FoMenu fomenu = new FoMenu();
     private VerticalLayout layout = new VerticalLayout();
 
     private HorizontalLayout gombok = new HorizontalLayout();
@@ -58,7 +59,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         torol.addClickListener(e -> mezokInit());
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
         init();
-        fomenu.getGumikKezelese().getStyle().set("color", "blue");
+
     }
 
 
@@ -88,7 +89,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         adatokBevitel.setHeight("100px");
         adatokMegjelenites.add(grid);
         layout.add(gombok, adatokBevitel, adatokMegjelenites);
-        add(fomenu, layout);
+        add(layout);
 
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         gridhezMenu();
@@ -147,11 +148,14 @@ public class GumikKezeleseForm extends VerticalLayout {
             gumikService.ment(gumi);
             gumikTablaFrissit();
             mezokInit();
+
         }catch(LetezoGumiException ex){
             Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();
+        }catch(Exception ex) {
+            Notification hibaAblak = new Hibajelzes(ex.getMessage());
+            hibaAblak.open();
         }
-
     }
 
     private String validacio() {
@@ -222,7 +226,7 @@ public class GumikKezeleseForm extends VerticalLayout {
             gumikService.ment(gumi);
             gridRefresh();
             this.gumiSzerkeszto.close();
-        }catch(LetezoGumiException ex){
+        }catch(Exception ex){
             Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();
         }

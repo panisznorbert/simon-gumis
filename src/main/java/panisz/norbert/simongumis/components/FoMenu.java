@@ -4,19 +4,20 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import panisz.norbert.simongumis.LoggerExample;
+import org.springframework.stereotype.Component;
+import panisz.norbert.simongumis.services.AdminService;
 
-import javax.annotation.PostConstruct;
-import java.util.logging.Logger;
-
+@UIScope
+@Component
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class FoMenu extends VerticalLayout {
+
 
     private AppLayout appLayout = new AppLayout();
     private AppLayoutMenuItem rendelesek = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Rendelések", e -> UI.getCurrent().navigate("rendelesek"));
@@ -28,29 +29,24 @@ public class FoMenu extends VerticalLayout {
     private AppLayoutMenuItem szolgaltatasok = new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> UI.getCurrent().navigate("szolgaltatasok"));
     private AppLayoutMenuItem kezdolap = new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate(""));
 
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
-    public FoMenu(){
+    public FoMenu(AdminService adminService){
         AppLayoutMenu menu = appLayout.createMenu();
 
-
-        if(KosarForm.vaneKosartartalom()){
-            this.kosar.getStyle().set("color", "red");
-            this.kosar.setIcon(new Icon(VaadinIcon.CART));
-        }
-
         //bejelentkezéshez kötött menüpontok
-        //if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()){}
-
         menuElemeinekBeallitasa(menu, kezdolap);
         menuElemeinekBeallitasa(menu, szolgaltatasok);
         menuElemeinekBeallitasa(menu, gumik);
         menuElemeinekBeallitasa(menu, idoponfoglalas);
         menuElemeinekBeallitasa(menu, kosar);
 
-        menuElemeinekBeallitasa(menu, gumikKezelese);
-        menuElemeinekBeallitasa(menu, lefoglaltIdopontok);
-        menuElemeinekBeallitasa(menu, rendelesek);
+        try {
+            if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
+                menuElemeinekBeallitasa(menu, gumikKezelese);
+                menuElemeinekBeallitasa(menu, lefoglaltIdopontok);
+                menuElemeinekBeallitasa(menu, rendelesek);
+            }
+        }catch(Exception e){}
 
         add(appLayout);
 
@@ -60,11 +56,6 @@ public class FoMenu extends VerticalLayout {
         this.appLayout.getElement().getStyle().set("margin", "0px");
         this.getStyle().set("z-index", "99999");
 
-    }
-
-    @PostConstruct
-    private void asd(){
-        LOGGER.info("**************POST-ba belépett******************");
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {

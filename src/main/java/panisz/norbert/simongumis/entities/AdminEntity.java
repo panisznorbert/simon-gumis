@@ -13,4 +13,5 @@ import javax.persistence.Table;
 public class AdminEntity extends BaseEntity {
     private String nev;
     private String jelszo;
+    private String session;
 }
