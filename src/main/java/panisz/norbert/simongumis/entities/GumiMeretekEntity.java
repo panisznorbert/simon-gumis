@@ -12,9 +12,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "gumi_meretek")
 public class GumiMeretekEntity extends BaseEntity implements Comparable<GumiMeretekEntity>{
-    Integer szelesseg;
-    Integer profil;
-    Integer felni;
+    private Integer szelesseg;
+    private Integer profil;
+    private Integer felni;
 
     @Override
     public String toString() {
