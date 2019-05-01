@@ -15,23 +15,23 @@ import java.util.List;
 @Transactional
 public class IdopontfoglalasServieImpl implements IdopontfoglalasServie {
     @Autowired
-    IdopontfoglalasRepository idopontFoglalasRepository;
+    IdopontfoglalasRepository idopontfoglalasRepository;
     @Autowired
     UgyfelRepository ugyfelRepository;
 
     @Override
     public IdopontfoglalasEntity keresesDatumra(LocalDateTime localDateTime) {
-        return idopontFoglalasRepository.findByDatum(localDateTime);
+        return idopontfoglalasRepository.findByDatum(localDateTime);
     }
 
     @Override
     public List<IdopontfoglalasEntity> keresesNaptol(LocalDateTime localDateTime) {
-        return idopontFoglalasRepository.findAllByDatumAfter(localDateTime);
+        return idopontfoglalasRepository.findAllByDatumAfter(localDateTime);
     }
 
     @Override
     public List<IdopontfoglalasEntity> osszes() {
-        return idopontFoglalasRepository.findAll();
+        return idopontfoglalasRepository.findAll();
     }
 
     @Override
@@ -44,12 +44,12 @@ public class IdopontfoglalasServieImpl implements IdopontfoglalasServie {
         if(ugyfelEntity != null) {
             idopontFoglalasEntity.setUgyfel(ugyfelEntity);
         }
-        return idopontFoglalasRepository.save(idopontFoglalasEntity);
+        return idopontfoglalasRepository.save(idopontFoglalasEntity);
     }
 
     @Override
     public void torol(IdopontfoglalasEntity idopontFoglalasEntity) {
         idopontFoglalasEntity.setUgyfel(null);
-        idopontFoglalasRepository.delete(idopontFoglalasEntity);
+        idopontfoglalasRepository.delete(idopontFoglalasEntity);
     }
 }
