@@ -3,18 +3,18 @@ package panisz.norbert.simongumis.views;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.components.FoMenu;
-import panisz.norbert.simongumis.components.IdopontFoglalasForm;
-import panisz.norbert.simongumis.services.IdopontFoglalasService;
+import panisz.norbert.simongumis.components.IdopontfoglalasForm;
+import panisz.norbert.simongumis.services.IdopontfoglalasServie;
 
 import javax.annotation.PostConstruct;
 
 @Route("idopontfoglalas")
-public class IdopontFoglalasView extends BaseView {
+public class IdopontfoglalasView extends BaseView {
 
     private FoMenu fomenu  = new FoMenu(adminService);
 
     @Autowired
-    private IdopontFoglalasService idopontFoglalasService;
+    private IdopontfoglalasServie idopontfoglalasServie;
 
     @PostConstruct
     public void init() { this.initializeView();
@@ -22,7 +22,7 @@ public class IdopontFoglalasView extends BaseView {
 
     private void initializeView() {
         fomenu.getIdoponfoglalas().getStyle().set("color", "blue");
-        add(new IdopontFoglalasForm(idopontFoglalasService));
+        add(new IdopontfoglalasForm(idopontfoglalasServie));
         setSizeFull();
     }
 }

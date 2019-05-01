@@ -9,11 +9,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
+import panisz.norbert.simongumis.entities.IdopontfoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
-import panisz.norbert.simongumis.exceptions.LetezoGumiException;
-import panisz.norbert.simongumis.services.IdopontFoglalasService;
-import panisz.norbert.simongumis.views.BaseView;
+import panisz.norbert.simongumis.services.IdopontfoglalasServie;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -23,9 +21,9 @@ import java.util.*;
 
 @UIScope
 @Component
-public class IdopontFoglalasForm extends VerticalLayout {
+public class IdopontfoglalasForm extends VerticalLayout {
 
-    private IdopontFoglalasService idopontFoglalasService;
+    private IdopontfoglalasServie idopontfoglalasServie;
 
     private DatePicker idopontokDatum;
     private ComboBox<LocalTime> foglalhatoOrak;
@@ -40,8 +38,8 @@ public class IdopontFoglalasForm extends VerticalLayout {
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
 
-    public IdopontFoglalasForm(IdopontFoglalasService idopontFoglalasService){
-        this.idopontFoglalasService=idopontFoglalasService;
+    public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie){
+        this.idopontfoglalasServie = idopontfoglalasServie;
         idopontokDatum = new DatePicker("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
@@ -116,10 +114,10 @@ public class IdopontFoglalasForm extends VerticalLayout {
                 munkaidoVege = 12;
             }
         for (int i = 7; i < munkaidoVege; i++) {
-            if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
+            if (idopontfoglalasServie.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
                 orak.add(LocalTime.of(i, 0));
             }
-            if (idopontFoglalasService.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
+            if (idopontfoglalasServie.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
                 orak.add(LocalTime.of(i, 30));
             }
         }
@@ -129,8 +127,8 @@ public class IdopontFoglalasForm extends VerticalLayout {
 
     }
 
-    private IdopontFoglalasEntity idopontFoglalasAdat(){
-        IdopontFoglalasEntity idopontFoglalasEntity = new IdopontFoglalasEntity();
+    private IdopontfoglalasEntity idopontFoglalasAdat(){
+        IdopontfoglalasEntity idopontFoglalasEntity = new IdopontfoglalasEntity();
         UgyfelEntity ugyfelEntity = new UgyfelEntity();
 
         ugyfelEntity.setNev(ugyfelAdatok.getNev().getValue());
@@ -154,7 +152,7 @@ public class IdopontFoglalasForm extends VerticalLayout {
             hiba.open();
         }else{
             try{
-                idopontFoglalasService.ment(idopontFoglalasAdat());
+                idopontfoglalasServie.ment(idopontFoglalasAdat());
                 alapBeallitas();
             }catch(Exception ex){
                 Notification hibaAblak = new Hibajelzes(ex.getMessage());

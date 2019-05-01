@@ -10,9 +10,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.entities.IdopontFoglalasEntity;
-import panisz.norbert.simongumis.services.IdopontFoglalasService;
-import panisz.norbert.simongumis.views.BaseView;
+import panisz.norbert.simongumis.entities.IdopontfoglalasEntity;
+import panisz.norbert.simongumis.services.IdopontfoglalasServie;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,21 +24,21 @@ import static java.util.Collections.sort;
 @Component
 public class LefoglaltIdopontokForm extends VerticalLayout {
 
-    private IdopontFoglalasService foglalasService;
+    private IdopontfoglalasServie foglalasService;
 
-    private Grid<IdopontFoglalasEntity> tabla = new Grid<>();
+    private Grid<IdopontfoglalasEntity> tabla = new Grid<>();
 
     private HorizontalLayout keresoSor = new HorizontalLayout();
 
     private HorizontalLayout foglalasok = new HorizontalLayout();
 
-    public LefoglaltIdopontokForm(IdopontFoglalasService foglalasService){
+    public LefoglaltIdopontokForm(IdopontfoglalasServie foglalasService){
         this.foglalasService = foglalasService;
         this.setAlignItems(Alignment.CENTER);
         tabla.setWidth("650px");
         tabla.setHeightByRows(true);
         tabla.setVerticalScrollingEnabled(false);
-        List<IdopontFoglalasEntity> tobbiFoglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
+        List<IdopontfoglalasEntity> tobbiFoglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
         if(tobbiFoglalasok != null && !tobbiFoglalasok.isEmpty()){
             tabla = tablafeltolto(tobbiFoglalasok);
             foglalasok.add(tabla);
@@ -50,10 +49,10 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
     }
 
 
-    private Grid<IdopontFoglalasEntity> tablafeltolto(List<IdopontFoglalasEntity> foglalasok){
+    private Grid<IdopontfoglalasEntity> tablafeltolto(List<IdopontfoglalasEntity> foglalasok){
         sort(foglalasok);
-        tabla.addColumn(new LocalDateTimeRenderer<>(IdopontFoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont").setWidth("160px");
-        tabla.addColumn(TemplateRenderer.<IdopontFoglalasEntity> of(
+        tabla.addColumn(new LocalDateTimeRenderer<>(IdopontfoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont").setWidth("160px");
+        tabla.addColumn(TemplateRenderer.<IdopontfoglalasEntity> of(
                 "<div><small>Név: [[item.nev]]<br>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
                         .withProperty("nev",
                                 foglalasEntity -> foglalasEntity.getUgyfel().getNev())
@@ -84,9 +83,9 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
         return tabla;
     }
 
-    private void idopontTorlese(IdopontFoglalasEntity idopontFoglalasEntity){
+    private void idopontTorlese(IdopontfoglalasEntity idopontFoglalasEntity){
         foglalasService.torol(idopontFoglalasEntity);
-        List<IdopontFoglalasEntity> foglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
+        List<IdopontfoglalasEntity> foglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
         sort(foglalasok);
         tabla.setItems(foglalasok);
         tabla.getDataProvider().refreshAll();
