@@ -65,11 +65,6 @@ public class GumiMeretekServiceImpl implements GumiMeretekService {
     }
 
     @Override
-    public List<GumiMeretekEntity> osszesMenuhoz() {
-        return amihezVanGumi(gumiMeretekRepository.findAll());
-    }
-
-    @Override
     public List<GumiMeretekEntity> amihezVanGumi(List<GumiMeretekEntity> gumiMeretek){
         for(GumiMeretekEntity gumiMeret : gumiMeretek){
             if(gumikRepository.findAllByMeretId(gumiMeret.getId()) == null){

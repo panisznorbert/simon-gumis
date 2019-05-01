@@ -13,7 +13,5 @@ public interface GumiMeretekService extends BaseServices<GumiMeretekEntity> {
     List<GumiMeretekEntity> szelessegreEsFelnireKeresMenuhoz(Integer szelesseg, Integer felni);
     List<GumiMeretekEntity> profilraEsFelnireKeresMenuhoz(Integer profil, Integer felni);
 
-    List<GumiMeretekEntity> osszesMenuhoz();
-
     List<GumiMeretekEntity> amihezVanGumi(List<GumiMeretekEntity> gumiMeretek);
 }

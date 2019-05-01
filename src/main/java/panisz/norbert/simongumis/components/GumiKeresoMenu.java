@@ -126,7 +126,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
         switch(beallito){
             case 0:{
-                meretFeltolto(gumiMeretekService.osszesMenuhoz(), 0, 0, 0);
+                meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
                 setMeret(0, 0, 0);
                 break;
             }

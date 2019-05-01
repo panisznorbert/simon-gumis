@@ -145,9 +145,8 @@ public class RendelesekForm extends VerticalLayout {
             }
         });
         torol.addClickListener(e -> {
-            rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
             modosit.setVisible(false);
-            rendelesek.getFooterRows().get(0).getCell(oszlop1).setComponent(new Label("Státusz: " + rendelesEntity.getStatusz().toString()));
+            rendelesek.getFooterRows().get(0).getCell(oszlop1).setComponent(new Label("Státusz: " + RendelesStatusz.TOROLVE));
             rendelesService.rendelesTrolese(rendelesEntity);
             torol.setVisible(false);
         });

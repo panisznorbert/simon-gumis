@@ -32,47 +32,44 @@ public class RendelesServiceImpl implements RendelesService {
     }
 
     @Override
-    public String mentKosarbol(RendelesEntity rendelesEntity) {
-        String hiba = null;
-        //végső vizsgálat hogy a rendelésben szereplő gumikból a kívánt darabszám van-e raktáron
-        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
-            if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
-                hiba = (rendelesiEgysegEntity.getGumi().toString() + " típusú gumiból, maximum " + gumikEntity.getMennyisegRaktarban().toString() + " db elérhető, de a rendelésében több szerepel!");
-            }
-        }
-        //megrendelésnél a raktárkészlatből a gumik levonása
-        if(hiba == null){
-            for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-                GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
-                gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
-                try{
-                    gumikRepository.save(gumikEntity);
-                }catch(Exception e){
-                    hiba = "Mentés sikertelen";
-                }
-            }
-        }
-        if(hiba == null){
-            try{
-                rendelesEntity.setSession("");
-                rendelesRepository.save(rendelesEntity);
-            }catch(Exception e){
-                rendelesEntity.setSession(UI.getCurrent().getSession().getSession().getId());
-                hiba = "Mentés sikertelen";
-            }
-        }
-
-        return hiba;
-    }
-
-    @Override
     public void torol(RendelesEntity rendelesEntity) {
         rendelesRepository.delete(rendelesEntity);
     }
 
     @Override
+    public String mentKosarbol(RendelesEntity rendelesEntity) {
+        //végső vizsgálat hogy a rendelésben szereplő gumikból a kívánt darabszám van-e raktáron
+        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
+            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
+            if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
+                return (rendelesiEgysegEntity.getGumi().toString() + " típusú gumiból, maximum " + gumikEntity.getMennyisegRaktarban().toString() + " db elérhető, de a rendelésében több szerepel!");
+            }
+        }
+        //megrendelésnél a raktárkészlatből a gumik levonása
+        for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
+            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
+            gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
+            try{
+                gumikRepository.save(gumikEntity);
+            }catch(Exception e){
+                return "Mentés sikertelen";
+            }
+        }
+
+        try{
+            rendelesEntity.setSession("");
+            rendelesRepository.save(rendelesEntity);
+        }catch(Exception e){
+            rendelesEntity.setSession(UI.getCurrent().getSession().getSession().getId());
+            return "Mentés sikertelen";
+        }
+
+        return null;
+    }
+
+    @Override
     public void rendelesTrolese(RendelesEntity rendelesEntity){
+        rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
             GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
             gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()+rendelesiEgysegEntity.getMennyiseg());
