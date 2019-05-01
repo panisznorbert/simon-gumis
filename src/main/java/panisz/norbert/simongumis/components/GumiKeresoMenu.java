@@ -7,12 +7,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import java.util.*;
-import java.util.logging.Logger;
 
 @UIScope
 @Component
@@ -46,8 +44,6 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private HorizontalLayout menu2 = new HorizontalLayout();
     private VerticalLayout menu = new VerticalLayout();
 
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
-
     public GumiKeresoMenu(GumiMeretekService gumiMeretekService){
         this.gumiMeretekService = gumiMeretekService;
         egyeb.addClickListener(e -> tovabbiFeltetelek());
@@ -58,7 +54,6 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
 
     private void init(){
-        LOGGER.info("GumiKeresoMenu-be init belépett");
         meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
         kriterium.setMeret(new GumiMeretekEntity());
         setMeret(0,0,0);

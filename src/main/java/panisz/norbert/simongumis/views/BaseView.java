@@ -5,13 +5,11 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.components.FoMenu;
 import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.RendelesService;
 
 import javax.annotation.PostConstruct;
-import java.util.logging.Logger;
 
 public class BaseView extends VerticalLayout {
 
@@ -22,8 +20,6 @@ public class BaseView extends VerticalLayout {
     RendelesService rendelesService;
 
     FoMenu fomenu;
-
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     @PostConstruct
     public void baseInit() { this.baseInitializeView();

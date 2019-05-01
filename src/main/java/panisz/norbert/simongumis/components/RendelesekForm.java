@@ -9,16 +9,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.RendelesEntity;
 import panisz.norbert.simongumis.entities.RendelesStatusz;
 import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
 import panisz.norbert.simongumis.services.RendelesService;
-import panisz.norbert.simongumis.views.BaseView;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 @UIScope
 @Component
@@ -32,12 +28,9 @@ public class RendelesekForm extends VerticalLayout {
     private HorizontalLayout keresoSav = new HorizontalLayout(nevKereso, nevreKeres);
     private VerticalLayout tartalom = new VerticalLayout();
 
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
-
     public RendelesekForm(RendelesService rendelesService){
         this.rendelesService = rendelesService;
         this.setAlignItems(Alignment.CENTER);
-        List<RendelesEntity> rendelesek = rendelesService.rendelesekreKeres(RendelesStatusz.KOSARBAN);
         adatBetoltes(rendelesService.rendelesekreKeres(RendelesStatusz.KOSARBAN));
         keresoSav.setAlignItems(Alignment.END);
         nevreKeres.addClickListener(e -> keresesNevre(nevKereso.getValue()));

@@ -12,14 +12,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumikService;
-import panisz.norbert.simongumis.views.BaseView;
-
-import java.util.logging.Logger;
 
 @UIScope
 @Component
@@ -34,8 +30,6 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private Button hozzaad  = new Button("Hozzáad");
     private Button torol  = new Button("Töröl");
-
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     private Grid<GumikEntity> grid = new Grid<>();
 

@@ -15,11 +15,6 @@ public class UgyfelServiceImpl implements UgyfelService {
     UgyfelRepository ugyfelRepository;
 
     @Override
-    public UgyfelEntity keresesUgyfeladatokra(String nev, String telefon, String email) {
-        return ugyfelRepository.findByNevAndTelefonAndEmail(nev, telefon, email);
-    }
-
-    @Override
     public List<UgyfelEntity> osszes() {
         return ugyfelRepository.findAll();
     }

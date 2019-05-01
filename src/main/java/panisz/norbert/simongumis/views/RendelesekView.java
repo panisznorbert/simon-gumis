@@ -1,9 +1,7 @@
 package panisz.norbert.simongumis.views;
 
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.components.RendelesekForm;
-import panisz.norbert.simongumis.services.RendelesService;
 
 import javax.annotation.PostConstruct;
 

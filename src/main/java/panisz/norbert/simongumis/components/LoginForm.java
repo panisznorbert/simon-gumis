@@ -9,12 +9,8 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.LoggerExample;
 import panisz.norbert.simongumis.entities.AdminEntity;
 import panisz.norbert.simongumis.services.AdminService;
-import panisz.norbert.simongumis.views.BaseView;
-
-import java.util.logging.Logger;
 
 @UIScope
 @Component
@@ -33,8 +29,6 @@ public class LoginForm extends VerticalLayout {
     private HorizontalLayout belepesMezok = new HorizontalLayout(felhasznalo, jelszo,  belep );
 
     private VerticalLayout tartalom = new VerticalLayout(belepesMezok, hiba);
-
-    private final static Logger LOGGER = Logger.getLogger(LoggerExample.class.getName());
 
     public LoginForm(AdminService adminService){
         this.adminService = adminService;
@@ -75,7 +69,6 @@ public class LoginForm extends VerticalLayout {
         }catch(Exception ex){
             hiba.setText("Hiba a belépésnél, kérem próbálja újra.");
         }
-        LOGGER.info("LOGIN SESSION: " + UI.getCurrent().getSession().getSession().getId());
         UI.getCurrent().navigate("");
         hiba.setText("");
     }
