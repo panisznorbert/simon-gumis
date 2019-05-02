@@ -232,7 +232,7 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     }
 
-    public void gridRefresh(){
+    private void gridRefresh(){
         grid.setItems(gumikService.osszes());
         grid.getDataProvider().refreshAll();
     }
