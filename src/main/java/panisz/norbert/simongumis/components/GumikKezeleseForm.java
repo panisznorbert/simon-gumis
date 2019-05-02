@@ -20,6 +20,7 @@ import panisz.norbert.simongumis.services.GumikService;
 @UIScope
 @Component
 public class GumikKezeleseForm extends VerticalLayout {
+
     private GumikService gumikService;
 
     private VerticalLayout layout = new VerticalLayout();
@@ -124,19 +125,23 @@ public class GumikKezeleseForm extends VerticalLayout {
         String hiba=validacio();
         GumikEntity gumi = new GumikEntity();
 
-        if(hiba == null) {
-            GumiMeretekEntity meret = new GumiMeretekEntity();
-            meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
-            meret.setProfil(Integer.valueOf(meret2.getValue()));
-            meret.setFelni(Integer.valueOf(meret3.getValue()));
-
-            gumi.setGyarto(gyarto.getValue());
-            gumi.setMeret(meret);
-            gumi.setAr(Integer.valueOf(ar.getValue()));
-            gumi.setEvszak(evszak.getValue());
-            gumi.setAllapot(allapot.getValue());
-            gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
+        if(hiba != null){
+            Notification hibaAblak = new Hibajelzes(hiba);
+            hibaAblak.open();
+            return;
         }
+
+        GumiMeretekEntity meret = new GumiMeretekEntity();
+        meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
+        meret.setProfil(Integer.valueOf(meret2.getValue()));
+        meret.setFelni(Integer.valueOf(meret3.getValue()));
+
+        gumi.setGyarto(gyarto.getValue());
+        gumi.setMeret(meret);
+        gumi.setAr(Integer.valueOf(ar.getValue()));
+        gumi.setEvszak(evszak.getValue());
+        gumi.setAllapot(allapot.getValue());
+        gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
 
         try{
             gumikService.ment(gumi);
