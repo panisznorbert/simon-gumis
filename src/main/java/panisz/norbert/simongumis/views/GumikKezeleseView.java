@@ -7,7 +7,7 @@ import panisz.norbert.simongumis.services.GumikService;
 
 import javax.annotation.PostConstruct;
 
-@Route("gumikkezelese")
+@Route("gumik_kezelese")
 public class GumikKezeleseView extends BaseView {
 
     @Autowired

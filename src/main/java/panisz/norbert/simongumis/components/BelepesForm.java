@@ -14,7 +14,7 @@ import panisz.norbert.simongumis.services.AdminService;
 
 @UIScope
 @Component
-public class LoginForm extends VerticalLayout {
+public class BelepesForm extends VerticalLayout {
 
     private AdminService adminService;
 
@@ -30,7 +30,7 @@ public class LoginForm extends VerticalLayout {
 
     private VerticalLayout tartalom = new VerticalLayout(belepesMezok, hiba);
 
-    public LoginForm(AdminService adminService){
+    public BelepesForm(AdminService adminService){
         this.adminService = adminService;
         hiba.setText("");
         hiba.getStyle().set("color","red");
