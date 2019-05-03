@@ -1,8 +1,10 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,6 +19,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+
+import static org.atmosphere.util.IOUtils.close;
 
 @UIScope
 @Component
@@ -151,8 +155,13 @@ public class IdopontfoglalasForm extends VerticalLayout {
             hiba.open();
         }else{
             try{
-                idopontfoglalasServie.ment(idopontFoglalasAdat());
-                alapBeallitas();
+                IdopontfoglalasEntity foglalas = idopontfoglalasServie.ment(idopontFoglalasAdat());
+                String idopont = foglalas.getDatum().toString();
+                idopont = idopont.replaceAll("T", " ");
+
+                Notification visszajelzes = new Hibajelzes("Az időpontfoglalás sikeresen megtörtént " + idopont + " időpontra");
+                visszajelzes.open();
+                UI.getCurrent().navigate("gumik");
             }catch(Exception ex){
                 Notification hibaAblak = new Hibajelzes(ex.getMessage());
                 hibaAblak.open();

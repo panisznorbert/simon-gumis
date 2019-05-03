@@ -56,11 +56,12 @@ public class GumikForm extends VerticalLayout {
 
     private void kosarbahelyezesAblak(GumikEntity gumi){
         Label tipus = new Label(gumi.toString() + " típusú gumiból");
+        Label osszDarab = new Label("(Maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db)");
         Label hiba = new Label();
         TextField darab = new TextField();
         darab.setPattern("[0-9]*");
         darab.setSuffixComponent(new Span("Db"));
-        VerticalLayout leiras = new VerticalLayout(hiba, tipus, darab);
+        VerticalLayout leiras = new VerticalLayout(hiba, tipus,osszDarab, darab);
         Button megse  = new Button("Mégse");
         Button ok  = new Button("Ok");
         HorizontalLayout gombok = new HorizontalLayout(ok, megse);

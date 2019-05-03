@@ -9,11 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class KezdolapForm extends VerticalLayout {
 
-    private Image szorolap = new Image("gumi1.jpg", "");
-
     public KezdolapForm(){
-
-        szorolap.setSizeFull();
-        add(szorolap);
     }
 }
