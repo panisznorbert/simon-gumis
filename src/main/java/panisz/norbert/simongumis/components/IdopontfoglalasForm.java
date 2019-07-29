@@ -13,14 +13,13 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontfoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
+import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.IdopontfoglalasServie;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-
-import static org.atmosphere.util.IOUtils.close;
 
 @UIScope
 @Component
@@ -41,7 +40,7 @@ public class IdopontfoglalasForm extends VerticalLayout {
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
 
-    public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie){
+    public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie, AdminService adminService){
         this.idopontfoglalasServie = idopontfoglalasServie;
         idopontokDatum = new DatePicker("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
@@ -53,6 +52,20 @@ public class IdopontfoglalasForm extends VerticalLayout {
 
         alapBeallitas();
 
+        //admin eszközök megjelenítése
+        try {
+            if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
+                alapAdminBeallitas();
+            }
+        }catch(Exception e){}
+
+    }
+
+    //admin eszközök megjelenítése
+    private void alapAdminBeallitas(){
+        // egy kiválasztott dátum nyitvatartásának módosítási lehetősége, egy új gomb segítségével, ami egy ablakot fog feldobni,
+        // amelyben be lehet állítani az adott napra hogy zárva/nyitva valamint a megszokottól eltérő nyitvatartást is
+        // ezeket az időpontokat egy különtáblában kell tárolini az adatbázisban, és az adatok betöltésekor ezt figyelembe kell venni.
     }
 
     private DatePicker.DatePickerI18n magyarDatumInit(){

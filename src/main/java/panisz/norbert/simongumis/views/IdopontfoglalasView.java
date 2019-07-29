@@ -19,7 +19,7 @@ public class IdopontfoglalasView extends BaseView {
 
     private void initializeView() {
         fomenu.getIdoponfoglalas().getStyle().set("color", "blue");
-        add(new IdopontfoglalasForm(idopontfoglalasServie));
+        add(new IdopontfoglalasForm(idopontfoglalasServie, adminService));
         setSizeFull();
     }
 }

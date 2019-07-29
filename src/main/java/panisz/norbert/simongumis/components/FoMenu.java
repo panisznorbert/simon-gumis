@@ -33,13 +33,15 @@ public class FoMenu extends VerticalLayout {
     public FoMenu(AdminService adminService){
         AppLayoutMenu menu = appLayout.createMenu();
 
-        //bejelentkezéshez kötött menüpontok
+
         menuElemeinekBeallitasa(menu, kezdolap);
         menuElemeinekBeallitasa(menu, szolgaltatasok);
         menuElemeinekBeallitasa(menu, gumik);
         menuElemeinekBeallitasa(menu, idoponfoglalas);
         menuElemeinekBeallitasa(menu, kosar);
 
+
+        //bejelentkezéshez kötött menüpontok
         try {
             if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
                 menuElemeinekBeallitasa(menu, gumikKezelese);

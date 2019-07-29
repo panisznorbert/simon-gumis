@@ -14,7 +14,7 @@ public class KezdolapView extends BaseView {
 
     private void initializeView() {
         fomenu.getKezdolap().getStyle().set("color", "blue");
-        add(new KezdolapForm());
+        add(new KezdolapForm(adminService));
         setSizeFull();
     }
 }
