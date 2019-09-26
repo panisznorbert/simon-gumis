@@ -2,9 +2,12 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
 import org.springframework.stereotype.Component;
+import panisz.norbert.simongumis.entities.UgyfelEntity;
 
 @Data
 @UIScope
@@ -15,14 +18,23 @@ public class UgyfelMezok extends HorizontalLayout {
     private TextField email = new TextField("E-mail:");
 
     public UgyfelMezok(){
-        nev.setRequired(true);
-        telefon.setRequired(true);
-        email.setRequired(true);
+        Binder<UgyfelEntity> binder = new Binder<>();
+        binder.forField(nev)
+                .asRequired("Kitöltendő")
+                .bind(UgyfelEntity::getNev, UgyfelEntity::setNev);
+        binder.forField(telefon)
+                .withValidator(telefon -> telefon.length() >= 9, "Hibás telefonszám")
+                .asRequired("Kitöltendő")
+                .bind(UgyfelEntity::getTelefon, UgyfelEntity::setTelefon);
+        binder.forField(email)
+                .withValidator(new EmailValidator("Hibás e-mail cím"))
+                .asRequired("Kitöltendő")
+                .bind(UgyfelEntity::getEmail, UgyfelEntity::setEmail);
         add(nev, telefon, email);
     }
 
     public boolean kitoltottseg(){
-        return nev.isInvalid() || telefon.isInvalid() || email.isInvalid() || nev.isEmpty() || telefon.isEmpty() || email.isEmpty();
+        return nev.isInvalid() || telefon.isInvalid() || email.isInvalid() || nev.isEmpty() || telefon.isEmpty() || email.isEmpty() || email.isPreventInvalidInput() || telefon.isPreventInvalidInput();
     }
 
     public void alaphelyzet(){
