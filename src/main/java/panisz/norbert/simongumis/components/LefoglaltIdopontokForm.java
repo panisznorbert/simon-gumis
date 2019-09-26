@@ -50,7 +50,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private Grid<IdopontfoglalasEntity> tablafeltolto(List<IdopontfoglalasEntity> foglalasok){
         sort(foglalasok);
-        tabla.addColumn(new LocalDateTimeRenderer<>(IdopontfoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont").setWidth("160px");
+        tabla.addColumn(new LocalDateTimeRenderer<>(IdopontfoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont").setWidth("180px");
         tabla.addColumn(TemplateRenderer.<IdopontfoglalasEntity> of(
                 "<div><small>Név: [[item.nev]]<br>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
                         .withProperty("nev",
@@ -59,7 +59,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
                                 foglalasEntity -> foglalasEntity.getUgyfel().getTelefon())
                         .withProperty("email",
                                 foglalasEntity -> foglalasEntity.getUgyfel().getEmail()),
-                "nev", "telefon", "email").setHeader("Ügyfél").setWidth("280px");
+                "nev", "telefon", "email").setHeader("Ügyfél").setWidth("260px");
         //Ha van megjegyzés egy ikon jelezze
         tabla.addColumn(new ComponentRenderer<>(e -> {
             Icon icon = new Icon(VaadinIcon.CLIPBOARD_TEXT);
