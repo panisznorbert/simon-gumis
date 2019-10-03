@@ -15,12 +15,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.entities.RendelesEntity;
-import panisz.norbert.simongumis.entities.RendelesStatusz;
-import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
+import panisz.norbert.simongumis.entities.*;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
+import panisz.norbert.simongumis.services.MegrendeltGumikService;
 import panisz.norbert.simongumis.services.RendelesService;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,6 +28,7 @@ import java.util.ArrayList;
 public class GumikForm extends VerticalLayout {
     private GumikService gumikService;
     private RendelesService rendelesService;
+    private MegrendeltGumikService megrendeltGumikService;
 
     private GumiKeresoMenu menu;
     private Grid<GumikEntity> gumik = new Grid<>();
@@ -37,10 +36,11 @@ public class GumikForm extends VerticalLayout {
 
     private FoMenu foMenu;
 
-    public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService, FoMenu foMenu){
+    public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService, FoMenu foMenu, MegrendeltGumikService megrendeltGumikService){
         this.gumikService = gumikService;
         this.rendelesService = rendelesService;
         this.foMenu = foMenu;
+        this.megrendeltGumikService=megrendeltGumikService;
         menu = new GumiKeresoMenu(gumiMeretekService);
         GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
@@ -98,11 +98,13 @@ public class GumikForm extends VerticalLayout {
 
     private void kosarbaRak(GumikEntity gumi, Integer darab){
         RendelesiEgysegEntity rendelesiEgyseg = new RendelesiEgysegEntity();
+        MegrendeltGumikEntity megrendeltGumikEntity = new MegrendeltGumikEntity();
         RendelesEntity rendeles = new RendelesEntity();
         rendeles.setStatusz(RendelesStatusz.KOSARBAN);
         rendeles.setSession(UI.getCurrent().getSession().getSession().getId());
         rendeles.setDatum(LocalDate.now());
-        rendelesiEgyseg.setGumi(gumi);
+
+        rendelesiEgyseg.setGumi(megrendeltGumikEntity.beallit(gumi));
         rendelesiEgyseg.setMennyiseg(darab);
         rendelesiEgyseg.setReszosszeg(gumi.getAr()*darab);
         boolean meglevo = false;

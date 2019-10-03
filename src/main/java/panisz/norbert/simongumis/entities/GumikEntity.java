@@ -14,7 +14,7 @@ import java.util.Objects;
 @Table(name = "gumik")
 public class GumikEntity extends BaseEntity {
     private String gyarto;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private GumiMeretekEntity meret;
     private Integer ar;
     private String evszak;
@@ -41,5 +41,20 @@ public class GumikEntity extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), gyarto, meret, evszak, allapot);
+    }
+
+    public GumikEntity beallit (MegrendeltGumikEntity megrendeltGumikEntity, int darab){
+        this.setAllapot(megrendeltGumikEntity.getAllapot());
+        this.setEvszak(megrendeltGumikEntity.getEvszak());
+        this.setGyarto(megrendeltGumikEntity.getGyarto());
+        this.setMennyisegRaktarban(darab);
+        this.setAr(megrendeltGumikEntity.getAr());
+        GumiMeretekEntity gumiMeretekEntity = new GumiMeretekEntity();
+        gumiMeretekEntity.setFelni(megrendeltGumikEntity.getMeretFelni());
+        gumiMeretekEntity.setProfil(megrendeltGumikEntity.getMeretProfil());
+        gumiMeretekEntity.setSzelesseg(megrendeltGumikEntity.getMeretSzelesseg());
+        this.setMeret(gumiMeretekEntity);
+
+        return this;
     }
 }

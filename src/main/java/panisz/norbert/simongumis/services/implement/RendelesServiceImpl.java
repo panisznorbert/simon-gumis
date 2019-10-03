@@ -4,11 +4,10 @@ import com.vaadin.flow.component.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import panisz.norbert.simongumis.entities.GumikEntity;
-import panisz.norbert.simongumis.entities.RendelesEntity;
-import panisz.norbert.simongumis.entities.RendelesStatusz;
-import panisz.norbert.simongumis.entities.RendelesiEgysegEntity;
+import panisz.norbert.simongumis.entities.*;
+import panisz.norbert.simongumis.repositories.GumiMeretekRepository;
 import panisz.norbert.simongumis.repositories.GumikRepository;
+import panisz.norbert.simongumis.repositories.MegrendeltGumikRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.services.RendelesService;
 import java.util.List;
@@ -20,6 +19,10 @@ public class RendelesServiceImpl implements RendelesService {
     RendelesRepository rendelesRepository;
     @Autowired
     GumikRepository gumikRepository;
+    @Autowired
+    MegrendeltGumikRepository megrendeltGumikRepository;
+    @Autowired
+    GumiMeretekRepository gumiMeretekRepository;
 
     @Override
     public List<RendelesEntity> osszes() {
@@ -40,14 +43,15 @@ public class RendelesServiceImpl implements RendelesService {
     public String mentKosarbol(RendelesEntity rendelesEntity) {
         //végső vizsgálat hogy a rendelésben szereplő gumikból a kívánt darabszám van-e raktáron
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
+            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getGumiId()).get();
             if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
                 return (rendelesiEgysegEntity.getGumi().toString() + " típusú gumiból, maximum " + gumikEntity.getMennyisegRaktarban().toString() + " db elérhető, de a rendelésében több szerepel!");
             }
         }
+
         //megrendelésnél a raktárkészlatből a gumik levonása
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
+            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getGumiId()).get();
             gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()-rendelesiEgysegEntity.getMennyiseg());
             try{
                 gumikRepository.save(gumikEntity);
@@ -71,11 +75,38 @@ public class RendelesServiceImpl implements RendelesService {
     public void rendelesTrolese(RendelesEntity rendelesEntity){
         rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getId()).get();
-            gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()+rendelesiEgysegEntity.getMennyiseg());
-            gumikRepository.save(gumikEntity);
+
+            GumikEntity gumikEntity = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapot(
+                    rendelesiEgysegEntity.getGumi().getGyarto(),
+                    rendelesiEgysegEntity.getGumi().getMeretSzelesseg(),
+                    rendelesiEgysegEntity.getGumi().getMeretProfil(),
+                    rendelesiEgysegEntity.getGumi().getMeretFelni(),
+                    rendelesiEgysegEntity.getGumi().getEvszak(),
+                    rendelesiEgysegEntity.getGumi().getAllapot()
+            );
+            //Amennyiben van ilyen gumi az adatbázisban visszateszi hozzá a darabszámot
+            if(gumikEntity!=null){
+                gumikEntity.setMennyisegRaktarban(gumikEntity.getMennyisegRaktarban()+rendelesiEgysegEntity.getMennyiseg());
+                gumikRepository.save(gumikEntity);
+            //Amennyiben nincs ilyen gumi az adatbázisban létrehozza
+            }else{
+                gumikEntity = new GumikEntity();
+                gumikEntity.beallit(rendelesiEgysegEntity.getGumi(), rendelesiEgysegEntity.getMennyiseg());
+
+                //vizsgálni hogy van-e már ilyen méret lementve és ha igen ne mentsunk még egyet le
+                GumiMeretekEntity meret = gumiMeretekRepository.findBySzelessegAndProfilAndFelni(
+                        gumikEntity.getMeret().getSzelesseg(),
+                        gumikEntity.getMeret().getProfil(),
+                        gumikEntity.getMeret().getFelni());
+                if(meret != null){
+                    gumikEntity.setMeret(meret);
+                }
+
+                gumikRepository.save(gumikEntity);
+
+            }
+
         }
-        rendelesRepository.save(rendelesEntity);
     }
 
     @Override

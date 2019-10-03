@@ -2,6 +2,8 @@ package panisz.norbert.simongumis.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -11,8 +13,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "rendelesi_egysegek")
 public class RendelesiEgysegEntity extends BaseEntity {
-    @OneToOne
-    private GumikEntity gumi;
+    @OneToOne(cascade = CascadeType.ALL)
+    private MegrendeltGumikEntity gumi;
     private Integer mennyiseg;
     private Integer reszosszeg;
 
@@ -20,4 +22,5 @@ public class RendelesiEgysegEntity extends BaseEntity {
     public String toString() {
         return gumi.toString() + ", " + mennyiseg + " db," + reszosszeg + " Ft";
     }
+
 }

@@ -12,15 +12,20 @@ import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.*;
+import panisz.norbert.simongumis.services.MegrendeltGumikService;
 import panisz.norbert.simongumis.services.RendelesService;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
 
 @UIScope
 @Component
 public class KosarForm extends VerticalLayout {
 
+    private final static Logger LOGGER = Logger.getLogger(KosarForm.class.getName());
+
     private static RendelesService alapRendelesService;
+    private MegrendeltGumikService megrendeltGumikService;
 
     private RendelesEntity rendelesEntity;
     private VerticalLayout tartalom = new VerticalLayout();
@@ -31,8 +36,9 @@ public class KosarForm extends VerticalLayout {
     private HorizontalLayout gombok = new HorizontalLayout(megrendeles);
     private TextField vegosszeg = new TextField("Végösszeg:");
 
-    public KosarForm(RendelesService rendelesService){
+    public KosarForm(RendelesService rendelesService, MegrendeltGumikService megrendeltGumikService){
         alapRendelesService = rendelesService;
+        this.megrendeltGumikService=megrendeltGumikService;
         this.setAlignItems(Alignment.CENTER);
         rendelesekTabla.setHeightByRows(true);
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");
@@ -43,6 +49,7 @@ public class KosarForm extends VerticalLayout {
         vegosszeg.setReadOnly(true);
 
         if(alapRendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
+            LOGGER.info("Kosar 1");
             rendelesEntity = alapRendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId());
             rendelesekTablaFeltolt(rendelesEntity.getRendelesiEgysegek());
             rendelesEntity.setVegosszeg(rendelesVegosszeg());
