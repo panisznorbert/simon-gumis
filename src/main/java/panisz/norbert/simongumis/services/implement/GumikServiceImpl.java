@@ -48,7 +48,7 @@ public class GumikServiceImpl implements GumikService {
         );
 
         if( mentettGumi != null && !mentettGumi.getId().equals(gumikEntity.getId())) {
-            throw new LetezoGumiException();
+            throw new LetezoGumiException(mentettGumi.getId());
         }
 
         return gumikRepository.save(gumikEntity);
@@ -60,4 +60,8 @@ public class GumikServiceImpl implements GumikService {
         gumikRepository.delete(gumikEntity);
     }
 
+    @Override
+    public GumikEntity idraKereses(Integer id) {
+        return gumikRepository.findGumikEntityById(id);
+    }
 }

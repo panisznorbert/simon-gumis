@@ -10,4 +10,6 @@ public interface GumikRepository extends JpaRepository<GumikEntity, Integer> {
 
     List<GumikEntity> findAllByMeretId(Integer id);
 
+    GumikEntity findGumikEntityById(Integer id);
+
 }

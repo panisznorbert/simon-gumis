@@ -17,9 +17,13 @@ import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumikService;
 
+import java.util.logging.Logger;
+
 @UIScope
 @Component
 public class GumikKezeleseForm extends VerticalLayout {
+
+    private final static Logger LOGGER = Logger.getLogger(GumikKezeleseForm.class.getName());
 
     private GumikService gumikService;
 
@@ -143,14 +147,37 @@ public class GumikKezeleseForm extends VerticalLayout {
         gumi.setAllapot(allapot.getValue());
         gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
 
+        kimentes(gumi);
+    }
+
+    private void kimentes(GumikEntity gumi){
         try{
             gumikService.ment(gumi);
             gumikTablaFrissit();
             mezokInit();
 
         }catch(LetezoGumiException ex){
+            Notification hibaAblak = new Hibajelzes("Ilyen gumi már létezik: " + gumi.toString());
+            Button hozzaad = new Button(gumi.getMennyisegRaktarban() + " db gumi hozzáadása");
+            hozzaad.addClickListener(e -> {
+                darabszamEmelese(Integer.valueOf(ex.getMessage()), gumi);
+                hibaAblak.close();
+            });
+            hibaAblak.add(hozzaad);
+            hibaAblak.open();
+        }catch(Exception ex) {
             Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();
+        }
+    }
+
+    private void darabszamEmelese(Integer id, GumikEntity gumi){
+        try{
+            gumi.setId(id);
+            gumi.setMennyisegRaktarban(gumi.getMennyisegRaktarban() + gumikService.idraKereses(id).getMennyisegRaktarban());
+            gumikService.ment(gumi);
+            gumikTablaFrissit();
+            mezokInit();
         }catch(Exception ex) {
             Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();
@@ -216,17 +243,11 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkeszto gumiSzerkeszto){
         String leiras = gumiSzerkeszto.validacio();
-        GumikEntity gumi = new GumikEntity();
-        if(leiras == null){
-            gumi = gumiSzerkeszto.beallit(gumikEntity);
-        }
 
-        try{
-            gumikService.ment(gumi);
-            gridRefresh();
-            this.gumiSzerkeszto.close();
-        }catch(Exception ex){
-            Notification hibaAblak = new Hibajelzes(ex.getMessage());
+        if(leiras == null){
+            kimentes(gumiSzerkeszto.beallit(gumikEntity));
+        }else{
+            Notification hibaAblak = new Hibajelzes(leiras);
             hibaAblak.open();
         }
 
