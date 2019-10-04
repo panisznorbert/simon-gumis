@@ -14,6 +14,6 @@ public class Hibajelzes extends Notification {
         add(tartalom);
         kilep.addClickListener(event -> close());
         this.setPosition(Notification.Position.MIDDLE);
-        this.setDuration(6000);
+        this.setDuration(10000);
     }
 }

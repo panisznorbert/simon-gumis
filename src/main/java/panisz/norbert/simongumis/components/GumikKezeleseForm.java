@@ -34,7 +34,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     private VerticalLayout adatokMegjelenites = new VerticalLayout();
 
     private Button hozzaad  = new Button("Hozzáad");
-    private Button torol  = new Button("Töröl");
+    private Button torol  = new Button("Mezők törlése");
 
     private Grid<GumikEntity> grid = new Grid<>();
 
@@ -57,6 +57,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         hozzaad.addClickListener(e -> ment());
         torol.addClickListener(e -> mezokInit());
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
+        grid.addItemClickListener(e -> sorkivalasztas(e.getItem()));
         init();
 
     }
@@ -100,6 +101,17 @@ public class GumikKezeleseForm extends VerticalLayout {
         contextMenu.addItem("Szerkeszt", event -> szerkesztes(event.getItem().get()));
         contextMenu.addItem("Töröl", event -> torles(event.getItem().get()));
 
+    }
+
+    private void sorkivalasztas(GumikEntity gumikEntity){
+        gyarto.setValue(gumikEntity.getGyarto());
+        meret1.setValue(gumikEntity.getMeret().getSzelesseg().toString());
+        meret2.setValue(gumikEntity.getMeret().getProfil().toString());
+        meret3.setValue(gumikEntity.getMeret().getFelni().toString());
+        evszak.setValue(gumikEntity.getEvszak());
+        allapot.setValue(gumikEntity.getAllapot());
+        ar.setValue(gumikEntity.getAr().toString());
+        darab.setValue(gumikEntity.getMennyisegRaktarban().toString());
     }
 
     private void torles(GumikEntity gumikEntity){
