@@ -107,6 +107,7 @@ public class RendelesServiceImpl implements RendelesService {
             }
 
         }
+        rendelesRepository.save(rendelesEntity);
     }
 
     @Override
