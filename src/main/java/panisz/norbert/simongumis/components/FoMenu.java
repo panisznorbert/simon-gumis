@@ -28,6 +28,7 @@ public class FoMenu extends VerticalLayout {
     private AppLayoutMenuItem gumikKezelese = new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e ->  UI.getCurrent().navigate("gumik_kezelese"));
     private AppLayoutMenuItem szolgaltatasok = new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> UI.getCurrent().navigate("szolgaltatasok"));
     private AppLayoutMenuItem kezdolap = new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate(""));
+    private AppLayoutMenuItem beallitasok = new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Beállítások", e -> UI.getCurrent().navigate("beallitasok"));
 
 
     public FoMenu(AdminService adminService){
@@ -47,6 +48,7 @@ public class FoMenu extends VerticalLayout {
                 menuElemeinekBeallitasa(menu, gumikKezelese);
                 menuElemeinekBeallitasa(menu, lefoglaltIdopontok);
                 menuElemeinekBeallitasa(menu, rendelesek);
+                menuElemeinekBeallitasa(menu, beallitasok);
             }
         }catch(Exception e){}
 
