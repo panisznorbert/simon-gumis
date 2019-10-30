@@ -4,7 +4,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -13,7 +12,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontfoglalasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
-import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.IdopontfoglalasServie;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -40,51 +38,18 @@ public class IdopontfoglalasForm extends VerticalLayout {
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
 
-    public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie, AdminService adminService){
+    public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie){
         this.idopontfoglalasServie = idopontfoglalasServie;
-        idopontokDatum = new DatePicker("Dátum:");
+        idopontokDatum = new MagyarDatum("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
         add(idopontok, ugyfelAdatok, egyeb, gombsor);
         this.setAlignItems(Alignment.CENTER);
         idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue()));
         foglal.addClickListener(e -> idopontFoglalas());
-
         alapBeallitas();
 
-        //admin eszközök megjelenítése
-        try {
-            if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
-                alapAdminBeallitas();
-            }
-        }catch(Exception e){}
-
     }
-
-    //admin eszközök megjelenítése
-    private void alapAdminBeallitas(){
-        // egy kiválasztott dátum nyitvatartásának módosítási lehetősége, egy új gomb segítségével, ami egy ablakot fog feldobni,
-        // amelyben be lehet állítani az adott napra hogy zárva/nyitva valamint a megszokottól eltérő nyitvatartást is
-        // ezeket az időpontokat egy különtáblában kell tárolini az adatbázisban, és az adatok betöltésekor ezt figyelembe kell venni.
-    }
-
-    private DatePicker.DatePickerI18n magyarDatumInit(){
-        DatePicker.DatePickerI18n magyarDatum = new DatePicker.DatePickerI18n();
-        magyarDatum.setCalendar("Kalendárium");
-        magyarDatum.setCancel("Mégse");
-        magyarDatum.setClear("Ürít");
-        magyarDatum.setFirstDayOfWeek(1);
-        String[] honap = {"Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"};
-        magyarDatum.setMonthNames(Arrays.asList(honap));
-        magyarDatum.setToday("Ma");
-        magyarDatum.setWeek("Hét");
-        String[] nap = {"Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"};
-        magyarDatum.setWeekdays(Arrays.asList(nap));
-        String[] napRov = {"Va", "Hé", "Ke", "Sze", "Csü", "Pé", "Szo"};
-        magyarDatum.setWeekdaysShort(Arrays.asList(napRov));
-        return magyarDatum;
-    }
-
 
 
     private void alapBeallitas(){
@@ -100,7 +65,6 @@ public class IdopontfoglalasForm extends VerticalLayout {
         }
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
-        idopontokDatum.setI18n(magyarDatumInit());
         ugyfelAdatok.alaphelyzet();
     }
 
@@ -116,6 +80,9 @@ public class IdopontfoglalasForm extends VerticalLayout {
     }
 
     private void orakFeltoltese(LocalDate kivalasztottDatum){
+        //*********************************************************
+        // ellenőrizni, hogy nincs-e megadva nyitvatartás módosítás
+        //*********************************************************
         idopontok.remove(foglalhatoOrak);
         if(DayOfWeek.SUNDAY.equals(kivalasztottDatum.getDayOfWeek())){
             idopontokDatum.setInvalid(true);
