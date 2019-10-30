@@ -11,8 +11,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontfoglalasEntity;
+import panisz.norbert.simongumis.entities.NyitvatartasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.services.IdopontfoglalasServie;
+import panisz.norbert.simongumis.services.NyitvatartasService;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,39 +40,40 @@ public class IdopontfoglalasForm extends VerticalLayout {
     private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
 
 
-    public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie){
+    public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie, NyitvatartasService nyitvatartasService){
         this.idopontfoglalasServie = idopontfoglalasServie;
         idopontokDatum = new MagyarDatum("Dátum:");
         foglalhatoOrak = new ComboBox<>("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
         add(idopontok, ugyfelAdatok, egyeb, gombsor);
         this.setAlignItems(Alignment.CENTER);
-        idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue()));
+        idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue(), nyitvatartasService));
         foglal.addClickListener(e -> idopontFoglalas());
-        alapBeallitas();
+        alapBeallitas(nyitvatartasService);
 
     }
 
 
-    private void alapBeallitas(){
+    private void alapBeallitas(NyitvatartasService nyitvatartasService){
         megjegyzes.setValue("");
         if(LocalTime.now().isBefore(LocalTime.of(16, 30))){
             idopontokDatum.setMin(LocalDate.now());
             idopontokDatum.setValue(LocalDate.now());
-            orakFeltoltese(LocalDate.now());
+            orakFeltoltese(LocalDate.now(), nyitvatartasService);
         }else{
             idopontokDatum.setMin(LocalDate.now().plusDays(1));
             idopontokDatum.setValue(LocalDate.now().plusDays(1));
-            orakFeltoltese(LocalDate.now().plusDays(1));
+            orakFeltoltese(LocalDate.now().plusDays(1), nyitvatartasService);
         }
         idopontokDatum.setRequired(true);
         foglalhatoOrak.setRequired(true);
         ugyfelAdatok.alaphelyzet();
     }
 
-    private void kivalasztottDatum(LocalDate kivalasztottDatum){
+    private void kivalasztottDatum(LocalDate kivalasztottDatum, NyitvatartasService nyitvatartasService){
+        foglal.setEnabled(true);
         if(!idopontokDatum.isInvalid()){
-            orakFeltoltese(kivalasztottDatum);
+            orakFeltoltese(kivalasztottDatum, nyitvatartasService);
             return;
         }
 
@@ -79,29 +82,69 @@ public class IdopontfoglalasForm extends VerticalLayout {
 
     }
 
-    private void orakFeltoltese(LocalDate kivalasztottDatum){
-        //*********************************************************
-        // ellenőrizni, hogy nincs-e megadva nyitvatartás módosítás
-        //*********************************************************
+    private void orakFeltoltese(LocalDate kivalasztottDatum, NyitvatartasService nyitvatartasService){
         idopontok.remove(foglalhatoOrak);
         if(DayOfWeek.SUNDAY.equals(kivalasztottDatum.getDayOfWeek())){
             idopontokDatum.setInvalid(true);
             Notification hibaAblak = new Hibajelzes("Vasárnap zárva vagyunk.");
             hibaAblak.open();
+            foglal.setEnabled(false);
             return;
         }
 
-        List<LocalTime> orak = new ArrayList<>();
+        int munkaidoKezdete = 7;
         int munkaidoVege = 17;
+
+        LocalDate viszonyitasDate = LocalDate.now();
+        LocalTime viszonyitasTime = LocalTime.now();
+
+
+        //szombaton csak délig van nyitva
         if (DayOfWeek.SATURDAY.equals(kivalasztottDatum.getDayOfWeek())) {
-                munkaidoVege = 12;
+            munkaidoVege = 12;
+        }
+
+        //Amennyiben van eltérő nyitvatartás az kerül beállításra
+        boolean nyitvatartasFelig = false;
+        NyitvatartasEntity nyitvatartasEntity = nyitvatartasService.adottNapNyitvatartasa(kivalasztottDatum);
+        if(nyitvatartasEntity != null){
+            if(!nyitvatartasEntity.isNyitva()) {
+                idopontokDatum.setInvalid(true);
+                Notification hibaAblak = new Hibajelzes(nyitvatartasEntity.toString() + " vagyunk");
+                hibaAblak.open();
+                return;
             }
-        for (int i = 7; i < munkaidoVege; i++) {
-            if (idopontfoglalasServie.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 0))))) {
+
+            viszonyitasDate = nyitvatartasEntity.getDatum();
+            viszonyitasTime = nyitvatartasEntity.getNyitas();
+
+            munkaidoKezdete = nyitvatartasEntity.getNyitas().getHour();
+            munkaidoVege = nyitvatartasEntity.getZaras().getHour();
+
+            if(nyitvatartasEntity.getZaras().getMinute() == 30){
+                nyitvatartasFelig = true;
+            }
+
+        }
+
+        List<LocalTime> orak = new ArrayList<>();
+
+        if(LocalDate.now().equals(viszonyitasDate) && LocalTime.now().isAfter(viszonyitasTime)){
+            viszonyitasTime = LocalTime.now();
+        }
+
+        for (int i = munkaidoKezdete; i < munkaidoVege; i++) {
+            if (idopontfoglalasServie.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 0))) == null && !(viszonyitasDate.equals(kivalasztottDatum) && (viszonyitasTime.isAfter(LocalTime.of(i, 0)))) ) {
                 orak.add(LocalTime.of(i, 0));
             }
-            if (idopontfoglalasServie.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(LocalDate.now().equals(kivalasztottDatum) && (LocalTime.now().isAfter(LocalTime.of(i, 30))))) {
+            if (idopontfoglalasServie.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(i, 30))) == null && !(viszonyitasDate.equals(kivalasztottDatum) && (viszonyitasTime.isAfter(LocalTime.of(i, 30))))) {
                 orak.add(LocalTime.of(i, 30));
+            }
+        }
+
+        if(nyitvatartasFelig){
+            if (idopontfoglalasServie.keresesDatumra(LocalDateTime.of(kivalasztottDatum, LocalTime.of(munkaidoVege, 0))) == null && !(viszonyitasDate.equals(kivalasztottDatum) && (viszonyitasTime.isAfter(LocalTime.of(munkaidoVege, 0))))) {
+                orak.add(LocalTime.of(munkaidoVege, 0));
             }
         }
         Collections.sort(orak);

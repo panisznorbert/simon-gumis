@@ -15,6 +15,7 @@ public class NyitvatartasEntity  extends BaseEntity implements Comparable<Nyitva
     private LocalDate datum;
     private LocalTime nyitas;
     private LocalTime zaras;
+    private boolean nyitva;
 
     @Override
     public int compareTo(NyitvatartasEntity nyitvatartasEntity) {
@@ -23,6 +24,12 @@ public class NyitvatartasEntity  extends BaseEntity implements Comparable<Nyitva
 
     @Override
     public String toString() {
-        return datum.toString() + ": " + nyitas + " - " + zaras;
+        if(nyitva){
+            return datum.toString() + ": " + nyitas + " - " + zaras;
+        }else{
+            return datum.toString() + ": " +"zárva";
+        }
+
+
     }
 }

@@ -3,7 +3,7 @@ package panisz.norbert.simongumis.views;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.components.BeallitasokForm;
-import panisz.norbert.simongumis.services.IdopontfoglalasServie;
+import panisz.norbert.simongumis.services.NyitvatartasService;
 
 import javax.annotation.PostConstruct;
 
@@ -11,14 +11,15 @@ import javax.annotation.PostConstruct;
 public class BeallitasokView extends BaseView {
 
     @Autowired
-    private IdopontfoglalasServie idopontfoglalasServie;
+    private NyitvatartasService nyitvatartasService;
 
     @PostConstruct
     public void init() { this.initializeView();
     }
 
     private void initializeView() {
-        add(new BeallitasokForm());
+        fomenu.getBeallitasok().getStyle().set("color", "blue");
+        add(new BeallitasokForm(nyitvatartasService));
         setSizeFull();
     }
 }
