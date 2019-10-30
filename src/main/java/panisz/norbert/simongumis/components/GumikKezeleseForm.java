@@ -29,12 +29,10 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private VerticalLayout layout = new VerticalLayout();
 
-    private HorizontalLayout gombok = new HorizontalLayout();
-    private HorizontalLayout adatokBevitel = new HorizontalLayout();
+    private VerticalLayout adatokBevitel = new VerticalLayout();
     private VerticalLayout adatokMegjelenites = new VerticalLayout();
 
     private Button hozzaad  = new Button("Hozzáad");
-    private Button torol  = new Button("Mezők törlése");
 
     private Grid<GumikEntity> grid = new Grid<>();
 
@@ -49,19 +47,17 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private Dialog gumiSzerkeszto;
 
-
     public GumikKezeleseForm(GumikService gumikService){
+
+        this.getStyle().set("width", "80%");
+        this.getStyle().set("padding-left", "20%");
         this.gumikService = gumikService;
-        this.setAlignItems(Alignment.CENTER);
         grid.setHeightByRows(true);
         hozzaad.addClickListener(e -> ment());
-        torol.addClickListener(e -> mezokInit());
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
         grid.addItemClickListener(e -> sorkivalasztas(e.getItem()));
         init();
-
     }
-
 
     private void init(){
         ar.setPattern("\\d*(\\.\\d*)?");
@@ -69,7 +65,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         ar.setSuffixComponent(new Span("Ft"));
         darab.setPattern("[0-9]*");
         darab.setPreventInvalidInput(true);
-        darab.setSuffixComponent(new Span("Db"));
+        darab.setSuffixComponent(new Span("Darab"));
         evszak.setValue("Nyári");
         allapot.setValue("Új");
 
@@ -84,23 +80,23 @@ public class GumikKezeleseForm extends VerticalLayout {
 
         gumikTablaInit();
 
-        gombok.add(hozzaad, torol);
-        adatokBevitel.add(gyarto, meret1, meret2, meret3, evszak, allapot, ar, darab);
-        adatokBevitel.setHeight("100px");
+        HorizontalLayout menusor1 = new HorizontalLayout(gyarto, meret1, meret2, meret3, evszak, allapot);
+        HorizontalLayout menusor2 = new HorizontalLayout(ar, darab, hozzaad);
+        menusor2.setAlignItems(Alignment.BASELINE);
+        adatokBevitel.add(menusor1, menusor2);
+        adatokBevitel.setHeight("200px");
         adatokMegjelenites.add(grid);
-        layout.add(gombok, adatokBevitel, adatokMegjelenites);
+        layout.add(adatokBevitel, adatokMegjelenites);
         add(layout);
 
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         gridhezMenu();
-
     }
 
     private void gridhezMenu(){
         GridContextMenu<GumikEntity> contextMenu = new GridContextMenu<>(grid);
         contextMenu.addItem("Szerkeszt", event -> szerkesztes(event.getItem().get()));
         contextMenu.addItem("Töröl", event -> torles(event.getItem().get()));
-
     }
 
     private void sorkivalasztas(GumikEntity gumikEntity){
@@ -134,7 +130,6 @@ public class GumikKezeleseForm extends VerticalLayout {
         megse.addClickListener(e -> gumiSzerkeszto.close());
         ment.addClickListener(e -> szerkesztesMentese(gumikEntity, adatok));
         gumiSzerkeszto.open();
-
     }
 
     private void ment(){
@@ -216,13 +211,13 @@ public class GumikKezeleseForm extends VerticalLayout {
         if(darab.isEmpty()){
             return("Minden mező kitöltése kötelező!");
         }
-        if(meret1.isEmpty() || Integer.valueOf(meret1.getValue())<135 || Integer.valueOf(meret1.getValue())>315 || (Integer.valueOf(meret1.getValue())%5)!=0 || (Integer.valueOf(meret1.getValue())%10)==0){
+        if(meret1.isEmpty() || Integer.parseInt(meret1.getValue())<135 || Integer.parseInt(meret1.getValue())>315 || (Integer.parseInt(meret1.getValue())%5)!=0 || (Integer.parseInt(meret1.getValue())%10)==0){
             return("A méret-szélesség hibásan lett megadva!");
         }
-        if(meret2.isEmpty() || Integer.valueOf(meret2.getValue())<25 || Integer.valueOf(meret2.getValue())>80 || (Integer.valueOf(meret2.getValue())%5)!=0){
+        if(meret2.isEmpty() || Integer.parseInt(meret2.getValue())<25 || Integer.parseInt(meret2.getValue())>80 || (Integer.parseInt(meret2.getValue())%5)!=0){
             return("A méret-profil hibásan lett megadva!");
         }
-        if(meret3.isEmpty() || Integer.valueOf(meret3.getValue())<10 || Integer.valueOf(meret3.getValue())>21 ){
+        if(meret3.isEmpty() || Integer.parseInt(meret3.getValue())<10 || Integer.parseInt(meret3.getValue())>21 ){
             return("A méret-felni átmérő hibásan lett megadva!");
         }
 

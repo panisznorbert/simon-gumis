@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.components.GumikForm;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
-import panisz.norbert.simongumis.services.MegrendeltGumikService;
 
 import javax.annotation.PostConstruct;
 
@@ -18,16 +17,13 @@ public class GumikView extends BaseView {
     @Autowired
     private GumiMeretekService gumiMeretekService;
 
-    @Autowired
-    private MegrendeltGumikService megrendeltGumikService;
-
     @PostConstruct
     public void init() { this.initializeView();
     }
 
     private void initializeView() {
         fomenu.getGumik().getStyle().set("color", "blue");
-        add(new GumikForm(gumikService, rendelesService, gumiMeretekService, fomenu, megrendeltGumikService));
+        add(new GumikForm(gumikService, rendelesService, gumiMeretekService, fomenu));
         setSizeFull();
     }
 
