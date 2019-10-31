@@ -13,7 +13,7 @@ public class RendelesekView extends BaseView {
     }
 
     private void initializeView() {
-        fomenu.getRendelesek().getStyle().set("color", "blue");
+        fomenu.getRendelesek().getStyle().set("color", "#75f3f9");
         add(new RendelesekForm(rendelesService));
         setSizeFull();
     }

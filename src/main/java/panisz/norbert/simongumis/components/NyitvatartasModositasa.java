@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -139,6 +140,7 @@ public class NyitvatartasModositasa extends VerticalLayout {
 
         try{
             alapNyitvatartasService.ment(nyitvatartasEntity);
+            UI.getCurrent().getPage().reload();
         }catch(Exception ex){
             Notification hiba = new Hibajelzes("Sikertelen mentés, próbálja újra");
             hiba.open();
@@ -163,6 +165,7 @@ public class NyitvatartasModositasa extends VerticalLayout {
         nyitvatartasEntity.setNyitva(false);
         try{
             alapNyitvatartasService.ment(nyitvatartasEntity);
+            UI.getCurrent().getPage().reload();
         }catch(Exception ex){
             Notification hiba = new Hibajelzes("Sikertelen mentés, próbálja újra");
             hiba.open();

@@ -22,7 +22,7 @@ public class IdopontfoglalasView extends BaseView {
     }
 
     private void initializeView() {
-        fomenu.getIdoponfoglalas().getStyle().set("color", "blue");
+        fomenu.getIdoponfoglalas().getStyle().set("color", "#75f3f9");
         add(new IdopontfoglalasForm(idopontfoglalasServie, nyitvatartasService));
         setSizeFull();
     }

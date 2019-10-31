@@ -18,7 +18,7 @@ public class BeallitasokView extends BaseView {
     }
 
     private void initializeView() {
-        fomenu.getBeallitasok().getStyle().set("color", "blue");
+        fomenu.getBeallitasok().getStyle().set("color", "#75f3f9");
         add(new BeallitasokForm(nyitvatartasService));
         setSizeFull();
     }

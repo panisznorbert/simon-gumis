@@ -11,7 +11,7 @@ public class SzolgaltatsokView extends BaseView {
     }
 
     private void initializeView() {
-        fomenu.getSzolgaltatasok().getStyle().set("color", "blue");
+        fomenu.getSzolgaltatasok().getStyle().set("color", "#75f3f9");
         add(new SzolgaltatsokForm());
         setSizeFull();
     }
