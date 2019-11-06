@@ -167,7 +167,11 @@ public class IdopontfoglalasForm extends VerticalLayout {
         }
 
         if(orak.isEmpty()){
-            hibaAblak = new Hibajelzes("A kiválasztott napra már nincs szabad időpont.");
+            if(kivalasztottDatum.equals(LocalDate.now())){
+                hibaAblak = new Hibajelzes("A mai napra már nincs szabad időpont.");
+            }else {
+                hibaAblak = new Hibajelzes("A kiválasztott napra már nincs szabad időpont.");
+            }
             hibaAblak.open();
             foglalhatoOrak.setVisible(false);
             return;
