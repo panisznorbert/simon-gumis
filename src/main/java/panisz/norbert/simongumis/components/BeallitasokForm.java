@@ -12,9 +12,12 @@ public class BeallitasokForm extends VerticalLayout {
 
     private VerticalLayout nyitvatartasModositasa;
 
+    private VerticalLayout kezdolapKepModositasa;
+
     public BeallitasokForm(NyitvatartasService nyitvatartasService){
         nyitvatartasModositasa = new NyitvatartasModositasa(nyitvatartasService);
-        add(nyitvatartasModositasa);
+        kezdolapKepModositasa = new KezdoKepModositasa();
+        add(nyitvatartasModositasa, kezdolapKepModositasa);
 
     }
 
