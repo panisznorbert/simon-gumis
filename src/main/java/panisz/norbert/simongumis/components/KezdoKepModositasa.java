@@ -2,6 +2,7 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -18,13 +19,16 @@ public class KezdoKepModositasa extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(KezdoKepModositasa.class.getName());
 
-    public KezdoKepModositasa(){
-        Button ment = new Button("Ment");
+    private MemoryBuffer memoryBuffer = new MemoryBuffer();
+    private Upload imgUpload;
+    private Button ment = new Button("Ment");
 
+    private HorizontalLayout feltoltes = new HorizontalLayout();
+
+    public KezdoKepModositasa(){
         Label kezdoKepModositasa = new Label("Kezdőképernyőn lévő szórólap módosítása:");
 
-        MemoryBuffer memoryBuffer = new MemoryBuffer();
-        Upload imgUpload = new Upload(memoryBuffer);
+        uploadInit();
 
         imgUpload.addStartedListener(e -> {
             System.out.println("Handling upload of " + e.getFileName()
@@ -41,19 +45,39 @@ public class KezdoKepModositasa extends VerticalLayout {
         });
 
         ment.addClickListener(e -> {
+            Notification hibaAblak;
+            String uzenet = "A kép frissítése sikeresen megtörtént.";;
             try {
                 File output = new File("src/main/resources/META-INF/resources/images/borito.png");
                 FileUtils.copyInputStreamToFile(memoryBuffer.getInputStream(), output);
+                uploadInit();
+                feltoltes.remove(imgUpload, ment);
+                feltoltes.add(imgUpload, ment);
+
             } catch (Exception ex) {
-                LOGGER.info("upload error: " + ex.getMessage());
+
+                uzenet = "A kép frissítése sikertelen.";
+            }finally {
+
             }
+            hibaAblak = new Hibajelzes(uzenet);
+            hibaAblak.open();
+
         });
 
         this.setAlignItems(Alignment.CENTER);
 
-        HorizontalLayout feltoltes = new HorizontalLayout(imgUpload, ment);
         feltoltes.setAlignItems(Alignment.BASELINE);
 
         add(kezdoKepModositasa, feltoltes);
+    }
+
+    private void uploadInit(){
+        feltoltes.removeAll();
+        imgUpload = new Upload(memoryBuffer);
+        imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+        imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
+        imgUpload.setUploadButton(new Button("Tallóz"));
+        feltoltes.add(imgUpload, ment);
     }
 }
