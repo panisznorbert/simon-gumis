@@ -57,8 +57,6 @@ public class KezdoKepModositasa extends VerticalLayout {
             } catch (Exception ex) {
 
                 uzenet = "A kép frissítése sikertelen.";
-            }finally {
-
             }
             hibaAblak = new Hibajelzes(uzenet);
             hibaAblak.open();
