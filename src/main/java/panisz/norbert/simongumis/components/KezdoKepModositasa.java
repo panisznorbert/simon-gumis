@@ -26,32 +26,26 @@ public class KezdoKepModositasa extends VerticalLayout {
         MemoryBuffer memoryBuffer = new MemoryBuffer();
         Upload imgUpload = new Upload(memoryBuffer);
 
-
         imgUpload.addStartedListener(e -> {
             System.out.println("Handling upload of " + e.getFileName()
                     + " (" + e.getContentLength() + " bytes) started");
         });
+
         imgUpload.addFinishedListener(e -> {
             System.out.println("Handling upload of " + e.getFileName()
                     + " (" + e.getContentLength() + " bytes) finished");
         });
+
         imgUpload.addSucceededListener(e -> {
             System.out.println("Succeeded Upload of " + e.getFileName());
-
         });
 
-
         ment.addClickListener(e -> {
-
             try {
-
                 File output = new File("src/main/resources/META-INF/resources/images/borito.png");
                 FileUtils.copyInputStreamToFile(memoryBuffer.getInputStream(), output);
-
             } catch (Exception ex) {
                 LOGGER.info("upload error: " + ex.getMessage());
-
-
             }
         });
 
@@ -59,7 +53,6 @@ public class KezdoKepModositasa extends VerticalLayout {
 
         HorizontalLayout feltoltes = new HorizontalLayout(imgUpload, ment);
         feltoltes.setAlignItems(Alignment.BASELINE);
-
 
         add(kezdoKepModositasa, feltoltes);
     }
