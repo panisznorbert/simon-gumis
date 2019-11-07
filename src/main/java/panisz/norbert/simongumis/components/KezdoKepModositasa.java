@@ -1,6 +1,7 @@
 package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -20,6 +21,7 @@ public class KezdoKepModositasa extends VerticalLayout {
     public KezdoKepModositasa(){
         Button ment = new Button("Ment");
 
+        Label kezdoKepModositasa = new Label("Kezdőképernyőn lévő szórólap módosítása:");
 
         MemoryBuffer memoryBuffer = new MemoryBuffer();
         Upload imgUpload = new Upload(memoryBuffer);
@@ -53,9 +55,12 @@ public class KezdoKepModositasa extends VerticalLayout {
             }
         });
 
-        HorizontalLayout feltoltes = new HorizontalLayout();
-        feltoltes.add(imgUpload, ment);
+        this.setAlignItems(Alignment.CENTER);
 
-        add(feltoltes);
+        HorizontalLayout feltoltes = new HorizontalLayout(imgUpload, ment);
+        feltoltes.setAlignItems(Alignment.BASELINE);
+
+
+        add(kezdoKepModositasa, feltoltes);
     }
 }
