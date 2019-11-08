@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.components;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
+import panisz.norbert.simongumis.services.KezdolapTartalomService;
 import panisz.norbert.simongumis.services.NyitvatartasService;
 
 
@@ -10,16 +11,12 @@ import panisz.norbert.simongumis.services.NyitvatartasService;
 @Component
 public class BeallitasokForm extends VerticalLayout {
 
-    private VerticalLayout nyitvatartasModositasa;
-
-    private VerticalLayout kezdolapKepModositasa;
-
-    public BeallitasokForm(NyitvatartasService nyitvatartasService){
-        nyitvatartasModositasa = new NyitvatartasModositasa(nyitvatartasService);
-        kezdolapKepModositasa = new KezdoKepModositasa();
-        add(nyitvatartasModositasa, kezdolapKepModositasa);
+    public BeallitasokForm(NyitvatartasService nyitvatartasService, KezdolapTartalomService kezdolapTartalomService){
+        VerticalLayout nyitvatartasModositasa = new NyitvatartasModositasa(nyitvatartasService);
+        VerticalLayout kezdolapKepModositasa = new SzorolapModositasa(kezdolapTartalomService);
+        VerticalLayout kezdolapTartalmanakModositasa = new KezdolapTartalomKezelese(kezdolapTartalomService);
+        add(nyitvatartasModositasa, kezdolapKepModositasa, kezdolapTartalmanakModositasa);
 
     }
-
 
 }

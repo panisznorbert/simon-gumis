@@ -43,7 +43,7 @@ public class GumikEntity extends BaseEntity {
         return Objects.hash(super.hashCode(), gyarto, meret, evszak, allapot);
     }
 
-    public GumikEntity beallit (MegrendeltGumikEntity megrendeltGumikEntity, int darab){
+    public void beallit (MegrendeltGumikEntity megrendeltGumikEntity, int darab){
         this.setAllapot(megrendeltGumikEntity.getAllapot());
         this.setEvszak(megrendeltGumikEntity.getEvszak());
         this.setGyarto(megrendeltGumikEntity.getGyarto());
@@ -54,7 +54,5 @@ public class GumikEntity extends BaseEntity {
         gumiMeretekEntity.setProfil(megrendeltGumikEntity.getMeretProfil());
         gumiMeretekEntity.setSzelesseg(megrendeltGumikEntity.getMeretSzelesseg());
         this.setMeret(gumiMeretekEntity);
-
-        return this;
     }
 }

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "megrendelt_gumik")
-public class MegrendeltGumikEntity extends BaseEntity implements Comparable<IdopontfoglalasEntity>{
+public class MegrendeltGumikEntity extends BaseEntity {
 
     private int gumiId;
     private String gyarto;
@@ -19,11 +19,6 @@ public class MegrendeltGumikEntity extends BaseEntity implements Comparable<Idop
     private Integer ar;
     private String evszak;
     private String allapot;
-
-    @Override
-    public int compareTo(IdopontfoglalasEntity idopontfoglalasEntity) {
-        return 0;
-    }
 
     @Override
     public String toString() {

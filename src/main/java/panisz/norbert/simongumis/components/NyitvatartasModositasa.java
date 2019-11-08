@@ -60,8 +60,8 @@ public class NyitvatartasModositasa extends VerticalLayout {
         Button nyitvatartas = new Button("Nyitvatartás módosítása");
         Button zarva = new Button("Zárva");
         HorizontalLayout gombsor = new HorizontalLayout(nyitvatartas, zarva);
-        Label nyitvatartasModositoCim = new Label("Nyitvatartás módosítása:");
-        this.add(nyitvatartasModositoCim, new HorizontalLayout(datum, tol, ig), informacio, gombsor);
+        Label cim = new Label("Nyitvatartás módosítása:");
+        this.add(cim, new HorizontalLayout(datum, tol, ig), informacio, gombsor);
         nyitvatartas.addClickListener(e -> nyitvatartasMentese());
         zarva.addClickListener(e -> zarvaMentese());
     }
