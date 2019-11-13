@@ -82,31 +82,14 @@ public class SzorolapModositasa extends VerticalLayout {
         }
 
         try{
-            ujSzorolap.setKep(memoryBuffer.getInputStream().readAllBytes());
-            //kezdolapTartalomService.ment(ujSzorolap);
-        }catch (Exception ex) {
-            uzenet = "A kép megnyitása sikertelen 1.";
-        }
-
-        try{
-            //kezdolapTartalomEntity.setKep(memoryBuffer.getInputStream().readAllBytes());
             kezdolapTartalomService.ment(ujSzorolap);
+            ujSzorolap.setKep(memoryBuffer.getInputStream().readAllBytes());
         }catch (Exception ex) {
-            uzenet = "A kép megnyitása sikertelen 2.";
+            uzenet = "A kép mentése sikertelen";
         }
 
-        /* Alap megoldás, ami local mappába dolgozik, de ez nem jó mert runtime-ban nem módosul a változás
-        try {
-            File output = new File("src/main/resources/META-INF/resources/images/borito.png");
-            FileUtils.copyInputStreamToFile(memoryBuffer.getInputStream(), output);
-            uploadInit();
-            feltoltes.remove(imgUpload);
-            feltoltes.add(imgUpload);
-        } catch (Exception ex) {
-            uzenet = "A kép frissítése sikertelen.";
-        }
-        */
 
+        uploadInit();
         hibaAblak = new Hibajelzes(uzenet);
         hibaAblak.open();
     }

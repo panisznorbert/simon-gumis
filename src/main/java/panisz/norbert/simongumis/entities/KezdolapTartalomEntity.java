@@ -2,10 +2,8 @@ package panisz.norbert.simongumis.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -14,6 +12,7 @@ import javax.persistence.Table;
 public class KezdolapTartalomEntity extends BaseEntity implements Comparable<KezdolapTartalomEntity>{
     @Enumerated(EnumType.STRING)
     private KezdolapTartalmiElemek megnevezes;
+    @Lob
     private byte[] kep;
     private String kepMeret;
     private String leiras;

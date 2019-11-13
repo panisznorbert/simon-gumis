@@ -4,12 +4,16 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.KezdolapTartalomEntity;
 import panisz.norbert.simongumis.services.KezdolapTartalomService;
 
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,11 +39,20 @@ public class KezdolapForm extends VerticalLayout {
         KezdolapTartalomEntity kezdolapTartalomEntity = kezdolapTartalomService.aktualisSzorolap();
 
         if(kezdolapTartalomEntity != null){
-            szorolap = new Image(String.valueOf(new ByteArrayInputStream(kezdolapTartalomEntity.getKep())), "");
-            szorolap.setWidth(kezdolapTartalomEntity.getKepMeret() + "%");
+            StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
+                @Override
+                public InputStream createInputStream() {
+                    return new ByteArrayInputStream(kezdolapTartalomEntity.getKep());
+                }
+            });
+
+            szorolap = new Image(streamResource, "");
+            szorolap.setWidth(kezdolapTartalomEntity.getKepMeret());
             alap.add(szorolap);
         }
+
     }
+
 
     private void tovabbiBetoltes(KezdolapTartalomService kezdolapTartalomService){
         List<KezdolapTartalomEntity> kezdolapTartalomEntityList = kezdolapTartalomService.egyebTartalom();
@@ -56,7 +69,7 @@ public class KezdolapForm extends VerticalLayout {
             ujSor.setAlignItems(Alignment.BASELINE);
             if(kezdolapTartalomEntity.getKep() != null){
                 Image kep = new Image(String.valueOf(new ByteArrayInputStream(kezdolapTartalomEntity.getKep())), "");
-                kep.setWidth(kezdolapTartalomEntity.getKepMeret().toString() + "%");
+                kep.setWidth(kezdolapTartalomEntity.getKepMeret() + "%");
                 ujSor.add(kep);
             }
             if(kezdolapTartalomEntity.getLeiras() != null){
