@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.entities;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -15,10 +16,10 @@ public class KezdolapTartalomEntity extends BaseEntity implements Comparable<Kez
     private byte[] kep;
     private String kepMeret;
     private String leiras;
-    private Integer pozicio;
+    private LocalDateTime pozicio;
 
     @Override
     public int compareTo(KezdolapTartalomEntity kezdolapTartalomEntity) {
-        return this.pozicio.compareTo(kezdolapTartalomEntity.pozicio);
+        return kezdolapTartalomEntity.pozicio.compareTo(this.pozicio);
     }
 }

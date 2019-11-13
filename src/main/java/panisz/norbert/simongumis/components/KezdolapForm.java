@@ -21,14 +21,11 @@ public class KezdolapForm extends VerticalLayout {
 
     private VerticalLayout alap = new VerticalLayout();
 
-    private Image szorolap;
-
     public KezdolapForm(KezdolapTartalomService kezdolapTartalomService){
         szorolapBetoltes(kezdolapTartalomService);
         tovabbiBetoltes(kezdolapTartalomService);
 
         alap.setAlignItems(Alignment.CENTER);
-
 
         this.add(alap);
     }
@@ -37,20 +34,12 @@ public class KezdolapForm extends VerticalLayout {
         KezdolapTartalomEntity kezdolapTartalomEntity = kezdolapTartalomService.aktualisSzorolap();
 
         if(kezdolapTartalomEntity != null){
-            StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
-                @Override
-                public InputStream createInputStream() {
-                    return new ByteArrayInputStream(kezdolapTartalomEntity.getKep());
-                }
-            });
-
-            szorolap = new Image(streamResource, "");
+            Image szorolap = kepBetolt(kezdolapTartalomEntity);
             szorolap.setWidth(kezdolapTartalomEntity.getKepMeret());
             alap.add(szorolap);
         }
 
     }
-
 
     private void tovabbiBetoltes(KezdolapTartalomService kezdolapTartalomService){
         List<KezdolapTartalomEntity> kezdolapTartalomEntityList = kezdolapTartalomService.egyebTartalom();
@@ -62,21 +51,31 @@ public class KezdolapForm extends VerticalLayout {
 
         Collections.sort(kezdolapTartalomEntityList);
         VerticalLayout ujTartalom = new VerticalLayout();
+        ujTartalom.setAlignItems(Alignment.CENTER);
         for(KezdolapTartalomEntity kezdolapTartalomEntity:kezdolapTartalomEntityList){
-            HorizontalLayout ujSor = new HorizontalLayout();
-            ujSor.setAlignItems(Alignment.BASELINE);
-            if(kezdolapTartalomEntity.getKep() != null){
-                Image kep = new Image(String.valueOf(new ByteArrayInputStream(kezdolapTartalomEntity.getKep())), "");
-                kep.setWidth(kezdolapTartalomEntity.getKepMeret() + "%");
-                ujSor.add(kep);
+            if(kezdolapTartalomEntity.getKep() != null && kezdolapTartalomEntity.getLeiras() != null){
+                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
             }
-            if(kezdolapTartalomEntity.getLeiras() != null){
-                TextArea leiras = new TextArea();
-                leiras.setValue(kezdolapTartalomEntity.getLeiras());
-                ujSor.add(leiras);
+            if(kezdolapTartalomEntity.getKep() != null && kezdolapTartalomEntity.getLeiras() == null){
+                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep()));
             }
-            ujTartalom.add(ujSor);
+            if(kezdolapTartalomEntity.getKep() == null && kezdolapTartalomEntity.getLeiras() != null){
+                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getLeiras()));
+            }
+
         }
         alap.add(ujTartalom);
+
+    }
+
+    private Image kepBetolt(KezdolapTartalomEntity kezdolapTartalomEntity){
+        StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
+            @Override
+            public InputStream createInputStream() {
+                return new ByteArrayInputStream(kezdolapTartalomEntity.getKep());
+            }
+        });
+
+        return new Image(streamResource, "");
     }
 }

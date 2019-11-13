@@ -2,6 +2,8 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.KezdolapTartalmiElemek;
 import panisz.norbert.simongumis.entities.KezdolapTartalomEntity;
 import panisz.norbert.simongumis.services.KezdolapTartalomService;
+
+import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 @UIScope
@@ -22,6 +26,8 @@ public class SzorolapModositasa extends VerticalLayout {
 
     private MemoryBuffer memoryBuffer = new MemoryBuffer();
     private Upload imgUpload;
+
+    private Notification hibaAblak;
 
     private HorizontalLayout feltoltes = new HorizontalLayout();
 
@@ -51,7 +57,7 @@ public class SzorolapModositasa extends VerticalLayout {
         ment.addClickListener(e -> mentes(kezdolapTartalomService));
 
         Button eltavolit = new Button("Eltávolít");
-        eltavolit.addClickListener(e -> eltavolitas());
+        eltavolit.addClickListener(e -> eltavolitas(kezdolapTartalomService));
 
         HorizontalLayout gombsor = new HorizontalLayout(ment, eltavolit);
         add(cim, feltoltes, gombsor);
@@ -62,19 +68,27 @@ public class SzorolapModositasa extends VerticalLayout {
         imgUpload = new Upload(memoryBuffer);
         imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
         imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
-        imgUpload.setUploadButton(new Button("Tallóz"));
+        imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
         feltoltes.add(imgUpload);
     }
 
     private void mentes(KezdolapTartalomService kezdolapTartalomService){
-        Notification hibaAblak;
+
         String uzenet = "A kép frissítése sikeresen megtörtént.";
 
         KezdolapTartalomEntity kezdolapTartalomEntity = kezdolapTartalomService.aktualisSzorolap();
         KezdolapTartalomEntity ujSzorolap = new KezdolapTartalomEntity();
+        ujSzorolap.setPozicio(LocalDateTime.now());
 
+        if(memoryBuffer.getFileName().isEmpty()){
+            uzenet = "Nincs kiválasztva kép";
+            hibaAblak = new Hibajelzes(uzenet);
+            hibaAblak.open();
+            LOGGER.info("nincs képnév");
+            return;
+        }
         if(kezdolapTartalomEntity == null){
-            ujSzorolap.setKepMeret("60%");
+            ujSzorolap.setKepMeret("40%");
             ujSzorolap.setMegnevezes(KezdolapTartalmiElemek.SZOROLAP);
 
         }else{
@@ -82,19 +96,23 @@ public class SzorolapModositasa extends VerticalLayout {
         }
 
         try{
-            kezdolapTartalomService.ment(ujSzorolap);
             ujSzorolap.setKep(memoryBuffer.getInputStream().readAllBytes());
+            kezdolapTartalomService.ment(ujSzorolap);
         }catch (Exception ex) {
             uzenet = "A kép mentése sikertelen";
         }
-
 
         uploadInit();
         hibaAblak = new Hibajelzes(uzenet);
         hibaAblak.open();
     }
 
-    private void eltavolitas(){
-
+    private void eltavolitas(KezdolapTartalomService kezdolapTartalomService){
+        KezdolapTartalomEntity kezdolapTartalomEntity = kezdolapTartalomService.aktualisSzorolap();
+        if(kezdolapTartalomEntity != null){
+            kezdolapTartalomService.torol(kezdolapTartalomEntity);
+            hibaAblak = new Hibajelzes("Szórólap sikeresen eltávolítva.");
+            hibaAblak.open();
+        }
     }
 }
