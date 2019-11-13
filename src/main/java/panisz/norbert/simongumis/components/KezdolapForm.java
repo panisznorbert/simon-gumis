@@ -10,8 +10,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.KezdolapTartalomEntity;
 import panisz.norbert.simongumis.services.KezdolapTartalomService;
-
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collections;

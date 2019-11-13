@@ -2,7 +2,6 @@ package panisz.norbert.simongumis.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 
 @Data
