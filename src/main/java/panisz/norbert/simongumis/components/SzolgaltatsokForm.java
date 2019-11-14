@@ -11,24 +11,21 @@ import org.springframework.stereotype.Component;
 @UIScope
 @Component
 public class SzolgaltatsokForm extends VerticalLayout {
-    final String[] szolgaltatsok = {"Kerékszerelés", "Defekt javítás", "Kerék kiegyensúlyozás", "GUMIHOTEL", "Kellék anyagok értékesítése", "Gumiabroncs értékesítés (Új és Használt)"};
-    final String[] kerekszerelesek = {"személy gépjármű", "kisteher gépjármű", "mezőgazdasági", "munkagép", "teher"};
-
-    private Label ujpont;
-
-    private VerticalLayout tartalom = new VerticalLayout();
 
     public SzolgaltatsokForm(){
 
-        //this.setAlignItems(Alignment.CENTER);
         this.getStyle().set("padding-left","20%");
+        VerticalLayout tartalom = new VerticalLayout();
         tartalom.setWidth("400px");
         add(tartalom);
 
+        String[] szolgaltatsok = {"Kerékszerelés", "Defekt javítás", "Kerék kiegyensúlyozás", "GUMIHOTEL", "Kellék anyagok értékesítése", "Gumiabroncs értékesítés (Új és Használt)"};
         for(String szolgpont : szolgaltatsok){
-            ujpont = new Label(szolgpont);
-            tartalom.add(new HorizontalLayout(new Icon(VaadinIcon.ANGLE_RIGHT), new Label(szolgpont)));
+            Label ujpont = new Label(szolgpont);
+            ujpont.getStyle().set("font-weight", "bold");
+            tartalom.add(new HorizontalLayout(new Icon(VaadinIcon.CHECK_SQUARE_O), ujpont));
             if("Kerékszerelés".equals(szolgpont)){
+                String[] kerekszerelesek = {"személy gépjármű", "kisteher gépjármű", "mezőgazdasági", "munkagép", "teher"};
                 for(String szerelespont : kerekszerelesek){
                     ujpont = new Label("- " + szerelespont);
                     ujpont.getStyle().set("padding-left", "50px");

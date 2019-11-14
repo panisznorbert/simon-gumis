@@ -33,6 +33,7 @@ public class BaseView extends VerticalLayout {
 
     private void baseInitializeView() {
         fomenu  = new FoMenu(adminService, nyitvatartasService);
+        fomenu.getStyle().set("padding-bottom", "50px");
         if(rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
             fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
             fomenu.getKosar().getStyle().set("color", "red");
