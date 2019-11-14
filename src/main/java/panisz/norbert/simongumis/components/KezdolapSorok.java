@@ -6,43 +6,42 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-public class KezdolapSorok extends HorizontalLayout {
+class KezdolapSorok extends HorizontalLayout {
 
-    public KezdolapSorok(byte[] kepAdat, String leiras){
+    KezdolapSorok(byte[] kepAdat, String leiras){
         HorizontalLayout tartalom = new HorizontalLayout();
-        Image kep = kepBetolt(kepAdat);
-        kep.setWidth("20%");
-        tartalom.add(kep);
-        TextArea szoveg = new TextArea();
-        szoveg.setWidth("100%");
-        szoveg.setReadOnly(true);
-        szoveg.setValue(leiras);
         tartalom.setWidth("900px");
-        VerticalLayout szovegmezo = new VerticalLayout(szoveg);
-        szovegmezo.setAlignItems(Alignment.CENTER);
-        tartalom.add(szovegmezo);
-        add(tartalom);
 
-    }
+        if(kepAdat != null && leiras != null){
 
-    public KezdolapSorok(byte[] kepAdat){
-        Image kep = kepBetolt(kepAdat);
-        kep.setSizeFull();
-        this.setWidth("40%");
-        add(kep);
-
-    }
-
-    public KezdolapSorok(String leiras){
-        TextArea szoveg = new TextArea();
-        szoveg.setReadOnly(true);
-        szoveg.setValue(leiras);
-        szoveg.setWidth("900px");
-        add(szoveg);
+            Image kep = kepBetolt(kepAdat);
+            kep.setWidth("20%");
+            tartalom.add(kep);
+            TextArea szoveg = new TextArea();
+            szoveg.setSizeFull();
+            szoveg.setReadOnly(true);
+            szoveg.setValue(leiras);
+            VerticalLayout szovegmezo = new VerticalLayout(szoveg);
+            szovegmezo.setAlignItems(Alignment.CENTER);
+            tartalom.add(szovegmezo);
+            add(tartalom);
+        }
+        if(kepAdat != null && leiras == null){
+            Image kep = kepBetolt(kepAdat);
+            kep.setWidth("300px");
+            this.setWidth("900px");
+            add(kep);
+        }
+        if(kepAdat == null && leiras != null){
+            TextArea szoveg = new TextArea();
+            szoveg.setReadOnly(true);
+            szoveg.setValue(leiras);
+            szoveg.setWidth("900px");
+            add(szoveg);
+        }
 
     }
 

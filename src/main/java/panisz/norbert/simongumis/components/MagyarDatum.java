@@ -4,9 +4,9 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 
 import java.util.Arrays;
 
-public class MagyarDatum extends DatePicker {
+class MagyarDatum extends DatePicker {
 
-    public MagyarDatum(String cimke){
+    MagyarDatum(String cimke){
         this.setLabel(cimke);
         this.setI18n(magyarDatumInit());
     }

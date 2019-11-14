@@ -9,18 +9,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
-import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.KezdolapTartalmiElemek;
 import panisz.norbert.simongumis.entities.KezdolapTartalomEntity;
 import panisz.norbert.simongumis.services.KezdolapTartalomService;
-
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
-@UIScope
-@Component
-public class SzorolapModositasa extends VerticalLayout {
+class SzorolapModositasa extends VerticalLayout {
 
     private final static Logger LOGGER = Logger.getLogger(SzorolapModositasa.class.getName());
 
@@ -31,8 +26,9 @@ public class SzorolapModositasa extends VerticalLayout {
 
     private HorizontalLayout feltoltes = new HorizontalLayout();
 
-    public SzorolapModositasa(KezdolapTartalomService kezdolapTartalomService){
+    SzorolapModositasa(KezdolapTartalomService kezdolapTartalomService){
         Label cim = new Label("Kezdőképernyőn lévő szórólap módosítása:");
+        cim.getStyle().set("font-weight", "bold");
 
         uploadInit();
 

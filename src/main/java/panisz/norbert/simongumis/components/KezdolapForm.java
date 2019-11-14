@@ -1,9 +1,7 @@
 package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -53,15 +51,7 @@ public class KezdolapForm extends VerticalLayout {
         VerticalLayout ujTartalom = new VerticalLayout();
         ujTartalom.setAlignItems(Alignment.CENTER);
         for(KezdolapTartalomEntity kezdolapTartalomEntity:kezdolapTartalomEntityList){
-            if(kezdolapTartalomEntity.getKep() != null && kezdolapTartalomEntity.getLeiras() != null){
-                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
-            }
-            if(kezdolapTartalomEntity.getKep() != null && kezdolapTartalomEntity.getLeiras() == null){
-                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep()));
-            }
-            if(kezdolapTartalomEntity.getKep() == null && kezdolapTartalomEntity.getLeiras() != null){
-                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getLeiras()));
-            }
+            ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
 
         }
         alap.add(ujTartalom);

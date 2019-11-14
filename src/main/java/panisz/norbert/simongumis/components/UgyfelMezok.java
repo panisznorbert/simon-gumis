@@ -6,18 +6,18 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@UIScope
-@Component
-public class UgyfelMezok extends HorizontalLayout {
+class UgyfelMezok extends HorizontalLayout {
     private TextField nev = new TextField("Név:");
     private TextField telefon = new TextField("Telefon:");
     private TextField email = new TextField("E-mail:");
 
-    public UgyfelMezok(){
+    UgyfelMezok(){
         Binder<UgyfelEntity> binder = new Binder<>();
         binder.forField(nev)
                 .asRequired("Kitöltendő")
@@ -33,11 +33,11 @@ public class UgyfelMezok extends HorizontalLayout {
         add(nev, telefon, email);
     }
 
-    public boolean kitoltottseg(){
+    boolean kitoltottseg(){
         return nev.isInvalid() || telefon.isInvalid() || email.isInvalid() || nev.isEmpty() || telefon.isEmpty() || email.isEmpty() || email.isPreventInvalidInput() || telefon.isPreventInvalidInput();
     }
 
-    public void alaphelyzet(){
+    void alaphelyzet(){
         nev.clear();
         telefon.clear();
         email.clear();

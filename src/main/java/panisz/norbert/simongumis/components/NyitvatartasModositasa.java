@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@UIScope
-@Component
-public class NyitvatartasModositasa extends VerticalLayout {
+class NyitvatartasModositasa extends VerticalLayout {
 
     private DatePicker datum = new MagyarDatum("Dátum:");
     private ComboBox<LocalTime> tol = new ComboBox<>("Nyitás");
@@ -33,7 +31,7 @@ public class NyitvatartasModositasa extends VerticalLayout {
 
     private NyitvatartasEntity nyitvatartasEntity = new NyitvatartasEntity();
 
-    public NyitvatartasModositasa(NyitvatartasService nyitvatartasService){
+    NyitvatartasModositasa(NyitvatartasService nyitvatartasService){
 
         this.setAlignItems(Alignment.CENTER);
 
@@ -61,6 +59,7 @@ public class NyitvatartasModositasa extends VerticalLayout {
         Button zarva = new Button("Zárva");
         HorizontalLayout gombsor = new HorizontalLayout(nyitvatartas, zarva);
         Label cim = new Label("Nyitvatartás módosítása:");
+        cim.getStyle().set("font-weight", "bold");
         this.add(cim, new HorizontalLayout(datum, tol, ig), informacio, gombsor);
         nyitvatartas.addClickListener(e -> nyitvatartasMentese());
         zarva.addClickListener(e -> zarvaMentese());

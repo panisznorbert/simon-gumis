@@ -1,7 +1,6 @@
 package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -11,22 +10,16 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
-import com.vaadin.flow.server.InputStreamFactory;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.KezdolapTartalmiElemek;
 import panisz.norbert.simongumis.entities.KezdolapTartalomEntity;
 import panisz.norbert.simongumis.services.KezdolapTartalomService;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-@UIScope
-@Component
-public class KezdolapTartalomKezelese extends VerticalLayout {
+class KezdolapTartalomKezelese extends VerticalLayout {
 
     private KezdolapTartalomService alapKezdolapTartalomService;
 
@@ -36,12 +29,14 @@ public class KezdolapTartalomKezelese extends VerticalLayout {
 
     private Label ujCim = new Label("Új leírás hozzáadása:");
 
-    public KezdolapTartalomKezelese(KezdolapTartalomService kezdolapTartalomService){
-        alapKezdolapTartalomService = kezdolapTartalomService;
-        kezdolapTartalomEntities=kezdolapTartalomService.egyebTartalom();
-        this.setAlignItems(Alignment.CENTER);
-        elemfelveteleInit();
+    private Label meglevoCim = new Label("Meglévő elemek:");
 
+    KezdolapTartalomKezelese(KezdolapTartalomService kezdolapTartalomService){
+        alapKezdolapTartalomService = kezdolapTartalomService;
+        kezdolapTartalomEntities=alapKezdolapTartalomService.egyebTartalom();
+        cim.getStyle().set("font-weight", "bold");
+        this.setAlignItems(Alignment.CENTER);
+        felvettElemekInit();
 
     }
 
@@ -93,15 +88,17 @@ public class KezdolapTartalomKezelese extends VerticalLayout {
             hibaAblak.open();
         }
 
-        elemfelveteleInit();
+        felvettElemekInit();
     }
 
-    private void elemfelveteleInit(){
+    private void felvettElemekInit(){
+        kezdolapTartalomEntities=alapKezdolapTartalomService.egyebTartalom();
         HorizontalLayout alap1 = ujElem();
         alap1.setWidth("900px");
         VerticalLayout alap2 = tartalomFeltoltes(kezdolapTartalomEntities);
+        alap2.setWidth("900px");
         removeAll();
-        add(cim, ujCim, alap1, alap2);
+        add(cim, ujCim, alap1, meglevoCim, alap2);
     }
 
     private VerticalLayout tartalomFeltoltes(List<KezdolapTartalomEntity> kezdolapTartalomEntities){
@@ -115,27 +112,19 @@ public class KezdolapTartalomKezelese extends VerticalLayout {
             HorizontalLayout ujTartalom = new HorizontalLayout();
             ujTartalom.setAlignItems(Alignment.CENTER);
             ujTartalom.add(new Label(Integer.toString(sorszam)));
-            if(kezdolapTartalomEntity.getKep() != null && kezdolapTartalomEntity.getLeiras() != null){
-                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
-            }
-            if(kezdolapTartalomEntity.getKep() != null && kezdolapTartalomEntity.getLeiras() == null){
-                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep()));
-            }
-            if(kezdolapTartalomEntity.getKep() == null && kezdolapTartalomEntity.getLeiras() != null){
-                ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getLeiras()));
-            }
+            ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
             sorszam++;
             Button torol = new Button("Töröl");
+            torol.addClickListener(e -> sorTorlese(kezdolapTartalomEntity));
             ujTartalom.add(torol);
             alap.add(ujTartalom);
         }
         return alap;
     }
 
-
-    private void sorTorlese(KezdolapTartalomEntity kezdolapTartalomEntity, VerticalLayout sor){
+    private void sorTorlese(KezdolapTartalomEntity kezdolapTartalomEntity){
         alapKezdolapTartalomService.torol(kezdolapTartalomEntity);
-        remove(sor);
+        felvettElemekInit();
     }
 
 
