@@ -69,16 +69,12 @@ class SzorolapModositasa extends VerticalLayout {
     }
 
     private void mentes(KezdolapTartalomService kezdolapTartalomService){
-
-        String uzenet = "A kép frissítése sikeresen megtörtént.";
-
         KezdolapTartalomEntity kezdolapTartalomEntity = kezdolapTartalomService.aktualisSzorolap();
         KezdolapTartalomEntity ujSzorolap = new KezdolapTartalomEntity();
         ujSzorolap.setPozicio(LocalDateTime.now());
 
         if(memoryBuffer.getFileName().isEmpty()){
-            uzenet = "Nincs kiválasztva kép";
-            hibaAblak = new Hibajelzes(uzenet);
+            hibaAblak = new Hibajelzes("Nincs kiválasztva kép");
             hibaAblak.open();
             LOGGER.info("nincs képnév");
             return;
@@ -95,12 +91,11 @@ class SzorolapModositasa extends VerticalLayout {
             ujSzorolap.setKep(memoryBuffer.getInputStream().readAllBytes());
             kezdolapTartalomService.ment(ujSzorolap);
         }catch (Exception ex) {
-            uzenet = "A kép mentése sikertelen";
+            hibaAblak = new Hibajelzes("A kép mentése sikertelen");
+            hibaAblak.open();
         }
 
         uploadInit();
-        hibaAblak = new Hibajelzes(uzenet);
-        hibaAblak.open();
     }
 
     private void eltavolitas(KezdolapTartalomService kezdolapTartalomService){

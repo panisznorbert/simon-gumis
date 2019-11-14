@@ -61,56 +61,10 @@ public class FoMenu extends VerticalLayout {
             //}
         }catch(Exception e){}
 
-        VerticalLayout infosav = new VerticalLayout();
-        HorizontalLayout nyitvatartas = new HorizontalLayout();
-        Label nyitvatartasLabel = new Label();
-
-        NyitvatartasEntity elteroNyitvatartas = nyitvatartasService.adottNapNyitvatartasa(LocalDate.now());
-
-        nyitvatartasLabel.getStyle().set("color", "red");
-
-        if(elteroNyitvatartas != null){
-            nyitvatartasLabel.setText("Ma nyitva: " + elteroNyitvatartas.getNyitas().toString() + " - " + elteroNyitvatartas.getZaras().toString());
-            if(nyitvavan(elteroNyitvatartas.getNyitas(), elteroNyitvatartas.getZaras())){
-                nyitvatartasLabel.getStyle().set("color", "green");
-            }
-        }else{
-            switch(LocalDate.now().getDayOfWeek()){
-                case SUNDAY:{
-                    nyitvatartasLabel.setText("Ma zárva van a műhely.");
-                    break;
-                }
-                case SATURDAY:{
-                    nyitvatartasLabel.setText("Ma nyitva: 7:00 - 12:00");
-                    if(nyitvavan(LocalTime.of(7, 0), LocalTime.of(12, 0))){
-                        nyitvatartasLabel.getStyle().set("color", "green");
-                    }
-                    break;
-                }
-                default:{
-                    nyitvatartasLabel.setText("Ma nyitva: 7:00 - 17:00");
-                    if(nyitvavan(LocalTime.of(7, 0), LocalTime.of(17, 0))){
-                        nyitvatartasLabel.getStyle().set("color", "green");
-                    }
-                    break;
-                }
-            }
-        }
-
-
 
         this.setAlignItems(Alignment.CENTER);
-        infosav.setAlignItems(Alignment.CENTER);
-        infosav.setSizeFull();
-        infosav.add(nyitvatartasLabel);
 
-        infosav.getStyle().set("position", "fixed");
-        infosav.getStyle().set("height", "60px");
-        infosav.getStyle().set("background-color", "#f3f5f7");
-        infosav.setWidth("100%");
-        infosav.add(nyitvatartas);
-
-        add(appLayout, infosav);
+        add(appLayout, nyitvatartasMeghatarozo(nyitvatartasService));
 
         this.setHeight("60px");
         this.appLayout.getElement().getStyle().set("height", "60px");
@@ -118,8 +72,58 @@ public class FoMenu extends VerticalLayout {
         this.appLayout.getElement().getStyle().set("margin", "0px");
         this.getStyle().set("z-index", "9");
 
+    }
 
+    private VerticalLayout nyitvatartasMeghatarozo(NyitvatartasService nyitvatartasService){
+        VerticalLayout infosav = new VerticalLayout();
+        HorizontalLayout nyitvatartas = new HorizontalLayout();
+        Label nyitvatartasLabel = new Label();
+        infosav.setAlignItems(Alignment.CENTER);
+        infosav.setSizeFull();
+        infosav.add(nyitvatartasLabel);
+        infosav.getStyle().set("position", "fixed");
+        infosav.getStyle().set("height", "60px");
+        infosav.getStyle().set("background-color", "#f3f5f7");
+        infosav.setWidth("100%");
+        nyitvatartasLabel.getStyle().set("font-weight", "bold");
+        NyitvatartasEntity elteroNyitvatartas = nyitvatartasService.adottNapNyitvatartasa(LocalDate.now());
 
+        nyitvatartasLabel.getStyle().set("color", "red");
+
+        if(elteroNyitvatartas != null){
+            if(!elteroNyitvatartas.isNyitva()){
+                nyitvatartasLabel.setText("Ma zárva van a műhely.");
+                return infosav;
+            }else{
+                nyitvatartasLabel.setText("Ma nyitva: " + elteroNyitvatartas.getNyitas().toString() + " - " + elteroNyitvatartas.getZaras().toString());
+            }
+            if(nyitvavan(elteroNyitvatartas.getNyitas(), elteroNyitvatartas.getZaras())){
+                nyitvatartasLabel.getStyle().set("color", "green");
+            }
+            return infosav;
+        }
+        switch(LocalDate.now().getDayOfWeek()){
+            case SUNDAY:{
+                nyitvatartasLabel.setText("Ma zárva van a műhely.");
+                break;
+            }
+            case SATURDAY:{
+                nyitvatartasLabel.setText("Ma nyitva: 7:00 - 12:00");
+                if(nyitvavan(LocalTime.of(7, 0), LocalTime.of(12, 0))){
+                    nyitvatartasLabel.getStyle().set("color", "green");
+                }
+                break;
+            }
+            default:{
+                nyitvatartasLabel.setText("Ma nyitva: 7:00 - 17:00");
+                if(nyitvavan(LocalTime.of(7, 0), LocalTime.of(17, 0))){
+                    nyitvatartasLabel.getStyle().set("color", "green");
+                }
+                break;
+            }
+        }
+
+        return infosav;
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {

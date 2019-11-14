@@ -108,6 +108,11 @@ class NyitvatartasModositasa extends VerticalLayout {
     }
 
     private void nyitvatartasMentese(){
+        if(tol.getValue().isAfter(ig.getValue())){
+            Notification hiba = new Hibajelzes("A nyitás időpontja a zárás után van");
+            hiba.open();
+            return;
+        }
         if(tol.isEmpty() || ig.isEmpty() || datum.isEmpty()){
             Notification hiba = new Hibajelzes("Hiányos kitöltés");
             hiba.open();
@@ -131,18 +136,24 @@ class NyitvatartasModositasa extends VerticalLayout {
         nyitvatartasEntity.setDatum(datum.getValue());
         nyitvatartasEntity.setNyitas(tol.getValue());
         nyitvatartasEntity.setZaras(ig.getValue());
-        if(tol.getValue().equals(LocalTime.of(0,0)) && ig.getValue().equals(LocalTime.of(0,0))){
+        //Amennyiben a tól és az ig is 00:00 vagy a tól és az ig egybe esik akkor zárva van
+        if((tol.getValue().equals(LocalTime.of(0,0)) && ig.getValue().equals(LocalTime.of(0,0)) || tol.getValue().equals(ig.getEmptyValue()))){
             nyitvatartasEntity.setNyitva(false);
         }else{
             nyitvatartasEntity.setNyitva(true);
         }
 
-        try{
-            alapNyitvatartasService.ment(nyitvatartasEntity);
+        if(tol.getValue().equals(LocalTime.of(7,0)) && ig.getValue().equals(LocalTime.of(17,0)) && !DayOfWeek.SUNDAY.equals(datum.getValue().getDayOfWeek()) && !DayOfWeek.SATURDAY.equals(datum.getValue().getDayOfWeek())){
+            alapNyitvatartasService.torol(nyitvatartasEntity);
             UI.getCurrent().getPage().reload();
-        }catch(Exception ex){
-            Notification hiba = new Hibajelzes("Sikertelen mentés, próbálja újra");
-            hiba.open();
+        }else{
+            try{
+                alapNyitvatartasService.ment(nyitvatartasEntity);
+                UI.getCurrent().getPage().reload();
+            }catch(Exception ex){
+                Notification hiba = new Hibajelzes("Sikertelen mentés, próbálja újra");
+                hiba.open();
+            }
         }
 
     }
