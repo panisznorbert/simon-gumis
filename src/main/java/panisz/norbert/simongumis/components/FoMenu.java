@@ -39,6 +39,9 @@ public class FoMenu extends VerticalLayout {
 
 
     public FoMenu(AdminService adminService, NyitvatartasService nyitvatartasService){
+
+        menuSzinek("black");
+
         AppLayoutMenu menu = appLayout.createMenu();
 
         menuElemeinekBeallitasa(menu, kezdolap);
@@ -98,6 +101,7 @@ public class FoMenu extends VerticalLayout {
 
         this.setAlignItems(Alignment.CENTER);
         infosav.setAlignItems(Alignment.CENTER);
+        infosav.setSizeFull();
         infosav.add(nyitvatartasLabel);
 
         infosav.getStyle().set("position", "fixed");
@@ -114,6 +118,8 @@ public class FoMenu extends VerticalLayout {
         this.appLayout.getElement().getStyle().set("margin", "0px");
         this.getStyle().set("z-index", "9");
 
+
+
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {
@@ -125,6 +131,19 @@ public class FoMenu extends VerticalLayout {
         if(LocalTime.now().isAfter(nyitas) && LocalTime.now().isBefore(zaras)){
             return true;
         }else return false;
+    }
+
+    private void menuSzinek(String szin){
+        rendelesek.getStyle().set("color", szin);
+        lefoglaltIdopontok.getStyle().set("color", szin);
+        idoponfoglalas .getStyle().set("color", szin);
+        kosar.getStyle().set("color", szin);
+        gumik.getStyle().set("color", szin);
+        gumikKezelese.getStyle().set("color", szin);
+        szolgaltatasok.getStyle().set("color", szin);
+        kezdolap.getStyle().set("color", szin);
+        beallitasok.getStyle().set("color", szin);
+
     }
 
 }
