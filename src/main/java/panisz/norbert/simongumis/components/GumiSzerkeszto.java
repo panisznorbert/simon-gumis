@@ -1,15 +1,30 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
+import panisz.norbert.simongumis.entities.KezdolapTartalomEntity;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
-public class GumiSzerkeszto extends VerticalLayout {
+class GumiSzerkeszto extends HorizontalLayout {
 
     private TextField gyarto = new TextField("Gyártó");
     private TextField meret1 = new TextField("Méret-szélesség");
@@ -19,9 +34,11 @@ public class GumiSzerkeszto extends VerticalLayout {
     private ComboBox<String> evszak = new ComboBox<>("Évszak", "Téli", "Nyári", "Négyévszakos");
     private ComboBox<String> allapot = new ComboBox<>("Állapot", "Új","Használt");
     private TextField darab  = new TextField("Raktárkészlet");
+    private MemoryBuffer memoryBuffer = new MemoryBuffer();
+    private Upload imgUpload;
 
 
-    public GumiSzerkeszto(GumikEntity gumikEntity){
+    GumiSzerkeszto(GumikEntity gumikEntity){
 
         ar.setPattern("\\d*(\\.\\d*)?");
         ar.setPreventInvalidInput(true);
@@ -48,10 +65,57 @@ public class GumiSzerkeszto extends VerticalLayout {
         allapot.setValue(gumikEntity.getAllapot());
         ar.setValue(gumikEntity.getAr().toString());
         darab.setValue(gumikEntity.getMennyisegRaktarban().toString());
-        add(new HorizontalLayout(gyarto, meret1), new HorizontalLayout(meret2, meret3), new HorizontalLayout(evszak, allapot), new HorizontalLayout(ar, darab));
+
+        imgUpload = new Upload(memoryBuffer);
+        imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+        imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
+        imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
+        imgUpload.setWidth("200px");
+
+        Icon icon = new Icon(VaadinIcon.BAN);
+        icon.setSize("100px");
+
+        VerticalLayout kerek = new VerticalLayout();
+        kerek.setAlignItems(Alignment.CENTER);
+
+        Image gumikep;
+
+        VerticalLayout kepfeltoltes = new VerticalLayout();
+        kepfeltoltes.setAlignItems(Alignment.CENTER);
+        if(gumikEntity.getKep() != null){
+            StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
+                @Override
+                public InputStream createInputStream() {
+                    return new ByteArrayInputStream(gumikEntity.getKep());
+                }
+            });
+            gumikep = new Image(streamResource, "");
+            gumikep.setWidth("300px");
+            kerek.add(gumikep);
+        }else{
+            kerek.add(icon);
+        }
+        kepfeltoltes.add(kerek);
+
+
+        imgUpload.addSucceededListener(e -> {
+            System.out.println("Succeeded Upload of " + e.getFileName());
+                kerek.removeAll();
+                kerek.add(ujKep(memoryBuffer));
+        });
+
+        kepfeltoltes.add(imgUpload);
+        kepfeltoltes.setWidth("300px");
+        kepfeltoltes.setAlignItems(Alignment.CENTER);
+
+        VerticalLayout oszlop1 = new VerticalLayout(gyarto, meret2, evszak, ar);
+        VerticalLayout oszlop2 = new VerticalLayout(meret1, meret3, allapot, darab);
+        oszlop1.setWidth("200px");
+        oszlop2.setWidth("200px");
+        add(oszlop1, oszlop2, kepfeltoltes);
     }
 
-    public GumikEntity beallit(GumikEntity gumikEntity){
+    GumikEntity beallit(GumikEntity gumikEntity){
             gumikEntity.setGyarto(gyarto.getValue());
             GumiMeretekEntity meret = gumikEntity.getMeret();
             meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
@@ -63,11 +127,38 @@ public class GumiSzerkeszto extends VerticalLayout {
             gumikEntity.setAr(Integer.valueOf(ar.getValue()));
             gumikEntity.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
 
+
+        if(!memoryBuffer.getFileName().isEmpty()){
+            try{
+                gumikEntity.setKep(memoryBuffer.getInputStream().readAllBytes());
+            }catch (Exception ex){
+                Notification hibaAblak = new Hibajelzes("A kép mentése sikertelen");
+                hibaAblak.open();
+            }
+        }
+
         return gumikEntity;
     }
 
-    public String validacio() {
+    String validacio() {
         return GumikKezeleseForm.getString(gyarto, evszak, allapot, ar, darab, meret1, meret2, meret3);
+    }
+
+    private Image ujKep(MemoryBuffer memoryBuffer){
+            StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
+                @Override
+                public InputStream createInputStream() {
+                    try {
+                        return new ByteArrayInputStream(memoryBuffer.getInputStream().readAllBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            });
+            Image kep = new Image(streamResource, "");
+            kep.setWidth("300px");
+            return kep;
     }
 
 }

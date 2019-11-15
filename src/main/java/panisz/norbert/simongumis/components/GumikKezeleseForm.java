@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -100,7 +101,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         imgUpload.setWidth("200px");
         adatokBevitel.setHeight("200px");
         adatokBevitel.setAlignItems(Alignment.CENTER);
-        grid.setWidth("950px");
+        grid.setWidth("1200px");
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         adatokBevitel.add(new VerticalLayout(menusor1, menusor2), new HorizontalLayout(imgUpload), new HorizontalLayout(hozzaad));
@@ -134,7 +135,7 @@ public class GumikKezeleseForm extends VerticalLayout {
             return;
         }
         gumikService.torol(gumikEntity);
-        gridRefresh();
+        gumikTablaFrissit();
     }
 
     private void szerkesztes(GumikEntity gumikEntity){
@@ -143,6 +144,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         Button ment  = new Button("Módosít");
         HorizontalLayout gombok = new HorizontalLayout(ment, megse);
         gumiSzerkeszto = new Dialog(adatok, gombok);
+        gumiSzerkeszto.setWidth("750px");
         gumiSzerkeszto.setCloseOnOutsideClick(false);
         megse.addClickListener(e -> gumiSzerkeszto.close());
         ment.addClickListener(e -> szerkesztesMentese(gumikEntity, adatok));
@@ -171,6 +173,15 @@ public class GumikKezeleseForm extends VerticalLayout {
         gumi.setAllapot(allapot.getValue());
         gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
 
+        if(!memoryBuffer.getFileName().isEmpty()){
+            try{
+                gumi.setKep(memoryBuffer.getInputStream().readAllBytes());
+            }catch (Exception ex){
+                Notification hibaAblak = new Hibajelzes("A kép mentése sikertelen");
+                hibaAblak.open();
+            }
+        }
+
         kimentes(gumi);
     }
 
@@ -179,6 +190,8 @@ public class GumikKezeleseForm extends VerticalLayout {
             gumikService.ment(gumi);
             gumikTablaFrissit();
             mezokInit();
+            gumiSzerkeszto.close();
+            //UI.getCurrent().getPage().reload();
 
         }catch(LetezoGumiException ex){
             Notification hibaAblak = new Hibajelzes("Ilyen gumi már létezik: " + gumi.toString());
@@ -190,7 +203,8 @@ public class GumikKezeleseForm extends VerticalLayout {
             hibaAblak.add(hozzaad);
             hibaAblak.open();
         }catch(Exception ex) {
-            Notification hibaAblak = new Hibajelzes(ex.getMessage());
+            LOGGER.info("Sikertelene mentés hiba: " + ex.getMessage());
+            Notification hibaAblak = new Hibajelzes("Sikertelen mentés");
             hibaAblak.open();
         }
     }
@@ -275,11 +289,6 @@ public class GumikKezeleseForm extends VerticalLayout {
             hibaAblak.open();
         }
 
-    }
-
-    private void gridRefresh(){
-        grid.setItems(gumikService.osszes());
-        grid.getDataProvider().refreshAll();
     }
 
 }

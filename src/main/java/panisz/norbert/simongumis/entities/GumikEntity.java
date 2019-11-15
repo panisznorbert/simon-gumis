@@ -2,24 +2,23 @@ package panisz.norbert.simongumis.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "gumik")
 public class GumikEntity extends BaseEntity {
     private String gyarto;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     private GumiMeretekEntity meret;
     private Integer ar;
     private String evszak;
     private String allapot;
     private Integer mennyisegRaktarban;
+    @Lob
+    private byte[] kep;
 
     @Override
     public String toString() {

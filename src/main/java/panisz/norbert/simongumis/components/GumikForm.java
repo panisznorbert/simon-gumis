@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -13,12 +14,17 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.NativeButtonRenderer;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.*;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -41,8 +47,10 @@ public class GumikForm extends VerticalLayout {
         menu = new GumiKeresoMenu(gumiMeretekService);
         GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
-        gumik.setWidth("950px");
+        gumik.setWidth("1100px");
         gumik.setHeightByRows(true);
+        gumik.setSelectionMode(Grid.SelectionMode.NONE);
+        gumik.addItemClickListener(e -> sorkivalasztas(e.getItem()));
         gumikTablaFeltolt(menu.getKriterium());
         add( menu, new HorizontalLayout(gumik));
         this.setAlignItems(Alignment.CENTER);
@@ -50,6 +58,23 @@ public class GumikForm extends VerticalLayout {
 
     }
 
+    private void sorkivalasztas(GumikEntity gumikEntity){
+        Dialog kepNagyit = new Dialog();
+        Image kep;
+        if(gumikEntity.getKep() != null){
+            StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
+                @Override
+                public InputStream createInputStream() {
+                    return new ByteArrayInputStream(gumikEntity.getKep());
+                }
+            });
+            kep = new Image(streamResource, "");
+            kep.setWidth("400px");
+            kepNagyit.setCloseOnOutsideClick(true);
+            kepNagyit.add(kep);
+            kepNagyit.open();
+        }
+    }
 
     private void kosarbahelyezesAblak(GumikEntity gumi){
         Label tipus = new Label(gumi.toString() + " típusú gumiból");
