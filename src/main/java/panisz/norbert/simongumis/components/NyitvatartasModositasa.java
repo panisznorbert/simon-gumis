@@ -8,8 +8,6 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.NyitvatartasEntity;
 import panisz.norbert.simongumis.services.NyitvatartasService;
 import java.time.DayOfWeek;
