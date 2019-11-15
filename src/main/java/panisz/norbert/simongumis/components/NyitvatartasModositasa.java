@@ -1,6 +1,5 @@
 package panisz.norbert.simongumis.components;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -100,9 +99,10 @@ class NyitvatartasModositasa extends VerticalLayout {
         }else{
             informacio.setText("");
             informacio.setVisible(false);
-            datumBeallitas();
+            if(!datum.isEmpty()){
+                datumBeallitas();
+            }
         }
-
     }
 
     private void nyitvatartasMentese(){
@@ -143,11 +143,11 @@ class NyitvatartasModositasa extends VerticalLayout {
 
         if(tol.getValue().equals(LocalTime.of(7,0)) && ig.getValue().equals(LocalTime.of(17,0)) && !DayOfWeek.SUNDAY.equals(datum.getValue().getDayOfWeek()) && !DayOfWeek.SATURDAY.equals(datum.getValue().getDayOfWeek())){
             alapNyitvatartasService.torol(nyitvatartasEntity);
-            UI.getCurrent().getPage().reload();
+            datumkivalasztas(datum.getValue());
         }else{
             try{
                 alapNyitvatartasService.ment(nyitvatartasEntity);
-                UI.getCurrent().getPage().reload();
+                datumkivalasztas(datum.getValue());
             }catch(Exception ex){
                 Notification hiba = new Hibajelzes("Sikertelen mentés, próbálja újra");
                 hiba.open();
@@ -173,7 +173,7 @@ class NyitvatartasModositasa extends VerticalLayout {
         nyitvatartasEntity.setNyitva(false);
         try{
             alapNyitvatartasService.ment(nyitvatartasEntity);
-            UI.getCurrent().getPage().reload();
+            datumkivalasztas(datum.getValue());
         }catch(Exception ex){
             Notification hiba = new Hibajelzes("Sikertelen mentés, próbálja újra");
             hiba.open();
