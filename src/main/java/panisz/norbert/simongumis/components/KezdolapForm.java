@@ -36,7 +36,6 @@ public class KezdolapForm extends VerticalLayout {
             szorolap.setWidth(kezdolapTartalomEntity.getKepMeret());
             alap.add(szorolap);
         }
-
     }
 
     private void tovabbiBetoltes(KezdolapTartalomService kezdolapTartalomService){
@@ -44,7 +43,6 @@ public class KezdolapForm extends VerticalLayout {
 
         if(kezdolapTartalomEntityList == null){
             return;
-
         }
 
         Collections.sort(kezdolapTartalomEntityList);
@@ -52,7 +50,6 @@ public class KezdolapForm extends VerticalLayout {
         ujTartalom.setAlignItems(Alignment.CENTER);
         for(KezdolapTartalomEntity kezdolapTartalomEntity:kezdolapTartalomEntityList){
             ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
-
         }
         alap.add(ujTartalom);
 

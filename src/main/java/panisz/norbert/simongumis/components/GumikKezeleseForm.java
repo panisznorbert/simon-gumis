@@ -5,11 +5,16 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridContextMenu;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
@@ -27,11 +32,6 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private GumikService gumikService;
 
-    private VerticalLayout layout = new VerticalLayout();
-
-    private VerticalLayout adatokBevitel = new VerticalLayout();
-    private VerticalLayout adatokMegjelenites = new VerticalLayout();
-
     private Button hozzaad  = new Button("Hozzáad");
 
     private Grid<GumikEntity> grid = new Grid<>();
@@ -47,6 +47,9 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private Dialog gumiSzerkeszto;
 
+    private MemoryBuffer memoryBuffer = new MemoryBuffer();
+    private Upload imgUpload;
+
     public GumikKezeleseForm(GumikService gumikService){
 
         this.getStyle().set("width", "80%");
@@ -56,7 +59,16 @@ public class GumikKezeleseForm extends VerticalLayout {
         hozzaad.addClickListener(e -> ment());
         grid.addItemDoubleClickListener(e -> szerkesztes(e.getItem()));
         grid.addItemClickListener(e -> sorkivalasztas(e.getItem()));
+        this.setAlignItems(Alignment.CENTER);
         init();
+    }
+
+    private void uploadInit(){
+        imgUpload = new Upload(memoryBuffer);
+        imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+        imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
+        imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
+
     }
 
     private void init(){
@@ -79,17 +91,22 @@ public class GumikKezeleseForm extends VerticalLayout {
         darab.setRequired(true);
 
         gumikTablaInit();
+        uploadInit();
 
-        HorizontalLayout menusor1 = new HorizontalLayout(gyarto, meret1, meret2, meret3, evszak, allapot);
-        HorizontalLayout menusor2 = new HorizontalLayout(ar, darab, hozzaad);
-        menusor2.setAlignItems(Alignment.BASELINE);
-        adatokBevitel.add(menusor1, menusor2);
+        HorizontalLayout adatokBevitel = new HorizontalLayout();
+        HorizontalLayout menusor1 = new HorizontalLayout(gyarto, meret1, meret2, meret3);
+        HorizontalLayout menusor2 = new HorizontalLayout(evszak, allapot, ar, darab);
+
+        imgUpload.setWidth("200px");
         adatokBevitel.setHeight("200px");
-        adatokMegjelenites.add(grid);
-        layout.add(adatokBevitel, adatokMegjelenites);
-        add(layout);
-
+        adatokBevitel.setAlignItems(Alignment.CENTER);
+        grid.setWidth("950px");
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+
+        adatokBevitel.add(new VerticalLayout(menusor1, menusor2), new HorizontalLayout(imgUpload), new HorizontalLayout(hozzaad));
+
+        add(adatokBevitel, new HorizontalLayout(grid));
+
         gridhezMenu();
     }
 

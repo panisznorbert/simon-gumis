@@ -20,7 +20,6 @@ class SzorolapModositasa extends VerticalLayout {
     private final static Logger LOGGER = Logger.getLogger(SzorolapModositasa.class.getName());
 
     private MemoryBuffer memoryBuffer = new MemoryBuffer();
-    private Upload imgUpload;
 
     private Notification hibaAblak;
 
@@ -32,19 +31,6 @@ class SzorolapModositasa extends VerticalLayout {
 
         uploadInit();
 
-        imgUpload.addStartedListener(e -> {
-            System.out.println("Handling upload of " + e.getFileName()
-                    + " (" + e.getContentLength() + " bytes) started");
-        });
-
-        imgUpload.addFinishedListener(e -> {
-            System.out.println("Handling upload of " + e.getFileName()
-                    + " (" + e.getContentLength() + " bytes) finished");
-        });
-
-        imgUpload.addSucceededListener(e -> {
-            System.out.println("Succeeded Upload of " + e.getFileName());
-        });
 
         this.setAlignItems(Alignment.CENTER);
         feltoltes.setAlignItems(Alignment.BASELINE);
@@ -61,7 +47,7 @@ class SzorolapModositasa extends VerticalLayout {
 
     private void uploadInit(){
         feltoltes.removeAll();
-        imgUpload = new Upload(memoryBuffer);
+        Upload imgUpload = new Upload(memoryBuffer);
         imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
         imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
         imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
