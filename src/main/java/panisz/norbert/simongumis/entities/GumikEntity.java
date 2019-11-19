@@ -1,7 +1,10 @@
 package panisz.norbert.simongumis.entities;
 
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import panisz.norbert.simongumis.components.Hibajelzes;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -53,5 +56,21 @@ public class GumikEntity extends BaseEntity {
         gumiMeretekEntity.setProfil(megrendeltGumikEntity.getMeretProfil());
         gumiMeretekEntity.setSzelesseg(megrendeltGumikEntity.getMeretSzelesseg());
         this.setMeret(gumiMeretekEntity);
+    }
+
+    public void setKep(byte[] kep) {
+        this.kep = kep;
+    }
+
+    public void setKep(MemoryBuffer memoryBuffer) {
+
+        if(!memoryBuffer.getFileName().isEmpty()){
+            try{
+                this.setKep(memoryBuffer.getInputStream().readAllBytes());
+            }catch (Exception ex){
+                Notification hibaAblak = new Hibajelzes("A kép mentése sikertelen");
+                hibaAblak.open();
+            }
+        }
     }
 }

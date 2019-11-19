@@ -1,6 +1,7 @@
 package panisz.norbert.simongumis.views;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

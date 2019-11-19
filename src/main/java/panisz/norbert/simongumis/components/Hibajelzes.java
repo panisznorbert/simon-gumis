@@ -5,9 +5,9 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-class Hibajelzes extends Notification {
+public class Hibajelzes extends Notification {
 
-    Hibajelzes(String uzenet){
+    public Hibajelzes(String uzenet){
         Button kilep = new Button("Ok");
         Label leiras = new Label(uzenet);
         VerticalLayout tartalom = new VerticalLayout(leiras, kilep);

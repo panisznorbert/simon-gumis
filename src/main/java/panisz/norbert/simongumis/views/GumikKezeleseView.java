@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.views;
 
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.components.GumikKezeleseForm;

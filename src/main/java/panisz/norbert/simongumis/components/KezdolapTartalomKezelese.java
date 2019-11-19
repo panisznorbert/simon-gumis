@@ -94,9 +94,9 @@ class KezdolapTartalomKezelese extends VerticalLayout {
     private void felvettElemekInit(){
         kezdolapTartalomEntities=alapKezdolapTartalomService.egyebTartalom();
         HorizontalLayout alap1 = ujElem();
-        alap1.setWidth("900px");
+        alap1.setWidth("850px");
         VerticalLayout alap2 = tartalomFeltoltes(kezdolapTartalomEntities);
-        alap2.setWidth("900px");
+        alap2.setWidth("850px");
         removeAll();
         add(cim, ujCim, alap1, meglevoCim, alap2);
     }

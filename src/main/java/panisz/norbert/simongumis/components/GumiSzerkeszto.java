@@ -116,26 +116,17 @@ class GumiSzerkeszto extends HorizontalLayout {
     }
 
     GumikEntity beallit(GumikEntity gumikEntity){
-            gumikEntity.setGyarto(gyarto.getValue());
-            GumiMeretekEntity meret = gumikEntity.getMeret();
-            meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
-            meret.setProfil(Integer.valueOf(meret2.getValue()));
-            meret.setFelni(Integer.valueOf(meret3.getValue()));
-            gumikEntity.setMeret(meret);
-            gumikEntity.setEvszak(evszak.getValue());
-            gumikEntity.setAllapot(allapot.getValue());
-            gumikEntity.setAr(Integer.valueOf(ar.getValue()));
-            gumikEntity.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
-
-
-        if(!memoryBuffer.getFileName().isEmpty()){
-            try{
-                gumikEntity.setKep(memoryBuffer.getInputStream().readAllBytes());
-            }catch (Exception ex){
-                Notification hibaAblak = new Hibajelzes("A kép mentése sikertelen");
-                hibaAblak.open();
-            }
-        }
+        gumikEntity.setGyarto(gyarto.getValue());
+        GumiMeretekEntity meret = gumikEntity.getMeret();
+        meret.setSzelesseg(Integer.valueOf(meret1.getValue()));
+        meret.setProfil(Integer.valueOf(meret2.getValue()));
+        meret.setFelni(Integer.valueOf(meret3.getValue()));
+        gumikEntity.setMeret(meret);
+        gumikEntity.setEvszak(evszak.getValue());
+        gumikEntity.setAllapot(allapot.getValue());
+        gumikEntity.setAr(Integer.valueOf(ar.getValue()));
+        gumikEntity.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
+        gumikEntity.setKep(memoryBuffer);
 
         return gumikEntity;
     }

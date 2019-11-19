@@ -47,7 +47,7 @@ public class GumikForm extends VerticalLayout {
         menu = new GumiKeresoMenu(gumiMeretekService);
         GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
-        gumik.setWidth("1100px");
+        gumik.setWidth("1000px");
         gumik.setHeightByRows(true);
         gumik.setSelectionMode(Grid.SelectionMode.NONE);
         gumik.addItemClickListener(e -> sorkivalasztas(e.getItem()));
@@ -55,7 +55,6 @@ public class GumikForm extends VerticalLayout {
         add( menu, new HorizontalLayout(gumik));
         this.setAlignItems(Alignment.CENTER);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
-
     }
 
     private void sorkivalasztas(GumikEntity gumikEntity){

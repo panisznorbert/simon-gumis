@@ -1,0 +1,10 @@
+vaadin-grid vaadin-grid-cell-content {
+    line-height: 80px;
+}
+vaadin-grid-cell-content img {
+    max-height: 80px;
+    max-width: 80px;
+    line-height: 80px;
+    vertical-align: middle;
+}
+

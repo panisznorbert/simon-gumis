@@ -1,8 +1,8 @@
 package panisz.norbert.simongumis.components;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridContextMenu;
@@ -24,7 +24,7 @@ import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumikService;
 
 import java.util.logging.Logger;
-
+@StyleSheet("style.css")
 @UIScope
 @Component
 public class GumikKezeleseForm extends VerticalLayout {
@@ -49,7 +49,7 @@ public class GumikKezeleseForm extends VerticalLayout {
     private Dialog gumiSzerkeszto;
 
     private MemoryBuffer memoryBuffer = new MemoryBuffer();
-    private Upload imgUpload;
+    private HorizontalLayout kepfeltolto = new HorizontalLayout();
 
     public GumikKezeleseForm(GumikService gumikService){
 
@@ -65,11 +65,13 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
     private void uploadInit(){
-        imgUpload = new Upload(memoryBuffer);
+        kepfeltolto.removeAll();
+        Upload imgUpload = new Upload(memoryBuffer);
+        imgUpload.setWidth("200px");
         imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
         imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
         imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
-
+        kepfeltolto.add(imgUpload);
     }
 
     private void init(){
@@ -98,18 +100,19 @@ public class GumikKezeleseForm extends VerticalLayout {
         HorizontalLayout menusor1 = new HorizontalLayout(gyarto, meret1, meret2, meret3);
         HorizontalLayout menusor2 = new HorizontalLayout(evszak, allapot, ar, darab);
 
-        imgUpload.setWidth("200px");
+
         adatokBevitel.setHeight("200px");
         adatokBevitel.setAlignItems(Alignment.CENTER);
-        grid.setWidth("1200px");
+        grid.setWidth("1100px");
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
 
-        adatokBevitel.add(new VerticalLayout(menusor1, menusor2), new HorizontalLayout(imgUpload), new HorizontalLayout(hozzaad));
+        adatokBevitel.add(new VerticalLayout(menusor1, menusor2), kepfeltolto, new HorizontalLayout(hozzaad));
 
         add(adatokBevitel, new HorizontalLayout(grid));
 
         gridhezMenu();
     }
+
 
     private void gridhezMenu(){
         GridContextMenu<GumikEntity> contextMenu = new GridContextMenu<>(grid);
@@ -172,15 +175,7 @@ public class GumikKezeleseForm extends VerticalLayout {
         gumi.setEvszak(evszak.getValue());
         gumi.setAllapot(allapot.getValue());
         gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
-
-        if(!memoryBuffer.getFileName().isEmpty()){
-            try{
-                gumi.setKep(memoryBuffer.getInputStream().readAllBytes());
-            }catch (Exception ex){
-                Notification hibaAblak = new Hibajelzes("A kép mentése sikertelen");
-                hibaAblak.open();
-            }
-        }
+        gumi.setKep(memoryBuffer);
 
         kimentes(gumi);
     }
@@ -188,11 +183,8 @@ public class GumikKezeleseForm extends VerticalLayout {
     private void kimentes(GumikEntity gumi){
         try{
             gumikService.ment(gumi);
-            gumikTablaFrissit();
             mezokInit();
-            gumiSzerkeszto.close();
-            //UI.getCurrent().getPage().reload();
-
+            gumikTablaFrissit();
         }catch(LetezoGumiException ex){
             Notification hibaAblak = new Hibajelzes("Ilyen gumi már létezik: " + gumi.toString());
             Button hozzaad = new Button(gumi.getMennyisegRaktarban() + " db gumi hozzáadása");
@@ -203,7 +195,8 @@ public class GumikKezeleseForm extends VerticalLayout {
             hibaAblak.add(hozzaad);
             hibaAblak.open();
         }catch(Exception ex) {
-            LOGGER.info("Sikertelene mentés hiba: " + ex.getMessage());
+            LOGGER.info("Sikertelene mentés hiba: ");
+            ex.printStackTrace();
             Notification hibaAblak = new Hibajelzes("Sikertelen mentés");
             hibaAblak.open();
         }
@@ -277,13 +270,17 @@ public class GumikKezeleseForm extends VerticalLayout {
         evszak.setValue("Nyári");
         allapot.setValue("Új");
         darab.clear();
+        uploadInit();
     }
 
-    private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkeszto gumiSzerkeszto){
-        String leiras = gumiSzerkeszto.validacio();
+    private void szerkesztesMentese(GumikEntity gumikEntity, GumiSzerkeszto gumiSzerkesztoAdatok){
+        String leiras = gumiSzerkesztoAdatok.validacio();
 
         if(leiras == null){
-            kimentes(gumiSzerkeszto.beallit(gumikEntity));
+            kimentes(gumiSzerkesztoAdatok.beallit(gumikEntity));
+            gumiSzerkeszto.close();
+            grid.focus();
+            grid.select(gumikEntity);
         }else{
             Notification hibaAblak = new Hibajelzes(leiras);
             hibaAblak.open();
