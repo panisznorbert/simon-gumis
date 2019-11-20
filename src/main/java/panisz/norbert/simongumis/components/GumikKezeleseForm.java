@@ -22,8 +22,8 @@ import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.GumikService;
-
 import java.util.logging.Logger;
+
 @StyleSheet("style.css")
 @UIScope
 @Component
@@ -35,7 +35,7 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     private Button hozzaad  = new Button("Hozzáad");
 
-    private Grid<GumikEntity> grid = new Grid<>();
+    private GumiGrid grid = new GumiGrid();
 
     private TextField gyarto = new TextField("Gyártó");
     private TextField meret1 = new TextField("Méret-szélesség");
@@ -249,7 +249,6 @@ public class GumikKezeleseForm extends VerticalLayout {
     }
 
     private void gumikTablaInit(){
-        GumiGridBeallitas.gumiGridBeallitas(grid);
 
         if(gumikService.osszes().size()>0){
             gumikTablaFrissit();

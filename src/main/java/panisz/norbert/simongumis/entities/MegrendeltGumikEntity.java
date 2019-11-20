@@ -3,6 +3,7 @@ package panisz.norbert.simongumis.entities;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Data
@@ -19,6 +20,8 @@ public class MegrendeltGumikEntity extends BaseEntity {
     private Integer ar;
     private String evszak;
     private String allapot;
+    @Lob
+    private byte[] kep;
 
     @Override
     public String toString() {
@@ -34,6 +37,7 @@ public class MegrendeltGumikEntity extends BaseEntity {
         this.setMeretFelni(gumi.getMeret().getFelni());
         this.setMeretProfil(gumi.getMeret().getProfil());
         this.setMeretSzelesseg(gumi.getMeret().getSzelesseg());
+        this.setKep(gumi.getKep());
 
         return this;
     }

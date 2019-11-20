@@ -49,7 +49,7 @@ public class KezdolapForm extends VerticalLayout {
         VerticalLayout ujTartalom = new VerticalLayout();
         ujTartalom.setAlignItems(Alignment.CENTER);
         for(KezdolapTartalomEntity kezdolapTartalomEntity:kezdolapTartalomEntityList){
-            ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
+            ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras(), true));
         }
         alap.add(ujTartalom);
 

@@ -3,7 +3,6 @@ package panisz.norbert.simongumis.entities;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import panisz.norbert.simongumis.components.Hibajelzes;
 
 import javax.persistence.*;
@@ -56,6 +55,7 @@ public class GumikEntity extends BaseEntity {
         gumiMeretekEntity.setProfil(megrendeltGumikEntity.getMeretProfil());
         gumiMeretekEntity.setSzelesseg(megrendeltGumikEntity.getMeretSzelesseg());
         this.setMeret(gumiMeretekEntity);
+        this.setKep(megrendeltGumikEntity.getKep());
     }
 
     public void setKep(byte[] kep) {

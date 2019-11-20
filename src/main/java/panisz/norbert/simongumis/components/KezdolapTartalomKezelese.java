@@ -16,10 +16,14 @@ import panisz.norbert.simongumis.entities.KezdolapTartalmiElemek;
 import panisz.norbert.simongumis.entities.KezdolapTartalomEntity;
 import panisz.norbert.simongumis.services.KezdolapTartalomService;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 class KezdolapTartalomKezelese extends VerticalLayout {
+
+    private final static Logger LOGGER = Logger.getLogger(KezdolapTartalomKezelese.class.getName());
 
     private KezdolapTartalomService alapKezdolapTartalomService;
 
@@ -83,6 +87,7 @@ class KezdolapTartalomKezelese extends VerticalLayout {
 
         try{
             alapKezdolapTartalomService.ment(ujTartalom);
+            LOGGER.info(Arrays.toString(ujTartalom.getKep()));
         }catch(Exception ex){
             hibaAblak = new Hibajelzes("A mentés sikertelen");
             hibaAblak.open();
@@ -112,7 +117,7 @@ class KezdolapTartalomKezelese extends VerticalLayout {
             HorizontalLayout ujTartalom = new HorizontalLayout();
             ujTartalom.setAlignItems(Alignment.CENTER);
             ujTartalom.add(new Label(Integer.toString(sorszam)));
-            ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras()));
+            ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras(), false));
             sorszam++;
             Button torol = new Button("Töröl");
             torol.addClickListener(e -> sorTorlese(kezdolapTartalomEntity));

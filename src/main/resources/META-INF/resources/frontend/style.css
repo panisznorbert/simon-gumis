@@ -1,5 +1,8 @@
-vaadin-grid vaadin-grid-cell-content {
+.gumitabla {
     line-height: 80px;
+}
+vaadin-grid vaadin-grid-header {
+    font-size: 20px;
 }
 vaadin-grid-cell-content img {
     max-height: 80px;
@@ -7,4 +10,3 @@ vaadin-grid-cell-content img {
     line-height: 80px;
     vertical-align: middle;
 }
-

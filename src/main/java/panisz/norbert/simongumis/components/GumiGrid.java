@@ -6,8 +6,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.server.InputStreamFactory;
@@ -16,18 +14,21 @@ import panisz.norbert.simongumis.entities.GumikEntity;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-class GumiGridBeallitas {
-    static void gumiGridBeallitas(Grid<GumikEntity> grid) {
-        grid.addColumn(new ComponentRenderer<>(GumiGridBeallitas::kepBetolt)).setHeader("").setTextAlign(ColumnTextAlign.CENTER).setWidth("110px");
+class GumiGrid extends Grid<GumikEntity>{
 
-        grid.addColumn(GumikEntity::getGyarto, "Gyártó").setHeader("Gyártó");
-        grid.addColumn(GumikEntity::getMeret, "Méret").setHeader("Méret").setWidth("120px");
-        grid.addColumn(GumikEntity::getEvszak, "Évszak").setHeader("Évszak").setWidth("120px");
-        grid.addColumn(GumikEntity::getAllapot, "Állapot").setHeader("Állapot");
-        grid.addColumn(TemplateRenderer.<GumikEntity> of("<div>[[item.ar]] Ft</div>")
+    GumiGrid(){
+        this.getClassNames().add("gumitabla");
+
+        this.addColumn(new ComponentRenderer<>(GumiGrid::kepBetolt)).setHeader("").setTextAlign(ColumnTextAlign.CENTER).setWidth("110px");
+
+        this.addColumn(GumikEntity::getGyarto, "Gyártó").setHeader("Gyártó");
+        this.addColumn(GumikEntity::getMeret, "Méret").setHeader("Méret").setWidth("120px");
+        this.addColumn(GumikEntity::getEvszak, "Évszak").setHeader("Évszak").setWidth("120px");
+        this.addColumn(GumikEntity::getAllapot, "Állapot").setHeader("Állapot");
+        this.addColumn(TemplateRenderer.<GumikEntity> of("<div>[[item.ar]] Ft</div>")
                 .withProperty("ar", GumikEntity::getAr), "ar").setHeader("Ár");
-        grid.addColumn(TemplateRenderer.<GumikEntity> of("<div>[[item.raktarkeszlet]] db</div>")
-                .withProperty("raktarkeszlet", GumikEntity::getMennyisegRaktarban), "raktarkeszlet").setHeader("Darab");
+        this.addColumn(TemplateRenderer.<GumikEntity> of("<div>[[item.raktarkeszlet]] db</div>")
+                .withProperty("raktarkeszlet", GumikEntity::getMennyisegRaktarban), "raktarkeszlet").setHeader("Elérhető");
     }
 
     private static Component kepBetolt(GumikEntity gumikEntity){

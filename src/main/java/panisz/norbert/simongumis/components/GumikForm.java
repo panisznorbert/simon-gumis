@@ -2,6 +2,7 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
@@ -22,12 +23,12 @@ import panisz.norbert.simongumis.entities.*;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+@StyleSheet("style.css")
 @UIScope
 @Component
 public class GumikForm extends VerticalLayout {
@@ -35,7 +36,7 @@ public class GumikForm extends VerticalLayout {
     private RendelesService rendelesService;
 
     private GumiKeresoMenu menu;
-    private Grid<GumikEntity> gumik = new Grid<>();
+    private GumiGrid gumik = new GumiGrid();
     private Dialog darabszamAblak;
 
     private FoMenu foMenu;
@@ -45,7 +46,6 @@ public class GumikForm extends VerticalLayout {
         this.rendelesService = rendelesService;
         this.foMenu = foMenu;
         menu = new GumiKeresoMenu(gumiMeretekService);
-        GumiGridBeallitas.gumiGridBeallitas(gumik);
         gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
         gumik.setWidth("1000px");
         gumik.setHeightByRows(true);
@@ -56,6 +56,7 @@ public class GumikForm extends VerticalLayout {
         this.setAlignItems(Alignment.CENTER);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }
+
 
     private void sorkivalasztas(GumikEntity gumikEntity){
         Dialog kepNagyit = new Dialog();
@@ -94,7 +95,7 @@ public class GumikForm extends VerticalLayout {
                 hiba.setText("Nem adott meg darabszámot");
                 darab.setInvalid(true);
                 //Ha rossz érték van beírva vagy több mint amennyi van a raktárban akkor hiba jön
-            }else if(darab.isInvalid() || Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()){
+            }else if(darab.isInvalid() || Integer.parseInt(darab.getValue())>gumi.getMennyisegRaktarban()){
                 hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db)");
                 darab.setInvalid(true);
             }
@@ -102,7 +103,7 @@ public class GumikForm extends VerticalLayout {
             //Ha jó érték van beírva és a hozzáadni kívánt darabszám és a kosárban lévő darabszám összege meghaladja a raktárkészletet akkor hiba jön
             if(!darab.isInvalid() && rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
                 for(RendelesiEgysegEntity rendeles: rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()).getRendelesiEgysegek()) {
-                    if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.valueOf(darab.getValue())>gumi.getMennyisegRaktarban()) {
+                    if (rendeles.getGumi().equals(gumi) && rendeles.getMennyiseg()+Integer.parseInt(darab.getValue())>gumi.getMennyisegRaktarban()) {
                         hiba.setText("Hibás adat (maximum rendelhető: " + gumi.getMennyisegRaktarban().toString() + " db, melyből már " + rendeles.getMennyiseg() + " a kosárban van!)");
                         darab.setInvalid(true);
                     }

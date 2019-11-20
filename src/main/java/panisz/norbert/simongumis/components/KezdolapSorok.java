@@ -11,9 +11,13 @@ import java.io.InputStream;
 
 class KezdolapSorok extends HorizontalLayout {
 
-    KezdolapSorok(byte[] kepAdat, String leiras){
+    KezdolapSorok(byte[] kepAdat, String leiras, boolean kezdolap){
+
         HorizontalLayout tartalom = new HorizontalLayout();
         tartalom.setWidth("900px");
+        if(!kezdolap){
+            this.setWidth("900px");
+        }
 
         if(kepAdat != null && leiras != null){
 
@@ -31,8 +35,7 @@ class KezdolapSorok extends HorizontalLayout {
         }
         if(kepAdat != null && leiras == null){
             Image kep = kepBetolt(kepAdat);
-            kep.setWidth("300px");
-            this.setWidth("900px");
+            kep.setWidth("500px");
             add(kep);
         }
         if(kepAdat == null && leiras != null){
