@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -40,10 +41,9 @@ public class FoMenu extends VerticalLayout {
 
     public FoMenu(AdminService adminService, NyitvatartasService nyitvatartasService){
 
-        menuSzinek("black");
-
+        menuSzinek("white");
         AppLayoutMenu menu = appLayout.createMenu();
-
+        appLayout.removeBranding();
         menuElemeinekBeallitasa(menu, kezdolap);
         menuElemeinekBeallitasa(menu, szolgaltatasok);
         menuElemeinekBeallitasa(menu, gumik);
@@ -66,25 +66,15 @@ public class FoMenu extends VerticalLayout {
 
         add(appLayout, nyitvatartasMeghatarozo(nyitvatartasService));
 
-        this.setHeight("60px");
-        this.appLayout.getElement().getStyle().set("height", "60px");
-        this.appLayout.getElement().getStyle().set("padding", "0px");
-        this.appLayout.getElement().getStyle().set("margin", "0px");
-        this.getStyle().set("z-index", "9");
-
     }
 
     private VerticalLayout nyitvatartasMeghatarozo(NyitvatartasService nyitvatartasService){
         VerticalLayout infosav = new VerticalLayout();
-        HorizontalLayout nyitvatartas = new HorizontalLayout();
         Label nyitvatartasLabel = new Label();
+        nyitvatartasLabel.addClassName("nyitvatartas");
         infosav.setAlignItems(Alignment.CENTER);
         infosav.setSizeFull();
         infosav.add(nyitvatartasLabel);
-        infosav.getStyle().set("position", "fixed");
-        infosav.getStyle().set("height", "60px");
-        infosav.getStyle().set("background-color", "#f3f5f7");
-        infosav.setWidth("100%");
         nyitvatartasLabel.getStyle().set("font-weight", "bold");
         NyitvatartasEntity elteroNyitvatartas = nyitvatartasService.adottNapNyitvatartasa(LocalDate.now());
 
@@ -132,9 +122,7 @@ public class FoMenu extends VerticalLayout {
     }
 
     private boolean nyitvavan(LocalTime nyitas, LocalTime zaras){
-        if(LocalTime.now().isAfter(nyitas) && LocalTime.now().isBefore(zaras)){
-            return true;
-        }else return false;
+        return LocalTime.now().isAfter(nyitas) && LocalTime.now().isBefore(zaras);
     }
 
     private void menuSzinek(String szin){

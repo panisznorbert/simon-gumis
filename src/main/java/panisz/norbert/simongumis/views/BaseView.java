@@ -2,8 +2,10 @@ package panisz.norbert.simongumis.views;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.atmosphere.config.service.Singleton;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import panisz.norbert.simongumis.services.RendelesService;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 
+@StyleSheet("fejlec.css")
 public class BaseView extends VerticalLayout {
 
     @Autowired
@@ -26,6 +29,11 @@ public class BaseView extends VerticalLayout {
     @Autowired
     NyitvatartasService nyitvatartasService;
 
+    private HorizontalLayout fejlec = new HorizontalLayout();
+
+    private Image balOldal = new Image("/images/baloldal.jpg", "");
+    private Image jobbOldal = new Image("/images/jobboldal.jpg", "");
+
     FoMenu fomenu;
 
     @PostConstruct
@@ -34,13 +42,17 @@ public class BaseView extends VerticalLayout {
 
     private void baseInitializeView() {
         fomenu  = new FoMenu(adminService, nyitvatartasService);
-        fomenu.getStyle().set("padding-bottom", "50px");
+        this.addClassName("alap");
+        fejlec.addClassName("fejlec");
+        fomenu.addClassName("menusor");
+        balOldal.addClassName("fejlec-kepek");
+        jobbOldal.addClassName("fejlec-kepek");
         if(rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
             fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
             fomenu.getKosar().getStyle().set("color", "red");
         }
-
-        add(fomenu);
+        fejlec.add(balOldal, fomenu, jobbOldal);
+        add(fejlec);
         setSizeFull();
     }
 
