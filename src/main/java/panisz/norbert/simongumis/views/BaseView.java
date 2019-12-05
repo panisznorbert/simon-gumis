@@ -7,15 +7,12 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.atmosphere.config.service.Singleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.components.FoMenu;
 import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.NyitvatartasService;
 import panisz.norbert.simongumis.services.RendelesService;
-
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
 
 @StyleSheet("fejlec.css")
 public class BaseView extends VerticalLayout {

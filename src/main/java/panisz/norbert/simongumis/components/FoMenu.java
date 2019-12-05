@@ -4,10 +4,8 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
@@ -16,8 +14,6 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.NyitvatartasEntity;
 import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.NyitvatartasService;
-
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
