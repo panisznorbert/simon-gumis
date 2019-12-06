@@ -199,13 +199,19 @@ public class IdopontfoglalasForm extends VerticalLayout {
         return idopontFoglalasEntity;
     }
 
-    private boolean kitoltottseg(){
-        return idopontokDatum.isEmpty() || foglalhatoOrak.isEmpty() || ugyfelAdatok.kitoltottseg();
+    private String kitoltottseg(){
+        if(idopontokDatum.isEmpty()){
+            return "Nem választott dátumot";
+        }
+        if(foglalhatoOrak.isEmpty()){
+           return "Nem választott időpontot";
+        }
+        return ugyfelAdatok.kitoltottseg();
     }
 
     private void idopontFoglalas(){
-        if(kitoltottseg()){
-            Notification hiba = new Hibajelzes("Hibás kitöltés. A megjegyzésen kívül minden mező kitöltése kötelező!");
+        if(!kitoltottseg().equals("")){
+            Notification hiba = new Hibajelzes(kitoltottseg());
             hiba.open();
         }else{
             try{

@@ -93,8 +93,8 @@ public class KosarForm extends VerticalLayout {
     }
 
     private void megrendeles(){
-        if(vevoAdatai.kitoltottseg()){
-            Notification hibaAblak = new Hibajelzes("Az ugyfél adatai hiányosan vannak kitöltve");
+        if(!vevoAdatai.kitoltottseg().equals("")){
+            Notification hibaAblak = new Hibajelzes(vevoAdatai.kitoltottseg());
             hibaAblak.open();
             return;
         }

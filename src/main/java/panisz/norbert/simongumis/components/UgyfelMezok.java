@@ -56,12 +56,20 @@ class UgyfelMezok extends VerticalLayout {
         szoveg.open();
     }
 
-    boolean kitoltottseg(){
-        if(pipa.isEmpty()){
-            leiras.getStyle().set("font-color", "red");
-            return false;
+    String kitoltottseg(){
+        if(!pipa.getValue()){
+            return "Nem fogadta el az adatkezelést";
         }
-        return nev.isInvalid() || telefon.isInvalid() || email.isInvalid() || nev.isEmpty() || telefon.isEmpty() || email.isEmpty() || email.isPreventInvalidInput() || telefon.isPreventInvalidInput();
+        if(nev.isInvalid() || nev.isEmpty()){
+            return "Nem adott meg nevet";
+        }
+        if(telefon.isInvalid() || telefon.isEmpty() || telefon.isPreventInvalidInput()){
+            return "Nem megfelelő telefonszám";
+        }
+        if(email.isInvalid() || email.isEmpty() || email.isPreventInvalidInput()){
+            return "Nem megfelelő e-mail cím";
+        }
+        return "";
     }
 
     void alaphelyzet(){
