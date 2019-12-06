@@ -2,6 +2,7 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
@@ -25,7 +26,6 @@ public class KosarForm extends VerticalLayout {
     private final static Logger LOGGER = Logger.getLogger(KosarForm.class.getName());
 
     private static RendelesService alapRendelesService;
-    private MegrendeltGumikService megrendeltGumikService;
 
     private RendelesEntity rendelesEntity;
     private VerticalLayout tartalom = new VerticalLayout();
@@ -36,9 +36,8 @@ public class KosarForm extends VerticalLayout {
     private HorizontalLayout gombok = new HorizontalLayout(megrendeles);
     private TextField vegosszeg = new TextField("Végösszeg:");
 
-    public KosarForm(RendelesService rendelesService, MegrendeltGumikService megrendeltGumikService){
+    public KosarForm(RendelesService rendelesService){
         alapRendelesService = rendelesService;
-        this.megrendeltGumikService=megrendeltGumikService;
         this.setAlignItems(Alignment.CENTER);
         rendelesekTabla.setHeightByRows(true);
         rendelesekTabla.addColumn(RendelesiEgysegEntity::getGumi).setHeader("Gumi").setWidth("300px");

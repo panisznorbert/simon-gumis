@@ -10,16 +10,13 @@ import javax.annotation.PostConstruct;
 @Route("kosar")
 public class KosarView extends BaseView {
 
-    @Autowired
-    private MegrendeltGumikService megrendeltGumikService;
-
     @PostConstruct
     public void init() { this.initializeView();
     }
 
     private void initializeView() {
         fomenu.getKosar().getStyle().set("color", "#75f3f9");
-        add(new KosarForm(rendelesService, megrendeltGumikService));
+        add(new KosarForm(rendelesService));
         setSizeFull();
     }
 

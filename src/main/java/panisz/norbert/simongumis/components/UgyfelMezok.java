@@ -1,23 +1,41 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
-import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-class UgyfelMezok extends HorizontalLayout {
+class UgyfelMezok extends VerticalLayout {
     private TextField nev = new TextField("Név:");
     private TextField telefon = new TextField("Telefon:");
     private TextField email = new TextField("E-mail:");
 
+    private Checkbox pipa = new Checkbox();
+    private Label leiras = new Label("Elfogadom az oldal adatkezelését");
+    private Icon adatkezelesLeiras = new Icon(VaadinIcon.FILE);
+    private HorizontalLayout adatkezeles = new HorizontalLayout(pipa, leiras, adatkezelesLeiras);
+
     UgyfelMezok(){
+        adatkezelesLeiras.addClickListener(e -> adatkezelesMegnyitas());
+        adatkezeles.setAlignItems(Alignment.BASELINE);
+        this.setAlignItems(Alignment.CENTER);
+        adatkezeles.getStyle().set("z-index", "10");
+
+        pipa.addClickListener(e -> {
+            leiras.getStyle().set("font-color", "black");
+        });
+
         Binder<UgyfelEntity> binder = new Binder<>();
         binder.forField(nev)
                 .asRequired("Kitöltendő")
@@ -30,10 +48,19 @@ class UgyfelMezok extends HorizontalLayout {
                 .withValidator(new EmailValidator("Hibás e-mail cím"))
                 .asRequired("Kitöltendő")
                 .bind(UgyfelEntity::getEmail, UgyfelEntity::setEmail);
-        add(nev, telefon, email);
+        add(new HorizontalLayout(nev, telefon, email), adatkezeles);
+    }
+
+    private void adatkezelesMegnyitas(){
+        Dialog szoveg = new Dialog();
+        szoveg.open();
     }
 
     boolean kitoltottseg(){
+        if(pipa.isEmpty()){
+            leiras.getStyle().set("font-color", "red");
+            return false;
+        }
         return nev.isInvalid() || telefon.isInvalid() || email.isInvalid() || nev.isEmpty() || telefon.isEmpty() || email.isEmpty() || email.isPreventInvalidInput() || telefon.isPreventInvalidInput();
     }
 
