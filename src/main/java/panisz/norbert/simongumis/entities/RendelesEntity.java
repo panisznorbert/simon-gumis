@@ -28,6 +28,6 @@ public class RendelesEntity extends BaseEntity implements Comparable<RendelesEnt
 
     @Override
     public int compareTo(RendelesEntity o) {
-        return this.getDatum().compareTo(o.getDatum());
+        return o.getDatum().compareTo(this.getDatum());
     }
 }

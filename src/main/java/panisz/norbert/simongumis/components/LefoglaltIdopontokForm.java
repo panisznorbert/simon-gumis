@@ -50,7 +50,7 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
 
     private Grid<IdopontfoglalasEntity> tablafeltolto(List<IdopontfoglalasEntity> foglalasok){
         sort(foglalasok);
-        tabla.addColumn(new LocalDateTimeRenderer<>(IdopontfoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT)), "datum").setHeader("Időpont").setWidth("180px");
+        tabla.addColumn(new LocalDateTimeRenderer<>(IdopontfoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)), "Időpont").setHeader("Időpont").setWidth("180px");
         tabla.addColumn(TemplateRenderer.<IdopontfoglalasEntity> of(
                 "<div><small>Név: [[item.nev]]<br>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
                         .withProperty("nev",
