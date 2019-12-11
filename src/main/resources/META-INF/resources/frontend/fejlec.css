@@ -4,7 +4,7 @@
 .fejlec {
     width: 100%;
     max-height: 30%;
-    margin-bottom: -70px;
+    margin-bottom: -90px;
 }
 .menusor {
     background-color: black;
@@ -20,5 +20,11 @@ vaadin-app-layout {
     --lumo-base-color: transparent;
 }
 .nyitvatartas {
-    margin-top: 100px;
+    margin-top: 70px;
+    min-width: 200px;
+}
+vaadin-app-layout vaadin-tab {
+    font-size: var(--lumo-font-size-xs);
+    padding-left: .75em;
+    padding-right: .75em;
 }
