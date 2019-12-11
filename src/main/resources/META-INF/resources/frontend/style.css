@@ -10,3 +10,9 @@ vaadin-grid-cell-content img {
     line-height: 80px;
     vertical-align: middle;
 }
+.szegely::before {
+    height: 10px;
+    display: inline;
+    width: 60%;
+    border-bottom-style: solid;
+}
