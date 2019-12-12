@@ -2,29 +2,77 @@
     padding: 0;
 }
 .fejlec {
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    display: flex;
     width: 100%;
     max-height: 30%;
-    margin-bottom: -90px;
 }
 .menusor {
     background-color: black;
-    height: 112px;
+    height: 95px;
     margin: 0;
 }
-.fejlec-kepek {
-    height: 200px;
+
+::part(back-button), ::part(forward-button) {
+    color: #75f3f9;
+}
+
+.jobb-fejlec-kep {
+    height: 170px;
+    margin: 0;
+}
+.bal-fejlec-kep {
+    height: 95px;
     margin: 0;
 }
 vaadin-app-layout {
     background-color: transparent;
     --lumo-base-color: transparent;
 }
-.nyitvatartas {
-    margin-top: 70px;
-    min-width: 200px;
+@media (min-width: 850px) {
+    .nyitvatartas {
+        min-width: 200px;
+        margin-top: 50px;
+        width: inherit;
+    }
+    vaadin-app-layout vaadin-tab {
+        --lumo-font-size-m: var(--lumo-font-size-xs);
+        --lumo-icon-size-m: 1.5rem;
+        padding-left: .75em;
+        padding-right: .75em;
+
+    }
 }
-vaadin-app-layout vaadin-tab {
-    font-size: var(--lumo-font-size-xs);
-    padding-left: .75em;
-    padding-right: .75em;
+@media (max-width: 850px) {
+    .nyitvatartas {
+        min-width: 200px;
+        margin-top: 30px;
+        width: inherit;
+        position: absolute;
+    }
+    vaadin-app-layout vaadin-tabs{
+        position: absolute;
+        bottom: 0;
+        background-color: black;
+        width: 100%;
+        --lumo-font-size-m: var(--lumo-font-size-xs);
+        --lumo-icon-size-m: 1.5rem;
+        text-align: center;
+    }
+    .menusor {
+        width: 100%;
+    }
+    body {
+        --lumo-space-m: 0;
+    }
+}
+.infosav {
+    align-items: center;
+}
+.tartalom {
+    width: 100%;
+    align-items: center;
+    margin-top: 100px;
 }

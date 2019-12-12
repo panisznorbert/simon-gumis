@@ -16,3 +16,30 @@ vaadin-grid-cell-content img {
     width: 60%;
     border-bottom-style: solid;
 }
+vaadin-grid {
+    margin-bottom: 50px;
+}
+@media (max-width: 1100px) {
+    vaadin-grid {
+        font-size: small;
+        width: 80%;
+    }
+    vaadin-grid vaadin-grid-header {
+        font-size: small;
+    }
+    .gumitabla {
+        line-height: 40px;
+    }
+    vaadin-grid-cell-content img {
+        max-height: 40px;
+        max-width: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+    }
+    vaadin-button {
+        font-size: small;
+    }
+    vaadin-text-field {
+        font-size: small;
+    }
+}

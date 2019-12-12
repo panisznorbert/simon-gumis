@@ -22,7 +22,7 @@ public class BeallitasokView extends BaseView {
 
     private void initializeView() {
         fomenu.getBeallitasok().getStyle().set("color", "#75f3f9");
-        add(new BeallitasokForm(nyitvatartasService, kezdolapTartalomService));
+        tartalom.add(new BeallitasokForm(nyitvatartasService, kezdolapTartalomService));
         setSizeFull();
     }
 }

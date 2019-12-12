@@ -16,7 +16,7 @@ public class KosarView extends BaseView {
 
     private void initializeView() {
         fomenu.getKosar().getStyle().set("color", "#75f3f9");
-        add(new KosarForm(rendelesService));
+        tartalom.add(new KosarForm(rendelesService));
         setSizeFull();
     }
 

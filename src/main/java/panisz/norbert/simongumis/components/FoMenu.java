@@ -57,9 +57,6 @@ public class FoMenu extends VerticalLayout {
             //}
         }catch(Exception e){}
 
-
-        this.setAlignItems(Alignment.CENTER);
-
         add(appLayout, nyitvatartasMeghatarozo(nyitvatartasService));
 
     }
@@ -68,7 +65,7 @@ public class FoMenu extends VerticalLayout {
         VerticalLayout infosav = new VerticalLayout();
         Label nyitvatartasLabel = new Label();
         nyitvatartasLabel.addClassName("nyitvatartas");
-        infosav.setAlignItems(Alignment.CENTER);
+        infosav.addClassName("infosav");
         infosav.setSizeFull();
         infosav.add(nyitvatartasLabel);
         nyitvatartasLabel.getStyle().set("font-weight", "bold");

@@ -18,7 +18,7 @@ public class KezdolapView extends BaseView {
 
     private void initializeView() {
         fomenu.getKezdolap().getStyle().set("color", "#75f3f9");
-        add(new KezdolapForm(kezdolapTartalomService));
+        tartalom.add(new KezdolapForm(kezdolapTartalomService));
         setSizeFull();
     }
 }

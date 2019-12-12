@@ -21,7 +21,7 @@ public class GumikKezeleseView extends BaseView {
 
     private void initializeView() {
         fomenu.getGumikKezelese().getStyle().set("color", "#75f3f9");
-        add(new GumikKezeleseForm(gumikService));
+        tartalom.add(new GumikKezeleseForm(gumikService));
         setSizeFull();
     }
 }

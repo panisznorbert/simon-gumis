@@ -13,7 +13,7 @@ public class BelepesView extends BaseView {
     }
 
     private void initializeView() {
-        add(new BelepesForm(adminService));
+        tartalom.add(new BelepesForm(adminService));
         setSizeFull();
     }
 }

@@ -18,7 +18,7 @@ public class LefoglaltIdopontokView extends BaseView {
 
     private void initializeView() {
         fomenu.getLefoglaltIdopontok().getStyle().set("color", "#75f3f9");
-        add(new LefoglaltIdopontokForm(foglalasService));
+        tartalom.add(new LefoglaltIdopontokForm(foglalasService));
         setSizeFull();
     }
 }

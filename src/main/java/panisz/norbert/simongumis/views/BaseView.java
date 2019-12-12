@@ -7,6 +7,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import panisz.norbert.simongumis.components.FoMenu;
 import panisz.norbert.simongumis.services.AdminService;
@@ -31,6 +32,8 @@ public class BaseView extends VerticalLayout {
     private Image balOldal = new Image("/images/baloldal.jpg", "");
     private Image jobbOldal = new Image("/images/jobboldal.jpg", "");
 
+    HorizontalLayout tartalom = new HorizontalLayout();
+
     FoMenu fomenu;
 
     @PostConstruct
@@ -40,16 +43,17 @@ public class BaseView extends VerticalLayout {
     private void baseInitializeView() {
         fomenu  = new FoMenu(adminService, nyitvatartasService);
         this.addClassName("alap");
+        tartalom.addClassName("tartalom");
         fejlec.addClassName("fejlec");
         fomenu.addClassName("menusor");
-        balOldal.addClassName("fejlec-kepek");
-        jobbOldal.addClassName("fejlec-kepek");
+        balOldal.addClassName("bal-fejlec-kep");
+        jobbOldal.addClassName("jobb-fejlec-kep");
         if(rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
             fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
             fomenu.getKosar().getStyle().set("color", "red");
         }
         fejlec.add(balOldal, fomenu, jobbOldal);
-        add(fejlec);
+        add(fejlec, tartalom);
         setSizeFull();
     }
 
