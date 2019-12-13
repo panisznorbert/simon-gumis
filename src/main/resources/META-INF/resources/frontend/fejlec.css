@@ -1,5 +1,6 @@
 .alap {
     padding: 0;
+    width: 100%;
 }
 .fejlec {
     padding: 0;
@@ -7,14 +8,16 @@
     position: fixed;
     display: flex;
     width: 100%;
-    max-height: 30%;
+    min-height: 170px;
 }
 .menusor {
     background-color: black;
     height: 95px;
     margin: 0;
 }
-
+::part(splitter) {
+    visibility: collapse;
+}
 ::part(back-button), ::part(forward-button) {
     color: #75f3f9;
 }
@@ -27,9 +30,13 @@
     height: 95px;
     margin: 0;
 }
+.szolgaltatas-sorok {
+    margin-top: 20px;
+}
 vaadin-app-layout {
     background-color: transparent;
     --lumo-base-color: transparent;
+    height: 95px;
 }
 @media (min-width: 850px) {
     .nyitvatartas {
@@ -44,6 +51,24 @@ vaadin-app-layout {
         padding-right: .75em;
 
     }
+    .infosav {
+        align-items: center;
+    }
+    .tartalom {
+        width: 100%;
+        align-items: center;
+        margin-top: 95px;
+    }
+}
+@media (max-width: 1100px) {
+    .tartalom {
+        width: 100%;
+        align-items: center;
+        margin-top: 150px;
+    }
+    body {
+        --lumo-space-m: 0;
+    }
 }
 @media (max-width: 850px) {
     .nyitvatartas {
@@ -53,26 +78,53 @@ vaadin-app-layout {
         position: absolute;
     }
     vaadin-app-layout vaadin-tabs{
-        position: absolute;
-        bottom: 0;
+        top: 0;
         background-color: black;
-        width: 100%;
         --lumo-font-size-m: var(--lumo-font-size-xs);
         --lumo-icon-size-m: 1.5rem;
         text-align: center;
     }
+    vaadin-app-layout {
+        background-color: black;
+        height: 52px;
+    }
     .menusor {
         width: 100%;
+        height: 109px;
     }
     body {
         --lumo-space-m: 0;
     }
+    .jobb-fejlec-kep {
+        margin: 52px 0 0;
+        height: 102px;
+    }
+    .bal-fejlec-kep {
+        margin: 52px 0 0;
+        height: 57px;
+    }
+    .infosav {
+        align-items: center;
+        margin-top: 50px;
+        min-width: 150px;
+    }
+    .tartalom {
+        width: 100%;
+        align-items: center;
+        margin-top: 150px;
+    }
 }
-.infosav {
-    align-items: center;
+@media (max-width: 520px) {
+    .nyitvatartas {
+        top: 90px;
+        min-width: 0;
+    }
+    .infosav {
+        min-width: 0;
+    }
+    .fejlec {
+        min-width: 400px;
+    }
 }
-.tartalom {
-    width: 100%;
-    align-items: center;
-    margin-top: 100px;
-}
+
+

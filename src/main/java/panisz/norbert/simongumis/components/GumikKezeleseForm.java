@@ -54,8 +54,6 @@ public class GumikKezeleseForm extends VerticalLayout {
 
     public GumikKezeleseForm(GumikService gumikService){
 
-        this.getStyle().set("width", "80%");
-        this.getStyle().set("padding-left", "20%");
         this.gumikService = gumikService;
         grid.setHeightByRows(true);
         hozzaad.addClickListener(e -> ment());
@@ -109,7 +107,7 @@ public class GumikKezeleseForm extends VerticalLayout {
 
         adatokBevitel.add(new VerticalLayout(menusor1, menusor2), kepfeltolto, new HorizontalLayout(hozzaad));
 
-        add(adatokBevitel, new HorizontalLayout(grid));
+        add(adatokBevitel, grid);
 
         gridhezMenu();
     }

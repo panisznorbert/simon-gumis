@@ -52,7 +52,7 @@ public class GumikForm extends VerticalLayout {
         gumik.setSelectionMode(Grid.SelectionMode.NONE);
         gumik.addItemClickListener(e -> sorkivalasztas(e.getItem()));
         gumikTablaFeltolt(menu.getKriterium());
-        add( menu, new HorizontalLayout(gumik));
+        add( menu, gumik);
         this.setAlignItems(Alignment.CENTER);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }

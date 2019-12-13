@@ -23,7 +23,9 @@ public class SzolgaltatsokForm extends VerticalLayout {
         for(String szolgpont : szolgaltatsok){
             Label ujpont = new Label(szolgpont);
             ujpont.getStyle().set("font-weight", "bold");
-            tartalom.add(new HorizontalLayout(new Icon(VaadinIcon.CHECK_SQUARE_O), ujpont));
+            HorizontalLayout sor = new HorizontalLayout(new Icon(VaadinIcon.CHECK_SQUARE_O), ujpont);
+            sor.addClassName("szolgaltatas-sorok");
+            tartalom.add(sor);
             if("Kerékszerelés".equals(szolgpont)){
                 String[] kerekszerelesek = {"személy gépjármű", "kisteher gépjármű", "mezőgazdasági", "munkagép", "teher"};
                 for(String szerelespont : kerekszerelesek){
