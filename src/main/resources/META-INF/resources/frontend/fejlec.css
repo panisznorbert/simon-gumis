@@ -60,7 +60,7 @@ vaadin-app-layout {
         margin-top: 95px;
     }
 }
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
     .tartalom {
         width: 100%;
         align-items: center;

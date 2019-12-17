@@ -199,7 +199,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private void tovabbiFeltetelek(){
         menu2.removeAll();
         menu2.add(gyarto, artol, arig, alaphelyzet, keres);
-        menu.setHeight("230px");
+        menu.setHeight("200px");
     }
 
 
