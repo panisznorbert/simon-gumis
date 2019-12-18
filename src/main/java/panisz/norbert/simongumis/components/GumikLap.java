@@ -17,7 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-public class GumikLap extends VerticalLayout {
+class GumikLap extends VerticalLayout {
 
     GumikLap(List<GumikEntity> gumik){
         lapfeltoltes(gumik);
@@ -46,13 +46,22 @@ public class GumikLap extends VerticalLayout {
         Label allapot = new Label(gumi.getAllapot());
         allapot.setId("allapot-label");
 
-        Label keszlet = new Label(gumi.getMennyisegRaktarban().toString());
+        Label keszlet = new Label("Készleten: " + gumi.getMennyisegRaktarban().toString() + " db");
         keszlet.setId("keszlet-label");
-        Label ar = new Label(gumi.getAr().toString());
+        Label ar = new Label(gumi.getAr().toString() + " Ft/db");
         ar.setId("ar-label");
 
-        TextField darabVasarlas = new TextField();
+        TextField darab = new TextField();
+        darab.setPattern("[0-9]*");
+        darab.setId("darab-mezo");
+        darab.setValue("0");
+        Button csokkent = new Button("-");
+        csokkent.setId("csokkent");
+        Button novel = new Button("+");
+        novel.setId("novel");
+        HorizontalLayout darabVasarlas = new HorizontalLayout(csokkent, darab, novel);
         Button kosarba = new Button("kosárba");
+        kosarba.setId("kosarba");
 
         VerticalLayout kepHelye = new VerticalLayout(gumiKep);
         kepHelye.setSizeUndefined();
@@ -62,10 +71,10 @@ public class GumikLap extends VerticalLayout {
         leirasHelye1.setId("leirasHelye1");
         VerticalLayout leirasHelye2 = new VerticalLayout(keszlet, ar);
         leirasHelye2.setSizeUndefined();
-        leirasHelye1.setId("leirasHelye2");
+        leirasHelye2.setId("leirasHelye2");
         VerticalLayout vasarlashelye = new VerticalLayout(darabVasarlas, kosarba);
         vasarlashelye.setSizeUndefined();
-        leirasHelye2.setId("vasarlashelye");
+        vasarlashelye.setId("vasarlashelye");
 
         HorizontalLayout sor = new HorizontalLayout(kepHelye, leirasHelye1, leirasHelye2, vasarlashelye);
         sor.addClassName("gumik-sor");
