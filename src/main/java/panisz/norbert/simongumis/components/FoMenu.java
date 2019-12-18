@@ -49,12 +49,12 @@ public class FoMenu extends VerticalLayout {
 
         //bejelentkezéshez kötött menüpontok
         try {
-            if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
+            //if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
                 menuElemeinekBeallitasa(menu, gumikKezelese);
                 menuElemeinekBeallitasa(menu, lefoglaltIdopontok);
                 menuElemeinekBeallitasa(menu, rendelesek);
                 menuElemeinekBeallitasa(menu, beallitasok);
-            }
+            //}
         }catch(Exception e){}
 
         add(appLayout, nyitvatartasMeghatarozo(nyitvatartasService));

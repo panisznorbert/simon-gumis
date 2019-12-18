@@ -36,7 +36,7 @@ public class GumikForm extends VerticalLayout {
     private RendelesService rendelesService;
 
     private GumiKeresoMenu menu;
-    private GumiGrid gumik = new GumiGrid();
+    private VerticalLayout gumilap;
     private Dialog darabszamAblak;
 
     private FoMenu foMenu;
@@ -46,35 +46,13 @@ public class GumikForm extends VerticalLayout {
         this.rendelesService = rendelesService;
         this.foMenu = foMenu;
         menu = new GumiKeresoMenu(gumiMeretekService);
-        gumik.addColumn(new NativeButtonRenderer<>("kosárba", this::kosarbahelyezesAblak));
-        gumik.setWidth("1000px");
-        gumik.setHeightByRows(true);
-        gumik.setSelectionMode(Grid.SelectionMode.NONE);
-        gumik.addItemClickListener(e -> sorkivalasztas(e.getItem()));
-        gumikTablaFeltolt(menu.getKriterium());
-        add( menu, gumik);
+
+        gumilap = new GumikLap(gumikService.osszes());
+        add( menu, gumilap);
         this.setAlignItems(Alignment.CENTER);
         menu.getKeres().addClickListener(e -> gumikTablaFeltolt(menu.getKriterium()));
     }
 
-
-    private void sorkivalasztas(GumikEntity gumikEntity){
-        Dialog kepNagyit = new Dialog();
-        Image kep;
-        if(gumikEntity.getKep() != null){
-            StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
-                @Override
-                public InputStream createInputStream() {
-                    return new ByteArrayInputStream(gumikEntity.getKep());
-                }
-            });
-            kep = new Image(streamResource, "");
-            kep.setWidth("400px");
-            kepNagyit.setCloseOnOutsideClick(true);
-            kepNagyit.add(kep);
-            kepNagyit.open();
-        }
-    }
 
     private void kosarbahelyezesAblak(GumikEntity gumi){
         Label tipus = new Label(gumi.toString() + " típusú gumiból");
@@ -198,8 +176,10 @@ public class GumikForm extends VerticalLayout {
                 szurtAdatok.remove(gumikEntity);
             }
         }
-        gumik.setItems(szurtAdatok);
-        gumik.getDataProvider().refreshAll();
+
+        this.remove(gumilap);
+        gumilap = new GumikLap(szurtAdatok);
+        this.add(gumilap);
     }
 
     private boolean adottSzelessegreSzurtE(Integer aktualisSzelesseg, Integer szurtSzelesseg){
