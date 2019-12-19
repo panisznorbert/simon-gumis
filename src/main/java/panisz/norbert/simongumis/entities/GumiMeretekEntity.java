@@ -7,7 +7,6 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "gumi_meretek")
 public class GumiMeretekEntity extends BaseEntity implements Comparable<GumiMeretekEntity>{
@@ -17,7 +16,7 @@ public class GumiMeretekEntity extends BaseEntity implements Comparable<GumiMere
 
     @Override
     public String toString() {
-        return szelesseg + "/" + profil + "/R/" + felni;
+        return szelesseg + "/" + profil + "R" + felni;
     }
 
     @Override

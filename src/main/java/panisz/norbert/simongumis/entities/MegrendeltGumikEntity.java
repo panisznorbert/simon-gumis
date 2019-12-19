@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table(name = "megrendelt_gumik")
 public class MegrendeltGumikEntity extends BaseEntity {
 
-    private int gumiId;
+    private Integer gumiId;
     private String gyarto;
     private Integer meretSzelesseg;
     private Integer meretProfil;
@@ -25,7 +25,7 @@ public class MegrendeltGumikEntity extends BaseEntity {
 
     @Override
     public String toString() {
-        return gyarto + " " + meretSzelesseg + "/" + meretProfil + "/R/" + meretFelni + " " + evszak + "-" + allapot;
+        return gyarto + " " + meretSzelesseg + "/" + meretProfil + "R" + meretFelni + " " + evszak + "-" + allapot;
     }
 
     public MegrendeltGumikEntity beallit(GumikEntity gumi) {
