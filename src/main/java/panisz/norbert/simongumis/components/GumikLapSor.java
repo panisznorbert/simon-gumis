@@ -3,15 +3,19 @@ package panisz.norbert.simongumis.components;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 import panisz.norbert.simongumis.entities.*;
@@ -20,6 +24,7 @@ import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,18 +34,24 @@ public class GumikLapSor extends HorizontalLayout {
     private AppLayoutMenuItem kosar;
 
     private VerticalLayout kepHelye = new VerticalLayout();
+    private Button gumiKep;
     private VerticalLayout leirasHelye1 = new VerticalLayout();
     private VerticalLayout leirasHelye2 = new VerticalLayout();
+    private Label keszlet;
     private VerticalLayout megrendelesHelye = new VerticalLayout();
     private VerticalLayout modositasHelye = new VerticalLayout();
-
+    private Icon szerkeszt;
 
     GumikLapSor(GumikEntity gumi, GumikService gumikService, RendelesService rendelesService, AppLayoutMenuItem kosar, AdminService adminService){
         this.kosar = kosar;
+        ujSor(gumi, gumikService, rendelesService, adminService);
+
+    }
+
+    private void ujSor(GumikEntity gumi, GumikService gumikService, RendelesService rendelesService, AdminService adminService){
         //Gumiról kép
-        Button gumiKep = kepBetolt(gumi.getKep());
+        gumiKep = kepBetolt(gumi.getKep());
         gumiKep.setId("kep-button");
-        gumiKep.addClickListener(e -> sorkivalasztas(gumi.getKep()));
 
         kepHelye.add(gumiKep);
         kepHelye.setSizeUndefined();
@@ -61,7 +72,7 @@ public class GumikLapSor extends HorizontalLayout {
         leirasHelye1.setId("leirasHelye1");
 
         //Leíras második része
-        Label keszlet = new Label("Készleten: " + gumi.getMennyisegRaktarban().toString() + " db");
+        keszlet = new Label("Készleten: " + gumi.getMennyisegRaktarban().toString() + " db");
         keszlet.setId("keszlet-label");
         Label ar = new Label(gumi.getAr().toString() + " Ft/db");
         ar.setId("ar-label");
@@ -95,13 +106,13 @@ public class GumikLapSor extends HorizontalLayout {
 
         //Sorok felépítése
         this.add(kepHelye, leirasHelye1, leirasHelye2, megrendelesHelye);
-        this.addClassName("gumik-sor");
+        this.setId("gumik-sor");
 
         //if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
         Icon torol = new Icon(VaadinIcon.TRASH);
         torol.setId("torol-ikon");
         torol.addClickListener(e -> torles(gumi, gumikService));
-        Icon szerkeszt = new Icon(VaadinIcon.EDIT);
+        szerkeszt = new Icon(VaadinIcon.EDIT);
         szerkeszt.setId("szerkeszt-ikon");
         szerkeszt.addClickListener(e -> szerkeszt(gumi));
         modositasHelye.add(torol, szerkeszt);
@@ -119,8 +130,85 @@ public class GumikLapSor extends HorizontalLayout {
     }
 
     private void szerkeszt(GumikEntity gumi){
+        this.setId("gumik-sor-szerkesztes");
+        this.kepHelye.removeAll();
+        this.leirasHelye1.removeAll();
+        this.leirasHelye2.removeAll();
+        this.remove(megrendelesHelye);
+        this.leirasHelye1.setId("leirasHelye1-szerkesztes");
+        this.leirasHelye2.setId("leirasHelye2-szerkesztes");
+        this.modositasHelye.setId("sorvege-szerkesztes");
+
+        TextField gyarto = new TextField();
+        gyarto.setValue(gumi.getGyarto());
+        gyarto.setId("gyarto-szerkesztes");
+        TextField meret1 = new TextField();
+        meret1.setValue(gumi.getMeret().getSzelesseg().toString());
+        meret1.setPattern("[0-9]*");
+        TextField meret2 = new TextField();
+        meret2.setValue(gumi.getMeret().getProfil().toString());
+        meret2.setPattern("[0-9]*");
+        TextField meret3 = new TextField();
+        meret3.setValue(gumi.getMeret().getFelni().toString());
+        meret3.setPattern("[0-9]*");
+        Label meretKiegeszites1 = new Label("/");
+        Label meretKiegeszites2 = new Label("R");
+        meretKiegeszites1.setId("meretKiegeszites");
+        meretKiegeszites2.setId("meretKiegeszites");
+        HorizontalLayout meret = new HorizontalLayout(meret1, meretKiegeszites1, meret2, meretKiegeszites2, meret3);
+
+        meret.setId("meret-szerkesztes");
+        ComboBox<String> evszak = new ComboBox<>("", "Téli", "Nyári", "Négyévszakos");
+        evszak.setValue(gumi.getEvszak());
+        ComboBox<String> allapot = new ComboBox<>("", "Új","Használt");
+        allapot.setValue(gumi.getAllapot());
+        leirasHelye1.add(gyarto, meret, evszak, allapot);
+
+        TextField ar = new TextField();
+        ar.setValue(gumi.getAr().toString());
+        ar.setId("ar-szerkesztes");
+        ar.setSuffixComponent(new Span("Ft/db"));
+        TextField darab  = new TextField();
+        darab.setValue(gumi.getMennyisegRaktarban().toString());
+        darab.setId("darab-szerkesztes");
+        darab.setSuffixComponent(new Span("db"));
+        keszlet.setText("Keszleten:");
+        HorizontalLayout keszletSor = new HorizontalLayout(keszlet, darab);
+        keszletSor.setId("keszletSor-szerkesztes");
+        leirasHelye2.add(keszletSor, ar);
+
+        modositasHelye.remove(szerkeszt);
+        szerkeszt = new Icon(VaadinIcon.CLIPBOARD_CHECK);
+        szerkeszt.setId("mentes-ikon");
+        szerkeszt.addClickListener(e -> szerkesztesMentese());
+        modositasHelye.add(szerkeszt);
+
+        MemoryBuffer memoryBuffer = new MemoryBuffer();
+        Upload imgUpload = new Upload(memoryBuffer);
+        imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+        imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
+        imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
+        imgUpload.setWidth("200px");
+
+        kepHelye.setId("kepHelye-szerkesztes");
+        VerticalLayout kep = new VerticalLayout(gumiKep);
+        kep.setId("kepHelye");
+        this.kepHelye.add(kep, imgUpload);
+        imgUpload.addSucceededListener(e -> {
+            System.out.println("Succeeded Upload of " + e.getFileName());
+            try {
+                gumiKep = kepBetolt(memoryBuffer.getInputStream().readAllBytes());
+                kep.removeAll();
+                kep.add(gumiKep);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        });
 
     }
+
+    private void szerkesztesMentese(){}
 
     private void rendelesCsokkentese(TextField mezo, Label hiba, Button gomb){
         if(hiba.isVisible()){
@@ -144,7 +232,7 @@ public class GumikLapSor extends HorizontalLayout {
         }
     }
 
-    private static Button kepBetolt(byte[] gumikEntity){
+    private Button kepBetolt(byte[] gumikEntity){
         Button kep = new Button();
         if(gumikEntity != null){
             StreamResource streamResource = new StreamResource("isr", new InputStreamFactory() {
@@ -154,6 +242,7 @@ public class GumikLapSor extends HorizontalLayout {
                 }
             });
             kep.setIcon(new Image(streamResource, ""));
+            kep.addClickListener(e -> sorkivalasztas(gumikEntity));
         }else{
             kep.setIcon(new Icon(VaadinIcon.BAN));
             kep.setEnabled(false);

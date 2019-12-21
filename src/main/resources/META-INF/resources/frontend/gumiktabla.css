@@ -7,7 +7,7 @@ vaadin-button iron-icon {
     height: 100px;
     color: #7f7f7f;
 }
-.gumik-sor {
+#gumik-sor {
     margin-bottom: 30px;
     margin-top: 0;
     background-color: black;
@@ -43,7 +43,7 @@ vaadin-button iron-icon {
     color: yellow;
 }
 #meret-label {
-    margin: 0;
+    margin-top: 0;
     color: #75f3f9;
 }
 #evszak-label {
@@ -55,12 +55,12 @@ vaadin-button iron-icon {
     color: #75f3f9;
 }
 #leirasHelye2 {
-    width: 150px;
-    align-items: center;
-    background-color: #7f7f7f;
-    margin: 20px 0;
-    padding: 0;
-    height: 120px;
+     width: 150px;
+     align-items: center;
+     background-color: #7f7f7f;
+     margin: 20px 0;
+     padding: 0;
+     height: 120px;
 }
 #keszlet-label {
     margin-top: 30px;
@@ -119,7 +119,7 @@ vaadin-button iron-icon {
 }
 #sorvege {
     padding: 0 20px 0 0;
-    width: 150px;
+    width: 100px;
     align-items: flex-end;
     color: #75f3f9;
     background-color: #7f7f7f;
@@ -133,5 +133,92 @@ vaadin-button iron-icon {
 }
 #szerkeszt-ikon {
     margin-top: 20px;
+    height: 30px;
+}
+/******Szerkesztő sor CSS****/
+#gumik-sor-szerkesztes {
+    margin-bottom: 30px;
+    margin-top: 0;
+    background-color: black;
+    height: 300px;
+    border-bottom-left-radius: 50px;
+    border-top-right-radius: 50px;
+}
+#kepHelye-szerkesztes {
+    align-self: center;
+    padding-top: 0;
+    width: 250px;
+    height: 300px;
+}
+#leirasHelye1-szerkesztes {
+    width: 250px;
+    background-color: #7f7f7f;
+    margin: 20px 0;
+    padding: 0 0 0 20px;
+    height: 260px;
+    border-top-left-radius: 20px;
+}
+#gyarto-szerkesztes::part(label) {
+    color: #75f3f9;
+}
+#gyarto-szerkesztes {
+    margin: 30px 0 0;
+    font-weight: bold;
+    font-size: larger;
+    color: yellow;
+    width: 200px;
+}
+#meret-szerkesztes {
+    align-items: center;
+}
+#meret-szerkesztes vaadin-text-field::part(label) {
+    padding-top: 0;
+    color: #75f3f9;
+}
+#meret-szerkesztes vaadin-text-field {
+    padding: 0;
+    color: #75f3f9;
+    width: 50px;
+    font-size: small;
+}
+#meretKiegeszites {
+    color: #75f3f9;
+}
+#leirasHelye2-szerkesztes {
+    width: 200px;
+    align-items: flex-end;
+    background-color: #7f7f7f;
+    margin: 20px 0;
+    padding: 0;
+    height: 260px;
+}
+#keszletSor-szerkesztes {
+    align-items: center;
+    margin-top: 0;
+}
+#darab-szerkesztes {
+    margin-top: 30px;
+    margin-left: 20px;
+    color: #75f3f9;
+    width: 70px;
+}
+#ar-szerkesztes {
+    width: 120px;
+    margin: 128px 0 0;
+    color: #75f3f9;
+    align-self: flex-end;
+}
+#sorvege-szerkesztes {
+    padding: 0 20px 0 0;
+    width: 100px;
+    align-items: flex-end;
+    color: #75f3f9;
+    background-color: #7f7f7f;
+    height: 260px;
+    margin: 20px 20px 20px 0;
+    border-bottom-right-radius: 20px;
+}
+#mentes-ikon {
+    margin-top: 140px;
     height: 30px;
 }
