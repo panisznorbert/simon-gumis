@@ -13,8 +13,8 @@ import java.util.Objects;
 @Table(name = "gumik")
 public class GumikEntity extends BaseEntity {
     private String gyarto;
-    @ManyToOne(cascade = CascadeType.ALL)
-    private GumiMeretekEntity meret;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    protected GumiMeretekEntity meret;
     private Integer ar;
     private String evszak;
     private String allapot;

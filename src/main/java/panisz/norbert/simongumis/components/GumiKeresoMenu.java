@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
 import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.services.GumiMeretekService;
+import panisz.norbert.simongumis.services.GumikService;
+
 import java.util.*;
 
 @UIScope
@@ -18,9 +20,6 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
     private GumiMeretekService gumiMeretekService;
 
-    private GumikEntity kriterium = new GumikEntity();
-    private static Integer kezdoAr;
-    private static Integer vegAr;
 
     private ComboBox<Integer> meret1 = new ComboBox("Méret-szélesség");
     private ComboBox<Integer> meret2 = new ComboBox("Méret-profil arány");
@@ -29,8 +28,8 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private HorizontalLayout meret2cb = new HorizontalLayout(meret2);
     private HorizontalLayout meret3cb = new HorizontalLayout(meret3);
 
-    private ComboBox evszak = new ComboBox("Évszak", "Téli", "Nyári", "Négyévszakos");
-    private ComboBox allapot = new ComboBox("Állapot", "Új","Használt");
+    private ComboBox<String> evszak = new ComboBox("Évszak", "Téli", "Nyári", "Négyévszakos");
+    private ComboBox<String> allapot = new ComboBox("Állapot", "Új","Használt");
 
     private TextField gyarto = new TextField("Gyártó");
     private TextField artol = new TextField("Ár -tól");
@@ -48,20 +47,12 @@ public class GumiKeresoMenu extends HorizontalLayout {
         this.gumiMeretekService = gumiMeretekService;
         egyeb.addClickListener(e -> tovabbiFeltetelek());
         alaphelyzet.addClickListener(e -> init());
-        keres.addClickListener(e -> adatokBeallitasa());
         init();
     }
 
 
     private void init(){
         meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
-        kriterium.setMeret(new GumiMeretekEntity());
-        setMeret(0,0,0);
-        kriterium.setGyarto("");
-        kriterium.setAllapot("");
-        kriterium.setEvszak("");
-        kriterium.setMennyisegRaktarban(0);
-        kriterium.setAr(0);
         evszak.clear();
         allapot.clear();
         gyarto.clear();
@@ -76,44 +67,10 @@ public class GumiKeresoMenu extends HorizontalLayout {
         menu.removeAll();
         menu.add(menu1, menu2);
         add(menu);
-        adatokBeallitasa();
     }
-
-    private void adatokBeallitasa(){
-        if(gyarto.isEmpty()){
-            kriterium.setGyarto("");
-        }else{
-            kriterium.setGyarto(gyarto.getValue());
-        }
-
-        if(artol.isEmpty()){
-            kezdoAr=0;
-        }else{
-            kezdoAr=Integer.valueOf(artol.getValue());
-        }
-
-        if(arig.isEmpty()){
-            vegAr=0;
-        }else{
-            vegAr=Integer.valueOf(arig.getValue());
-        }
-
-        if(evszak.isEmpty()){
-            kriterium.setEvszak("");
-        }else{
-            kriterium.setEvszak(evszak.getValue().toString());
-        }
-
-        if(allapot.isEmpty()){
-            kriterium.setAllapot("");
-        }else{
-            kriterium.setAllapot(allapot.getValue().toString());
-        }
-    }
-
 
     private void meretKivalasztas(){
-        Integer beallito = 111;
+        int beallito = 111;
         if(meret1.isEmpty()){
             beallito = beallito - 100;
         }
@@ -127,51 +84,38 @@ public class GumiKeresoMenu extends HorizontalLayout {
         switch(beallito){
             case 0:{
                 meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
-                setMeret(0, 0, 0);
                 break;
             }
             case 1:{
                 meretFeltolto(gumiMeretekService.felnireKeresMenuhoz(meret3.getValue()), 0, 0, 1);
-                setMeret(0, 0, meret3.getValue());
                 break;
             }
             case 10:{
                 meretFeltolto(gumiMeretekService.profilraKeresMenuhoz(meret2.getValue()),0 ,1 ,0);
-                setMeret(0, meret2.getValue(), 0);
                 break;
             }
             case 11:{
                 meretFeltolto(gumiMeretekService.profilraEsFelnireKeresMenuhoz(meret2.getValue(), meret3.getValue()),0,1,1);
-                setMeret(0, meret2.getValue(), meret3.getValue());
                 break;
             }
             case 100:{
                 meretFeltolto(gumiMeretekService.szelessegreKeresMenuhoz(meret1.getValue()), 1, 0, 0);
-                setMeret(meret1.getValue(), 0, 0);
                 break;
             }
             case 101:{
                 meretFeltolto(gumiMeretekService.szelessegreEsFelnireKeresMenuhoz(meret1.getValue(), meret3.getValue()), 1, 0, 1);
-                setMeret(meret1.getValue(), 0, meret3.getValue());
                 break;
             }
             case 110:{
                 meretFeltolto(gumiMeretekService.szelessegreEsProfilraKeresMenuhoz(meret1.getValue(), meret2.getValue()), 1, 1, 0);
-                setMeret(meret1.getValue(), meret2.getValue(), 0);
                 break;
             }
             case 111:{
-                setMeret(meret1.getValue(), meret2.getValue(), meret3.getValue());
                 break;
             }
         }
     }
 
-    private void setMeret(Integer a, Integer b, Integer c){
-        kriterium.getMeret().setSzelesseg(a);
-        kriterium.getMeret().setProfil(b);
-        kriterium.getMeret().setFelni(c);
-    }
 
     private void meretFeltolto(List<GumiMeretekEntity> gumiMeretekEntities, int a, int b, int c){
         SortedSet<Integer> meretSet1 = new TreeSet<>();
@@ -202,18 +146,77 @@ public class GumiKeresoMenu extends HorizontalLayout {
         menu.setHeight("200px");
     }
 
+    List<GumikEntity> szurtGumik(GumikService gumikService){
+        ArrayList<GumikEntity> osszesGumi = new ArrayList<>(gumikService.osszes());
+        ArrayList<GumikEntity> szurtAdatok = new ArrayList<>(osszesGumi);
+        for (GumikEntity gumikEntity : osszesGumi) {
+            if (adottSzelessegreSzurtE(gumikEntity.getMeret().getSzelesseg(), meret1.isEmpty() ? 0 : meret1.getValue())) {
+                szurtAdatok.remove(gumikEntity);
+                continue;
+            }
+            if (adottProfilraSzurtE(gumikEntity.getMeret().getProfil(), meret2.isEmpty() ? 0 : meret2.getValue())) {
+                szurtAdatok.remove(gumikEntity);
+                continue;
+            }
+            if (adottFelnireSzurtE(gumikEntity.getMeret().getFelni(), meret3.isEmpty() ? 0 : meret3.getValue())) {
+                szurtAdatok.remove(gumikEntity);
+                continue;
+            }
+            if (adottEvszakraSzurtE(gumikEntity.getEvszak(), evszak.isEmpty() ? "" : evszak.getValue())) {
+                szurtAdatok.remove(gumikEntity);
+                continue;
+            }
+            if (adottAllapotraSzurtE(gumikEntity.getAllapot(), allapot.isEmpty() ? "" : allapot.getValue())) {
+                szurtAdatok.remove(gumikEntity);
+                continue;
+            }
+            if (adottGyartoraSzurtE(gumikEntity.getGyarto(), gyarto.getValue())) {
+                szurtAdatok.remove(gumikEntity);
+                continue;
+            }
+            if (adottArraSzurtE(gumikEntity.getAr())) {
+                szurtAdatok.remove(gumikEntity);
+            }
+            //amiből nulla darab van azt ne jelenítse meg
+            if (gumikEntity.getMennyisegRaktarban().equals(0)){
+                szurtAdatok.remove(gumikEntity);
+            }
+        }
 
-    public Button getKeres() {
+        return szurtAdatok;
+    }
+
+    private boolean adottSzelessegreSzurtE(Integer aktualisSzelesseg, Integer szurtSzelesseg){
+        return szurtSzelesseg != 0 && !aktualisSzelesseg.equals(szurtSzelesseg);
+    }
+
+    private boolean adottProfilraSzurtE(Integer aktualisProfil, Integer szurtProfil){
+        return szurtProfil != 0 && !aktualisProfil.equals(szurtProfil);
+    }
+
+    private boolean adottFelnireSzurtE(Integer aktualisFelni, Integer szurtFelni){
+        return szurtFelni != 0 && !aktualisFelni.equals(szurtFelni);
+    }
+
+    private boolean adottEvszakraSzurtE(String aktualisEvszak, String szurtEvszak){
+        return !szurtEvszak.equals("") && !aktualisEvszak.equals(szurtEvszak);
+    }
+
+    private boolean adottAllapotraSzurtE(String aktualisAllapot, String szurtAllapot){
+        return !szurtAllapot.equals("") && !aktualisAllapot.equals(szurtAllapot);
+    }
+
+    private boolean adottGyartoraSzurtE(String aktualisGyarto, String szurtGyarto){
+        return !szurtGyarto.equals("") && !aktualisGyarto.equalsIgnoreCase(szurtGyarto);
+    }
+
+    private boolean adottArraSzurtE(Integer aktualisAr){
+        return aktualisAr < (artol.isEmpty() ? 0 : Integer.parseInt(artol.getValue())) ||
+                ((arig.isEmpty() ? 0 : Integer.parseInt(arig.getValue())) != 0 && aktualisAr > (arig.isEmpty() ? 0 : Integer.parseInt(arig.getValue())));
+    }
+
+    Button getKeres() {
         return keres;
     }
 
-    public GumikEntity getKriterium() {
-        return kriterium;
-    }
-
-    public static Integer getKezdoAr() { return kezdoAr; }
-
-    public static Integer getVegAr() {
-        return vegAr;
-    }
 }

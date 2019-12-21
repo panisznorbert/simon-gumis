@@ -23,7 +23,7 @@ public class GumikView extends BaseView {
 
     private void initializeView() {
         fomenu.getGumik().getStyle().set("color", "#75f3f9");
-        tartalom.add(new GumikForm(gumikService, rendelesService, gumiMeretekService, fomenu));
+        tartalom.add(new GumikForm(gumikService, rendelesService, gumiMeretekService, fomenu, adminService));
         setSizeFull();
     }
 

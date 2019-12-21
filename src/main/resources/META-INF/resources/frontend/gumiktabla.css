@@ -73,14 +73,13 @@ vaadin-button iron-icon {
     color: #75f3f9;
 }
 #megrendelesHelye {
-    padding: 0 20px 0 0;
+    padding: 0;
     width: 150px;
     align-items: flex-end;
     color: #75f3f9;
     background-color: #7f7f7f;
     height: 120px;
-    margin: 20px 20px 20px 0;
-    border-bottom-right-radius: 20px;
+    margin: 20px 0;
 }
 #darab-mezo {
     padding: 0;
@@ -117,4 +116,22 @@ vaadin-button iron-icon {
     margin-top: 30px;
     background-color: black;
     color: white;
+}
+#sorvege {
+    padding: 0 20px 0 0;
+    width: 150px;
+    align-items: flex-end;
+    color: #75f3f9;
+    background-color: #7f7f7f;
+    height: 120px;
+    margin: 20px 20px 20px 0;
+    border-bottom-right-radius: 20px;
+}
+#torol-ikon {
+    margin-top: 40px;
+    height: 30px;
+}
+#szerkeszt-ikon {
+    margin-top: 20px;
+    height: 30px;
 }
