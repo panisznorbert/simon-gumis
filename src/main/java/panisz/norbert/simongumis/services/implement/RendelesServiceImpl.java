@@ -11,6 +11,7 @@ import panisz.norbert.simongumis.repositories.MegrendeltGumikRepository;
 import panisz.norbert.simongumis.repositories.RendelesRepository;
 import panisz.norbert.simongumis.services.RendelesService;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -43,10 +44,16 @@ public class RendelesServiceImpl implements RendelesService {
     public String mentKosarbol(RendelesEntity rendelesEntity) {
         //végső vizsgálat hogy a rendelésben szereplő gumikból a kívánt darabszám van-e raktáron
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
-            GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getGumiId()).get();
-            if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
-                return (rendelesiEgysegEntity.getGumi().toString() + " típusú gumiból, maximum " + gumikEntity.getMennyisegRaktarban().toString() + " db elérhető, de a rendelésében több szerepel!");
+            //vizsgálat, hogy az adott gumi létezik-e még az adatbázisban
+            try{
+                GumikEntity gumikEntity = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getGumiId()).get();
+                if(gumikEntity.getMennyisegRaktarban()<rendelesiEgysegEntity.getMennyiseg()){
+                    return (rendelesiEgysegEntity.getGumi().toString() + " típusú gumiból, maximum " + gumikEntity.getMennyisegRaktarban().toString() + " db elérhető, de a rendelésében több szerepel!");
+                }
+            }catch(NoSuchElementException ex){
+                return "'" + rendelesiEgysegEntity.getGumi().toString() + "' gumi már nem rendelhető";
             }
+
         }
 
         //megrendelésnél a raktárkészlatből a gumik levonása

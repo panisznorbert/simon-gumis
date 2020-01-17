@@ -1,0 +1,6 @@
+vaadin-notification-card {
+    width: 550px;
+}
+vaadin-button {
+    align-self: flex-end
+}

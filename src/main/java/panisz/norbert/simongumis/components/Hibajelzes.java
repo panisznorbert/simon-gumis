@@ -1,10 +1,12 @@
 package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+@StyleSheet("hibajelzes.css")
 public class Hibajelzes extends Notification {
 
     public Hibajelzes(String uzenet){
@@ -14,6 +16,6 @@ public class Hibajelzes extends Notification {
         add(tartalom);
         kilep.addClickListener(event -> close());
         this.setPosition(Notification.Position.MIDDLE);
-        this.setDuration(10000);
+        this.setDuration(15000);
     }
 }

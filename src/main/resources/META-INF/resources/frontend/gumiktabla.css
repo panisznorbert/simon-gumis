@@ -6,6 +6,11 @@ vaadin-button iron-icon {
     width: 100px;
     height: 100px;
     color: #7f7f7f;
+    position: inherit;
+}
+vaadin-text-field::slotted(span) {
+    font-weight: bold;
+    color: #75f3f9;
 }
 #gumik-sor {
     margin-bottom: 30px;
@@ -27,6 +32,7 @@ vaadin-button iron-icon {
     align-self: center;
     width: 140px;
     height: 140px;
+    position: inherit;
 }
 #leirasHelye1 {
     width: 200px;
@@ -90,6 +96,7 @@ vaadin-button iron-icon {
     background-color: black;
     text-align-last: center;
 }
+
 #csokkent, #novel {
     padding: 0;
     margin: 10px 0 0;
@@ -100,9 +107,11 @@ vaadin-button iron-icon {
 }
 #csokkent {
     color: red;
+
 }
 #novel {
     color: green;
+
 }
 #darabszamHiba-label {
     padding: 0;
@@ -115,7 +124,7 @@ vaadin-button iron-icon {
 #kosarba {
     margin-top: 30px;
     background-color: black;
-    color: white;
+    color: #75f3f9;
 }
 #sorvege {
     padding: 0 20px 0 0;
@@ -128,12 +137,16 @@ vaadin-button iron-icon {
     border-bottom-right-radius: 20px;
 }
 #torol-ikon {
+    position: inherit;
     margin-top: 40px;
     height: 30px;
+    color: red;
 }
 #szerkeszt-ikon {
+    position: inherit;
     margin-top: 20px;
     height: 30px;
+    color: green;
 }
 /******Szerkesztő sor CSS****/
 #gumik-sor-szerkesztes {
@@ -219,6 +232,21 @@ vaadin-button iron-icon {
     border-bottom-right-radius: 20px;
 }
 #mentes-ikon {
+    position: inherit;
     margin-top: 140px;
     height: 30px;
+    color: green;
+}
+#combobox-szerkesztes::part(text-field), #combobox-szerkesztes::part(clear-button), #combobox-szerkesztes::part(toggle-button) {
+    color: #75f3f9;
+}
+vaadin-combo-box-overlay::part(content) {
+    background-color: #7f7f7f;
+    color: #75f3f9;
+}
+#darab-szerkesztes span, #ar-szerkesztes span {
+    color: #75f3f9;
+}
+#kepfeltolto, #kepfeltolto::part(drop-label-icon), #kepfeltolto::part(drop-label) {
+    color: #75f3f9;
 }

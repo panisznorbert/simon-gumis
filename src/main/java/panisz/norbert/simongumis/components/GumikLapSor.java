@@ -33,6 +33,10 @@ public class GumikLapSor extends HorizontalLayout {
 
     private AppLayoutMenuItem kosar;
 
+    private GumikService gumikService;
+    private RendelesService rendelesService;
+    private AdminService adminService;
+
     private VerticalLayout kepHelye = new VerticalLayout();
     private Button gumiKep;
     private VerticalLayout leirasHelye1 = new VerticalLayout();
@@ -41,14 +45,18 @@ public class GumikLapSor extends HorizontalLayout {
     private VerticalLayout megrendelesHelye = new VerticalLayout();
     private VerticalLayout modositasHelye = new VerticalLayout();
     private Icon szerkeszt;
+    private Icon torol;
 
     GumikLapSor(GumikEntity gumi, GumikService gumikService, RendelesService rendelesService, AppLayoutMenuItem kosar, AdminService adminService){
         this.kosar = kosar;
-        ujSor(gumi, gumikService, rendelesService, adminService);
+        this.gumikService = gumikService;
+        this.rendelesService = rendelesService;
+        this.adminService = adminService;
+        ujSor(gumi);
 
     }
 
-    private void ujSor(GumikEntity gumi, GumikService gumikService, RendelesService rendelesService, AdminService adminService){
+    private void ujSor(GumikEntity gumi){
         //Gumiról kép
         gumiKep = kepBetolt(gumi.getKep());
         gumiKep.setId("kep-button");
@@ -109,7 +117,7 @@ public class GumikLapSor extends HorizontalLayout {
         this.setId("gumik-sor");
 
         //if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
-        Icon torol = new Icon(VaadinIcon.TRASH);
+        torol = new Icon(VaadinIcon.TRASH);
         torol.setId("torol-ikon");
         torol.addClickListener(e -> torles(gumi, gumikService));
         szerkeszt = new Icon(VaadinIcon.EDIT);
@@ -138,6 +146,14 @@ public class GumikLapSor extends HorizontalLayout {
         this.leirasHelye1.setId("leirasHelye1-szerkesztes");
         this.leirasHelye2.setId("leirasHelye2-szerkesztes");
         this.modositasHelye.setId("sorvege-szerkesztes");
+        this.modositasHelye.removeAll();
+
+        torol = new Icon(VaadinIcon.FILE_REMOVE);
+        torol.setId("torol-ikon");
+        torol.addClickListener(e -> szerkesztesMegse(gumi));
+
+        modositasHelye.add(torol, szerkeszt);
+        modositasHelye.setSizeUndefined();
 
         TextField gyarto = new TextField();
         gyarto.setValue(gumi.getGyarto());
@@ -160,8 +176,10 @@ public class GumikLapSor extends HorizontalLayout {
         meret.setId("meret-szerkesztes");
         ComboBox<String> evszak = new ComboBox<>("", "Téli", "Nyári", "Négyévszakos");
         evszak.setValue(gumi.getEvszak());
+        evszak.setId("combobox-szerkesztes");
         ComboBox<String> allapot = new ComboBox<>("", "Új","Használt");
         allapot.setValue(gumi.getAllapot());
+        allapot.setId("combobox-szerkesztes");
         leirasHelye1.add(gyarto, meret, evszak, allapot);
 
         TextField ar = new TextField();
@@ -189,6 +207,7 @@ public class GumikLapSor extends HorizontalLayout {
         imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
         imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
         imgUpload.setWidth("200px");
+        imgUpload.setId("kepfeltolto");
 
         kepHelye.setId("kepHelye-szerkesztes");
         VerticalLayout kep = new VerticalLayout(gumiKep);
@@ -208,7 +227,20 @@ public class GumikLapSor extends HorizontalLayout {
 
     }
 
-    private void szerkesztesMentese(){}
+    private void szerkesztesMegse(GumikEntity gumi){
+        this.removeAll();
+        this.kepHelye.removeAll();
+        this.leirasHelye1.removeAll();
+        this.leirasHelye2.removeAll();
+        this.megrendelesHelye.removeAll();
+        this.modositasHelye.removeAll();
+        this.remove(megrendelesHelye);
+        this.ujSor(gumi);
+    }
+
+    private void szerkesztesMentese(){
+
+    }
 
     private void rendelesCsokkentese(TextField mezo, Label hiba, Button gomb){
         if(hiba.isVisible()){
