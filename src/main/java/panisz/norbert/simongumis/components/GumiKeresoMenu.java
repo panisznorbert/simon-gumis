@@ -2,9 +2,13 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.GumiMeretekEntity;
@@ -14,6 +18,7 @@ import panisz.norbert.simongumis.services.GumikService;
 
 import java.util.*;
 
+@StyleSheet("almenu.css")
 @UIScope
 @Component
 public class GumiKeresoMenu extends HorizontalLayout {
@@ -21,21 +26,21 @@ public class GumiKeresoMenu extends HorizontalLayout {
     private GumiMeretekService gumiMeretekService;
 
 
-    private ComboBox<Integer> meret1 = new ComboBox("Méret-szélesség");
-    private ComboBox<Integer> meret2 = new ComboBox("Méret-profil arány");
-    private ComboBox<Integer> meret3 = new ComboBox("Méret-felni átmérő");
+    private ComboBox<Integer> meret1 = new ComboBox();
+    private ComboBox<Integer> meret2 = new ComboBox();
+    private ComboBox<Integer> meret3 = new ComboBox();
     private HorizontalLayout meret1cb = new HorizontalLayout(meret1);
     private HorizontalLayout meret2cb = new HorizontalLayout(meret2);
     private HorizontalLayout meret3cb = new HorizontalLayout(meret3);
 
-    private ComboBox<String> evszak = new ComboBox("Évszak", "Téli", "Nyári", "Négyévszakos");
-    private ComboBox<String> allapot = new ComboBox("Állapot", "Új","Használt");
+    private ComboBox<String> evszak = new ComboBox("", "Téli", "Nyári", "Négyévszakos");
+    private ComboBox<String> allapot = new ComboBox("", "Új","Használt");
 
-    private TextField gyarto = new TextField("Gyártó");
-    private TextField artol = new TextField("Ár -tól");
-    private TextField arig = new TextField("Ár -ig");
+    private TextField gyarto = new TextField();
+    private TextField artol = new TextField();
+    private TextField arig = new TextField();
 
-    private Button egyeb = new Button("+ feltételek");
+    private Button egyeb = new Button("+ Opciók");
     private Button alaphelyzet = new Button("Alaphelyzet");
     private Button keres = new Button("Keresés");
 
@@ -48,22 +53,35 @@ public class GumiKeresoMenu extends HorizontalLayout {
         egyeb.addClickListener(e -> tovabbiFeltetelek());
         alaphelyzet.addClickListener(e -> init());
         init();
+        meret1.setId("combobox-meret");
+        meret2.setId("combobox-meret");
+        meret3.setId("combobox-meret");
+        evszak.setId("combobox-meret");
+        allapot.setId("combobox-meret");
+        gyarto.setId("kereso-input");
+        artol.setId("kereso-input");
+        arig.setId("kereso-input");
     }
 
 
     private void init(){
         meretFeltolto(gumiMeretekService.osszes(), 0, 0, 0);
         evszak.clear();
+        evszak.setPlaceholder("Évszak");
         allapot.clear();
+        allapot.setPlaceholder("Állapot");
         gyarto.clear();
+        gyarto.setPlaceholder("Gyártó");
         artol.clear();
+        artol.setPlaceholder("Ár-tól");
         arig.clear();
+        arig.setPlaceholder("Ár-ig");
         menu1.removeAll();
         menu1.add(meret1cb, meret2cb, meret3cb, evszak, allapot);
         menu2.removeAll();
         menu2.add(egyeb, alaphelyzet, keres);
         menu2.setAlignItems(Alignment.BASELINE);
-        menu.setHeight("160px");
+        menu2.setId("menu2");
         menu.removeAll();
         menu.add(menu1, menu2);
         add(menu);
@@ -127,9 +145,15 @@ public class GumiKeresoMenu extends HorizontalLayout {
             meretSet3.add(gumiMeretekEntity.getFelni());
         }
 
-        meret1cb.remove(meret1);meret1 = new ComboBox("Méret-szélesség");meret1.setItems(meretSet1);meret1cb.add(meret1);
-        meret2cb.remove(meret2);meret2 = new ComboBox("Méret-profil arány");meret2.setItems(meretSet2);meret2cb.add(meret2);
-        meret3cb.remove(meret3);meret3 = new ComboBox("Méret-felni átmérő");meret3.setItems(meretSet3);meret3cb.add(meret3);
+        meret1cb.remove(meret1);meret1 = new ComboBox();meret1.setItems(meretSet1);meret1cb.add(meret1);
+        meret2cb.remove(meret2);meret2 = new ComboBox();meret2.setItems(meretSet2);meret2cb.add(meret2);
+        meret3cb.remove(meret3);meret3 = new ComboBox();meret3.setItems(meretSet3);meret3cb.add(meret3);
+        meret1.setPlaceholder("Méret-szélesség");
+        meret2.setPlaceholder("Méret-profil");
+        meret3.setPlaceholder("Méret-felni");
+        meret1.setId("combobox-meret");
+        meret2.setId("combobox-meret");
+        meret3.setId("combobox-meret");
 
         if(a==1){meret1.setValue(gumiMeretekEntities.get(0).getSzelesseg());}
         if(b==1){meret2.setValue(gumiMeretekEntities.get(0).getProfil());}
@@ -174,9 +198,16 @@ public class GumiKeresoMenu extends HorizontalLayout {
                 szurtAdatok.remove(gumikEntity);
                 continue;
             }
-            if (adottArraSzurtE(gumikEntity.getAr())) {
-                szurtAdatok.remove(gumikEntity);
+            try{
+                if (adottArraSzurtE(gumikEntity.getAr())) {
+                    szurtAdatok.remove(gumikEntity);
+                }
+            }catch(NumberFormatException ex){
+                Hibajelzes hibajelzes = new Hibajelzes("Hibásan adta meg az árat!");
+                hibajelzes.open();
+                return null;
             }
+
             //amiből nulla darab van azt ne jelenítse meg
             if (gumikEntity.getMennyisegRaktarban().equals(0)){
                 szurtAdatok.remove(gumikEntity);
@@ -211,12 +242,18 @@ public class GumiKeresoMenu extends HorizontalLayout {
     }
 
     private boolean adottArraSzurtE(Integer aktualisAr){
-        return aktualisAr < (artol.isEmpty() ? 0 : Integer.parseInt(artol.getValue())) ||
-                ((arig.isEmpty() ? 0 : Integer.parseInt(arig.getValue())) != 0 && aktualisAr > (arig.isEmpty() ? 0 : Integer.parseInt(arig.getValue())));
+        return aktualisAr < (artol.isEmpty() ? 0 : Integer.parseInt(artol.getValue())) || ((arig.isEmpty() ? 0 : Integer.parseInt(arig.getValue())) != 0 && aktualisAr > (arig.isEmpty() ? 0 : Integer.parseInt(arig.getValue())));
     }
+
 
     Button getKeres() {
         return keres;
     }
+
+    Button getEgyeb() {
+        return egyeb;
+    }
+
+    Button getAlaphelyzet() {return alaphelyzet; }
 
 }

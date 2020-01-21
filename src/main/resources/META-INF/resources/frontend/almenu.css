@@ -2,19 +2,22 @@
     margin-top: 0;
 }
 #almenu {
+    z-index: 8;
     position: fixed;
     align-items: center;
-    width: 400px;
-    height: 50px;
+    width: 550px;
+    height: 60px;
     background-color: black;
     border-radius: 0 0 100px 100px;
     padding-top: 0;
     margin-top: -16px;
 }
 #menusor {
+    z-index: 9;
     padding-left: 15px;
 }
 #menusor vaadin-button {
+    z-index: 10;
     font-weight: bold;
     color: #75f3f9;
     background-color: #7f7f7f;
@@ -24,8 +27,86 @@
 #menusor iron-icon {
     color: #75f3f9;
     width: 30px;
-
 }
 #gumilap {
     margin-top: 80px;
+}
+#gumilap-kereses {
+    margin-top: 150px;
+}
+#almenu-kereses {
+    z-index: 8;
+    position: fixed;
+    align-items: center;
+    width: 1200px;
+    height: 120px;
+    background-color: #7f7f7f;
+    border-radius: 0 0 100px 100px;
+    padding-top: 0;
+    margin-top: -16px;
+    border-style: solid;
+    border-top-style: none;
+}
+#almenu-uj-elem {
+
+}
+#combobox-meret {
+    color: #75f3f9;
+    margin-top: 4px;
+}
+vaadin-text-field::slotted(span) {
+    font-weight: bold;
+    color: #75f3f9;
+}
+#combobox-meret::part(text-field), #combobox-meret::part(clear-button), #combobox-meret::part(toggle-button), #combobox-meret::part(label) {
+    color: #75f3f9;
+}
+#combobox-meret::part(text-field) {
+    background: black;
+    padding: 0;
+    height: 100%;
+    border-radius: 5px;
+    color: #75f3f9;
+}
+vaadin-combo-box-overlay::part(content) {
+    background-color: #7f7f7f;
+    color: #75f3f9;
+}
+#kereso-input {
+    max-height: 36px;
+    background: black;
+    padding: 0;
+    height: 100%;
+    border-radius: 5px;
+    color: #75f3f9;
+}
+#menu2 vaadin-button {
+    font-weight: bold;
+    color: #75f3f9;
+    background-color: black;
+}
+#kilep {
+    margin-top: 7px;
+    align-self: flex-end;
+    position: fixed;
+    color: red;
+    width: 25px;
+}
+#menu {
+    margin-top: 0;
+}
+#rendezes {
+    height: 36px;
+    margin-top: 4px;
+    color: #75f3f9;
+}
+#rendezes::part(clear-button), #rendezes::part(toggle-button) {
+    color: #75f3f9;
+}
+#rendezes::part(text-field) {
+    background: #7f7f7f;
+    padding: 0;
+    height: 100%;
+    border-radius: 5px;
+    color: #75f3f9;
 }

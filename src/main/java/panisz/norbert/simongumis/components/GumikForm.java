@@ -1,7 +1,7 @@
 package panisz.norbert.simongumis.components;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -9,10 +9,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
+import panisz.norbert.simongumis.entities.GumikEntity;
 import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
+
+import java.util.List;
 
 @StyleSheet("almenu.css")
 @UIScope
@@ -20,31 +23,80 @@ import panisz.norbert.simongumis.services.RendelesService;
 public class GumikForm extends VerticalLayout {
     private GumiKeresoMenu menu;
     private GumikLap gumilap;
+    private VerticalLayout almenu = new VerticalLayout();
 
+    private GumikService gumikService;
+    private RendelesService rendelesService;
+    private GumiMeretekService gumiMeretekService;
+    private AdminService adminService;
+    private FoMenu foMenu;
 
     public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService, FoMenu foMenu, AdminService adminService){
+        this.gumikService = gumikService;
+        this.rendelesService = rendelesService;
+        this.gumiMeretekService = gumiMeretekService;
+        this.foMenu = foMenu;
+        this.adminService = adminService;
         this.setId("alap");
+        gumilap = new GumikLap(gumikService.osszes(), gumikService, rendelesService, foMenu.getKosar(), adminService);
+        almenu.setSizeUndefined();
+        initMenusor();
+
+        add(almenu, gumilap);
+        this.setAlignItems(Alignment.CENTER);
+
+    }
+
+    private void initMenusor(){
+
+        gumilap.setId("gumilap");
+        almenu.removeAll();
+        almenu.setId("almenu");
+        HorizontalLayout menusor = new HorizontalLayout();
         Button keres = new Button("Keresés", new Icon(VaadinIcon.SEARCH));
-        Button uj = new Button("Új gumi");
-        HorizontalLayout menusor = new HorizontalLayout(keres);
+        keres.addClickListener(e -> Kereses());
+        ComboBox rendezes = new ComboBox<>("", "Gyártó", "Ár/növekvő", "Ár/csökkenő", "Méret");
+        rendezes.setPlaceholder("Sorrend");
+        rendezes.setId("rendezes");
+        menusor.add(keres, rendezes);
+
         //if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
-            menusor.add(uj);
+        Button uj = new Button("Új gumi");
+        uj.addClickListener(e -> UjElem());
+        menusor.add(uj);
         //}
         menusor.setId("menusor");
         menusor.setSizeUndefined();
-        VerticalLayout almenu = new VerticalLayout(menusor);
-        almenu.setId("almenu");
-        almenu.setSizeUndefined();
 
+        almenu.add(menusor);
+    }
+
+    private void Kereses(){
+        Icon kilep = new Icon(VaadinIcon.ARROW_BACKWARD);
+        kilep.setId("kilep");
+        kilep.addClickListener(e -> initMenusor());
+        gumilap.setId("gumilap-kereses");
+        almenu.removeAll();
+        almenu.setId("almenu-kereses");
         menu = new GumiKeresoMenu(gumiMeretekService);
-        gumilap = new GumikLap(gumikService.osszes(), gumikService, rendelesService, foMenu.getKosar(), adminService);
-        gumilap.setId("gumilap");
-        add(almenu, gumilap);
-        this.setAlignItems(Alignment.CENTER);
+        menu.setId("menu");
         menu.getKeres().addClickListener(e -> {
-            this.remove(gumilap);
-            gumilap = new GumikLap(menu.szurtGumik(gumikService), gumikService, rendelesService, foMenu.getKosar(), adminService);
-            add(gumilap);
+            List<GumikEntity> szurtGumik = menu.szurtGumik(gumikService);
+            if(szurtGumik != null){
+                this.remove(gumilap);
+                gumilap = new GumikLap(szurtGumik, gumikService, rendelesService, foMenu.getKosar(), adminService);
+                add(gumilap);
+                initMenusor();
+            }
+
         });
+
+        almenu.add(kilep, menu);
+    }
+
+    private void UjElem(){
+        almenu.removeAll();
+        almenu.setId("almenu-uj-elem");
+
     }
 }

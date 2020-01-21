@@ -6,7 +6,6 @@ vaadin-button iron-icon {
     width: 100px;
     height: 100px;
     color: #7f7f7f;
-    position: inherit;
 }
 vaadin-text-field::slotted(span) {
     font-weight: bold;
@@ -32,7 +31,6 @@ vaadin-text-field::slotted(span) {
     align-self: center;
     width: 140px;
     height: 140px;
-    position: inherit;
 }
 #leirasHelye1 {
     width: 200px;
