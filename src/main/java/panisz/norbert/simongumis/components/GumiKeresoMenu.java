@@ -42,7 +42,7 @@ public class GumiKeresoMenu extends HorizontalLayout {
 
     private Button egyeb = new Button("+ Opciók");
     private Button alaphelyzet = new Button("Alaphelyzet");
-    private Button keres = new Button("Keresés");
+    private Button keres = new Button("Keresés", new Icon(VaadinIcon.SEARCH));
 
     private HorizontalLayout menu1 = new HorizontalLayout();
     private HorizontalLayout menu2 = new HorizontalLayout();

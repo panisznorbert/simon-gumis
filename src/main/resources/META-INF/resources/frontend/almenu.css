@@ -34,12 +34,13 @@
 #gumilap-kereses {
     margin-top: 150px;
 }
-#almenu-kereses {
+#gumilap-uj-elem {
+    margin-top: 300px;
+}
+#almenu-kereses, #almenu-uj-elem {
     z-index: 8;
     position: fixed;
     align-items: center;
-    width: 1200px;
-    height: 120px;
     background-color: #7f7f7f;
     border-radius: 0 0 100px 100px;
     padding-top: 0;
@@ -47,8 +48,13 @@
     border-style: solid;
     border-top-style: none;
 }
+#almenu-kereses {
+    width: 1200px;
+    height: 120px;
+}
 #almenu-uj-elem {
-
+    width: 900px;
+    height: 260px;
 }
 #combobox-meret {
     color: #75f3f9;
@@ -85,12 +91,17 @@ vaadin-combo-box-overlay::part(content) {
     color: #75f3f9;
     background-color: black;
 }
+#menu2 iron-icon {
+    color: #75f3f9;
+    width: 30px;
+}
 #kilep {
     margin-top: 7px;
     align-self: flex-end;
     position: fixed;
     color: red;
     width: 25px;
+    height: 25px;
 }
 #menu {
     margin-top: 0;

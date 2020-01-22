@@ -38,13 +38,14 @@ public class GumikServiceImpl implements GumikService {
         }
         //vizsgálni, hogy van-e már ilyen gumi lementve, és ha igen akkor ne mentsunk még egyet le
         //módosítás esetén vizsgálva van hogy a módosítandón kívül van-e már ilyen
-        GumikEntity mentettGumi = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapot(
+        GumikEntity mentettGumi = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapotAndAr(
                 gumikEntity.getGyarto(),
                 gumikEntity.getMeret().getSzelesseg(),
                 gumikEntity.getMeret().getProfil(),
                 gumikEntity.getMeret().getFelni(),
                 gumikEntity.getEvszak(),
-                gumikEntity.getAllapot()
+                gumikEntity.getAllapot(),
+                gumikEntity.getAr()
         );
 
         if( mentettGumi != null && !mentettGumi.getId().equals(gumikEntity.getId())) {

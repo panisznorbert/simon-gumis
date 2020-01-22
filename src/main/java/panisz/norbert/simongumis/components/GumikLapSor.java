@@ -19,6 +19,8 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 import panisz.norbert.simongumis.entities.*;
+import panisz.norbert.simongumis.exceptions.HibasKitoltesException;
+import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
@@ -41,11 +43,25 @@ public class GumikLapSor extends HorizontalLayout {
     private Button gumiKep;
     private VerticalLayout leirasHelye1 = new VerticalLayout();
     private VerticalLayout leirasHelye2 = new VerticalLayout();
-    private Label keszlet;
+    private Label keszlet = new Label();
     private VerticalLayout megrendelesHelye = new VerticalLayout();
     private VerticalLayout modositasHelye = new VerticalLayout();
     private Icon szerkeszt;
     private Icon torol;
+
+    private MemoryBuffer memoryBuffer;
+    private TextField gyarto = new TextField();
+    private TextField meret1 = new TextField();
+    private TextField meret2 = new TextField();
+    private TextField meret3 = new TextField();
+    private Label meretKiegeszites1 = new Label("/");
+    private Label meretKiegeszites2 = new Label("R");
+    private HorizontalLayout meret = new HorizontalLayout(meret1, meretKiegeszites1, meret2, meretKiegeszites2, meret3);
+    private ComboBox<String> evszak = new ComboBox<>("", "Téli", "Nyári", "Négyévszakos");
+    private ComboBox<String> allapot = new ComboBox<>("", "Új","Használt");
+    private TextField ar = new TextField();
+    private TextField darab  = new TextField();
+
 
     GumikLapSor(GumikEntity gumi, GumikService gumikService, RendelesService rendelesService, AppLayoutMenuItem kosar, AdminService adminService){
         this.kosar = kosar;
@@ -54,6 +70,74 @@ public class GumikLapSor extends HorizontalLayout {
         this.adminService = adminService;
         ujSor(gumi);
 
+    }
+
+    GumikLapSor(GumikService gumikService, RendelesService rendelesService, AppLayoutMenuItem kosar, AdminService adminService){
+        this.kosar = kosar;
+        this.gumikService = gumikService;
+        this.rendelesService = rendelesService;
+        this.adminService = adminService;
+        ujElemFelvetele();
+
+    }
+
+    private void setKepHelyeSzerkeszt(String funkcio){
+        memoryBuffer = new MemoryBuffer();
+        Upload imgUpload = new Upload(memoryBuffer);
+        imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+        imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
+        imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
+        imgUpload.setWidth("200px");
+
+        if("szerkeszt".equals(funkcio)){
+            imgUpload.setId("kepfeltolto");
+        }
+        if("uj".equals(funkcio)){
+            imgUpload.setId("kepfeltolto-uj");
+        }
+
+        kepHelye.setId("kepHelye-szerkesztes");
+        VerticalLayout kep = new VerticalLayout(gumiKep);
+        kep.setId("kepHelye");
+        kepHelye.add(kep, imgUpload);
+        imgUpload.addSucceededListener(e -> {
+            try {
+                gumiKep = kepBetolt(memoryBuffer.getInputStream().readAllBytes());
+                kep.removeAll();
+                kep.add(gumiKep);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    private void ujElemFelvetele(){
+        this.setId("uj-elem-felvetele-sor");
+        this.leirasHelye1.setId("leirasHelye1-uj-elem");
+        this.leirasHelye2.setId("leirasHelye2-uj-elem");
+
+        gumiKep = kepBetolt(null);
+        gumiKep.setId("kep-button-uj");
+        kepHelye.setSizeUndefined();
+        setKepHelyeSzerkeszt("uj");
+
+        szerkeszthetoMezokInit();
+        gyarto.setId("gyarto-uj-elem");
+        ar.setId("ar-uj-elem");
+        darab.setId("darab-uj-elem");
+
+        gyarto.setPlaceholder("Gyártó");
+        evszak.setPlaceholder("Évszak");
+        allapot.setPlaceholder("Állapot");
+
+        Icon ment = new Icon(VaadinIcon.CLIPBOARD_CHECK);
+        ment.setId("uj-mentes-ikon");
+        ment.addClickListener(e -> mentes(null));
+
+        leirasHelye2.add(darab, ar, ment);
+
+        //Sorok felépítése
+        this.add(kepHelye, leirasHelye1, leirasHelye2);
     }
 
     private void ujSor(GumikEntity gumi){
@@ -80,7 +164,7 @@ public class GumikLapSor extends HorizontalLayout {
         leirasHelye1.setId("leirasHelye1");
 
         //Leíras második része
-        keszlet = new Label("Készleten: " + gumi.getMennyisegRaktarban().toString() + " db");
+        keszlet.setText("Készleten: " + gumi.getMennyisegRaktarban().toString() + " db");
         keszlet.setId("keszlet-label");
         Label ar = new Label(gumi.getAr().toString() + " Ft/db");
         ar.setId("ar-label");
@@ -155,41 +239,20 @@ public class GumikLapSor extends HorizontalLayout {
         modositasHelye.add(torol, szerkeszt);
         modositasHelye.setSizeUndefined();
 
-        TextField gyarto = new TextField();
-        gyarto.setValue(gumi.getGyarto());
+        szerkeszthetoMezokInit();
         gyarto.setId("gyarto-szerkesztes");
-        TextField meret1 = new TextField();
-        meret1.setValue(gumi.getMeret().getSzelesseg().toString());
-        meret1.setPattern("[0-9]*");
-        TextField meret2 = new TextField();
-        meret2.setValue(gumi.getMeret().getProfil().toString());
-        meret2.setPattern("[0-9]*");
-        TextField meret3 = new TextField();
-        meret3.setValue(gumi.getMeret().getFelni().toString());
-        meret3.setPattern("[0-9]*");
-        Label meretKiegeszites1 = new Label("/");
-        Label meretKiegeszites2 = new Label("R");
-        meretKiegeszites1.setId("meretKiegeszites");
-        meretKiegeszites2.setId("meretKiegeszites");
-        HorizontalLayout meret = new HorizontalLayout(meret1, meretKiegeszites1, meret2, meretKiegeszites2, meret3);
-
-        meret.setId("meret-szerkesztes");
-        ComboBox<String> evszak = new ComboBox<>("", "Téli", "Nyári", "Négyévszakos");
-        evszak.setValue(gumi.getEvszak());
-        evszak.setId("combobox-szerkesztes");
-        ComboBox<String> allapot = new ComboBox<>("", "Új","Használt");
-        allapot.setValue(gumi.getAllapot());
-        allapot.setId("combobox-szerkesztes");
-        leirasHelye1.add(gyarto, meret, evszak, allapot);
-
-        TextField ar = new TextField();
-        ar.setValue(gumi.getAr().toString());
         ar.setId("ar-szerkesztes");
-        ar.setSuffixComponent(new Span("Ft/db"));
-        TextField darab  = new TextField();
-        darab.setValue(gumi.getMennyisegRaktarban().toString());
         darab.setId("darab-szerkesztes");
-        darab.setSuffixComponent(new Span("db"));
+
+        gyarto.setValue(gumi.getGyarto());
+        meret1.setValue(gumi.getMeret().getSzelesseg().toString());
+        meret2.setValue(gumi.getMeret().getProfil().toString());
+        meret3.setValue(gumi.getMeret().getFelni().toString());
+        evszak.setValue(gumi.getEvszak());
+        allapot.setValue(gumi.getAllapot());
+        ar.setValue(gumi.getAr().toString());
+        darab.setValue(gumi.getMennyisegRaktarban().toString());
+
         keszlet.setText("Keszleten:");
         HorizontalLayout keszletSor = new HorizontalLayout(keszlet, darab);
         keszletSor.setId("keszletSor-szerkesztes");
@@ -198,33 +261,25 @@ public class GumikLapSor extends HorizontalLayout {
         modositasHelye.remove(szerkeszt);
         szerkeszt = new Icon(VaadinIcon.CLIPBOARD_CHECK);
         szerkeszt.setId("mentes-ikon");
-        szerkeszt.addClickListener(e -> szerkesztesMentese());
+        szerkeszt.addClickListener(e -> mentes(gumi));
         modositasHelye.add(szerkeszt);
 
-        MemoryBuffer memoryBuffer = new MemoryBuffer();
-        Upload imgUpload = new Upload(memoryBuffer);
-        imgUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
-        imgUpload.setDropLabel(new Label("Húzza ide a fájlt"));
-        imgUpload.setUploadButton(new Icon(VaadinIcon.FILE_ADD));
-        imgUpload.setWidth("200px");
-        imgUpload.setId("kepfeltolto");
+        setKepHelyeSzerkeszt("szerkeszt");
 
-        kepHelye.setId("kepHelye-szerkesztes");
-        VerticalLayout kep = new VerticalLayout(gumiKep);
-        kep.setId("kepHelye");
-        this.kepHelye.add(kep, imgUpload);
-        imgUpload.addSucceededListener(e -> {
-            System.out.println("Succeeded Upload of " + e.getFileName());
-            try {
-                gumiKep = kepBetolt(memoryBuffer.getInputStream().readAllBytes());
-                kep.removeAll();
-                kep.add(gumiKep);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+    }
 
-        });
-
+    private void szerkeszthetoMezokInit(){
+        meret1.setPattern("[0-9]*");
+        meret2.setPattern("[0-9]*");
+        meret3.setPattern("[0-9]*");
+        meretKiegeszites1.setId("meretKiegeszites");
+        meretKiegeszites2.setId("meretKiegeszites");
+        meret.setId("meret-szerkesztes");
+        evszak.setId("combobox-szerkesztes");
+        allapot.setId("combobox-szerkesztes");
+        ar.setSuffixComponent(new Span("Ft/db"));
+        darab.setSuffixComponent(new Span("db"));
+        leirasHelye1.add(gyarto, meret, evszak, allapot);
     }
 
     private void szerkesztesMegse(GumikEntity gumi){
@@ -238,8 +293,101 @@ public class GumikLapSor extends HorizontalLayout {
         this.ujSor(gumi);
     }
 
-    private void szerkesztesMentese(){
+    private GumikEntity hibasKitoltes(GumikEntity gumi) throws HibasKitoltesException {
+        if(gumi == null){
+            gumi = new GumikEntity();
+            gumi.setMeret(new GumiMeretekEntity());
+        }
 
+        if(gyarto.isEmpty()){
+            throw new HibasKitoltesException("Gyártó mező kitöltése kötelező!");
+        }else{
+            gumi.setGyarto(gyarto.getValue());
+        }
+
+        if(evszak.isEmpty()){
+            throw new HibasKitoltesException("Évszak mező kitöltése kötelező!");
+        }else{
+            gumi.setEvszak(evszak.getValue());
+        }
+
+        if(allapot.isEmpty()){
+            throw new HibasKitoltesException("Állapot mező kitöltése kötelező!");
+        }else{
+            gumi.setAllapot(allapot.getValue());
+        }
+
+        if(ar.isEmpty()){
+            throw new HibasKitoltesException("Ár mező kitöltése kötelező!");
+        }else{
+            gumi.setAr(Integer.valueOf(ar.getValue()));
+        }
+
+        if(darab.isEmpty()){
+            throw new HibasKitoltesException("Darab mező kitöltése kötelező!");
+        }else{
+            gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
+        }
+
+        if(meret1.isEmpty() || Integer.parseInt(meret1.getValue())<135 || Integer.parseInt(meret1.getValue())>315 || (Integer.parseInt(meret1.getValue())%5)!=0 || (Integer.parseInt(meret1.getValue())%10)==0){
+            throw new HibasKitoltesException("A méret-szélesség hibásan lett megadva!");
+        }else{
+            gumi.getMeret().setSzelesseg(Integer.valueOf(meret1.getValue()));
+        }
+
+        if(meret2.isEmpty() || Integer.parseInt(meret2.getValue())<25 || Integer.parseInt(meret2.getValue())>80 || (Integer.parseInt(meret2.getValue())%5)!=0){
+            throw new HibasKitoltesException("A méret-profil hibásan lett megadva!");
+        }else{
+            gumi.getMeret().setProfil(Integer.valueOf(meret2.getValue()));
+        }
+
+        if(meret3.isEmpty() || Integer.parseInt(meret3.getValue())<10 || Integer.parseInt(meret3.getValue())>21 ){
+            throw new HibasKitoltesException("A méret-felni átmérő hibásan lett megadva!");
+        }else{
+            gumi.getMeret().setFelni(Integer.valueOf(meret3.getValue()));
+        }
+
+        if(memoryBuffer != null){
+            gumi.setKep(memoryBuffer);
+        }
+
+        return gumi;
+    }
+
+
+    private void mentes(GumikEntity gumi){
+        try{
+            gumikService.ment(hibasKitoltes(gumi));
+            UI.getCurrent().getPage().reload();
+        }catch(LetezoGumiException ex){
+            Notification hibaAblak = new Hibajelzes("Ilyen gumi már létezik: " + gumi.toString());
+            Button hozzaad = new Button(gumi.getMennyisegRaktarban() + " db gumi hozzáadása");
+            hozzaad.addClickListener(e -> {
+                darabszamEmelese(Integer.valueOf(ex.getMessage()), gumi);
+                hibaAblak.close();
+            });
+            hibaAblak.add(hozzaad);
+            hibaAblak.open();
+        }catch(HibasKitoltesException ex){
+            Hibajelzes hibajelzes = new Hibajelzes(ex.getMessage());
+            hibajelzes.open();
+        }catch(Exception ex) {
+            ex.printStackTrace();
+            Notification hibaAblak = new Hibajelzes("Sikertelen mentés");
+            hibaAblak.open();
+        }
+    }
+
+    private void darabszamEmelese(Integer id, GumikEntity gumi){
+        try{
+            gumi.setId(id);
+            gumi.setMennyisegRaktarban(gumi.getMennyisegRaktarban() + gumikService.idraKereses(id).getMennyisegRaktarban());
+            gumikService.ment(gumi);
+            UI.getCurrent().getPage().reload();
+        }catch(Exception ex) {
+            Notification hibaAblak = new Hibajelzes(ex.getMessage());
+            hibaAblak.open();
+        }
     }
 
     private void rendelesCsokkentese(TextField mezo, Label hiba, Button gomb){

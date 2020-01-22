@@ -83,13 +83,14 @@ public class RendelesServiceImpl implements RendelesService {
         rendelesEntity.setStatusz(RendelesStatusz.TOROLVE);
         for(RendelesiEgysegEntity rendelesiEgysegEntity : rendelesEntity.getRendelesiEgysegek()){
 
-            GumikEntity gumikEntity = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapot(
+            GumikEntity gumikEntity = gumikRepository.findByGyartoAndMeret_SzelessegAndMeret_ProfilAndMeret_FelniAndEvszakAndAllapotAndAr(
                     rendelesiEgysegEntity.getGumi().getGyarto(),
                     rendelesiEgysegEntity.getGumi().getMeretSzelesseg(),
                     rendelesiEgysegEntity.getGumi().getMeretProfil(),
                     rendelesiEgysegEntity.getGumi().getMeretFelni(),
                     rendelesiEgysegEntity.getGumi().getEvszak(),
-                    rendelesiEgysegEntity.getGumi().getAllapot()
+                    rendelesiEgysegEntity.getGumi().getAllapot(),
+                    rendelesiEgysegEntity.getGumi().getAr()
             );
             //Amennyiben van ilyen gumi az adatbázisban visszateszi hozzá a darabszámot
             if(gumikEntity!=null){

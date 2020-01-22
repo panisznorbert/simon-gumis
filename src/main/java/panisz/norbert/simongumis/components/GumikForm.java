@@ -21,7 +21,6 @@ import java.util.List;
 @UIScope
 @Component
 public class GumikForm extends VerticalLayout {
-    private GumiKeresoMenu menu;
     private GumikLap gumilap;
     private VerticalLayout almenu = new VerticalLayout();
 
@@ -55,7 +54,7 @@ public class GumikForm extends VerticalLayout {
         HorizontalLayout menusor = new HorizontalLayout();
         Button keres = new Button("Keresés", new Icon(VaadinIcon.SEARCH));
         keres.addClickListener(e -> Kereses());
-        ComboBox rendezes = new ComboBox<>("", "Gyártó", "Ár/növekvő", "Ár/csökkenő", "Méret");
+        ComboBox<String> rendezes = new ComboBox<>("", "Gyártó", "Ár/növekvő", "Ár/csökkenő", "Méret");
         rendezes.setPlaceholder("Sorrend");
         rendezes.setId("rendezes");
         menusor.add(keres, rendezes);
@@ -78,7 +77,7 @@ public class GumikForm extends VerticalLayout {
         gumilap.setId("gumilap-kereses");
         almenu.removeAll();
         almenu.setId("almenu-kereses");
-        menu = new GumiKeresoMenu(gumiMeretekService);
+        GumiKeresoMenu menu = new GumiKeresoMenu(gumiMeretekService);
         menu.setId("menu");
         menu.getKeres().addClickListener(e -> {
             List<GumikEntity> szurtGumik = menu.szurtGumik(gumikService);
@@ -95,8 +94,14 @@ public class GumikForm extends VerticalLayout {
     }
 
     private void UjElem(){
+        Icon kilep = new Icon(VaadinIcon.ARROW_BACKWARD);
+        kilep.setId("kilep");
+        kilep.addClickListener(e -> initMenusor());
+        gumilap.setId("gumilap-uj-elem");
         almenu.removeAll();
         almenu.setId("almenu-uj-elem");
+        GumikLapSor elemFelvetele = new GumikLapSor(gumikService, rendelesService, foMenu.getKosar(), adminService);
 
+        almenu.add(kilep, elemFelvetele);
     }
 }
