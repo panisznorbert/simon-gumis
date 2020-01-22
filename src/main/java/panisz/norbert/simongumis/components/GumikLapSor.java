@@ -301,55 +301,41 @@ public class GumikLapSor extends HorizontalLayout {
 
         if(gyarto.isEmpty()){
             throw new HibasKitoltesException("Gyártó mező kitöltése kötelező!");
-        }else{
-            gumi.setGyarto(gyarto.getValue());
         }
-
         if(evszak.isEmpty()){
             throw new HibasKitoltesException("Évszak mező kitöltése kötelező!");
-        }else{
-            gumi.setEvszak(evszak.getValue());
         }
-
         if(allapot.isEmpty()){
             throw new HibasKitoltesException("Állapot mező kitöltése kötelező!");
-        }else{
-            gumi.setAllapot(allapot.getValue());
         }
-
         if(ar.isEmpty()){
             throw new HibasKitoltesException("Ár mező kitöltése kötelező!");
-        }else{
-            gumi.setAr(Integer.valueOf(ar.getValue()));
         }
-
         if(darab.isEmpty()){
             throw new HibasKitoltesException("Darab mező kitöltése kötelező!");
-        }else{
-            gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
         }
-
         if(meret1.isEmpty() || Integer.parseInt(meret1.getValue())<135 || Integer.parseInt(meret1.getValue())>315 || (Integer.parseInt(meret1.getValue())%5)!=0 || (Integer.parseInt(meret1.getValue())%10)==0){
             throw new HibasKitoltesException("A méret-szélesség hibásan lett megadva!");
-        }else{
-            gumi.getMeret().setSzelesseg(Integer.valueOf(meret1.getValue()));
         }
-
         if(meret2.isEmpty() || Integer.parseInt(meret2.getValue())<25 || Integer.parseInt(meret2.getValue())>80 || (Integer.parseInt(meret2.getValue())%5)!=0){
             throw new HibasKitoltesException("A méret-profil hibásan lett megadva!");
-        }else{
-            gumi.getMeret().setProfil(Integer.valueOf(meret2.getValue()));
         }
-
         if(meret3.isEmpty() || Integer.parseInt(meret3.getValue())<10 || Integer.parseInt(meret3.getValue())>21 ){
             throw new HibasKitoltesException("A méret-felni átmérő hibásan lett megadva!");
-        }else{
-            gumi.getMeret().setFelni(Integer.valueOf(meret3.getValue()));
         }
 
         if(memoryBuffer != null){
             gumi.setKep(memoryBuffer);
         }
+
+        gumi.setGyarto(gyarto.getValue());
+        gumi.setEvszak(evszak.getValue());
+        gumi.setAllapot(allapot.getValue());
+        gumi.setAr(Integer.valueOf(ar.getValue()));
+        gumi.setMennyisegRaktarban(Integer.valueOf(darab.getValue()));
+        gumi.getMeret().setSzelesseg(Integer.valueOf(meret1.getValue()));
+        gumi.getMeret().setProfil(Integer.valueOf(meret2.getValue()));
+        gumi.getMeret().setFelni(Integer.valueOf(meret3.getValue()));
 
         return gumi;
     }
