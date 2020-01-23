@@ -13,6 +13,7 @@ import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.*;
+import panisz.norbert.simongumis.exceptions.HibasKitoltesException;
 import panisz.norbert.simongumis.services.MegrendeltGumikService;
 import panisz.norbert.simongumis.services.RendelesService;
 import java.time.LocalDate;
@@ -93,26 +94,26 @@ public class KosarForm extends VerticalLayout {
     }
 
     private void megrendeles(){
-        if(!vevoAdatai.kitoltottseg().equals("")){
-            Notification hibaAblak = new Hibajelzes(vevoAdatai.kitoltottseg());
+        try{
+            vevoAdatai.kitoltottseg();
+            UgyfelEntity ugyfel = new UgyfelEntity();
+            ugyfel.setNev(vevoAdatai.getNev().getValue());
+            ugyfel.setEmail(vevoAdatai.getEmail().getValue());
+            ugyfel.setTelefon(vevoAdatai.getTelefon().getValue());
+            rendelesEntity.setUgyfel(ugyfel);
+            rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
+            rendelesEntity.setDatum(LocalDate.now());
+            String hiba = alapRendelesService.mentKosarbol(rendelesEntity);
+            if(hiba != null){
+                Notification hibaAblak = new Hibajelzes(hiba);
+                hibaAblak.open();
+            }else{
+                UI.getCurrent().navigate("gumik");
+            }
+        }catch(HibasKitoltesException ex){
+            Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();
-            return;
         }
-        UgyfelEntity ugyfel = new UgyfelEntity();
-        ugyfel.setNev(vevoAdatai.getNev().getValue());
-        ugyfel.setEmail(vevoAdatai.getEmail().getValue());
-        ugyfel.setTelefon(vevoAdatai.getTelefon().getValue());
-        rendelesEntity.setUgyfel(ugyfel);
-        rendelesEntity.setStatusz(RendelesStatusz.MEGRENDELVE);
-        rendelesEntity.setDatum(LocalDate.now());
-        String hiba = alapRendelesService.mentKosarbol(rendelesEntity);
-        if(hiba != null){
-            Notification hibaAblak = new Hibajelzes(hiba);
-            hibaAblak.open();
-        }else{
-            UI.getCurrent().navigate("gumik");
-        }
-
     }
 
 }

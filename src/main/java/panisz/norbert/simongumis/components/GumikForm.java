@@ -14,7 +14,6 @@ import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.GumiMeretekService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
-
 import java.util.List;
 
 @StyleSheet("almenu.css")
@@ -29,6 +28,7 @@ public class GumikForm extends VerticalLayout {
     private GumiMeretekService gumiMeretekService;
     private AdminService adminService;
     private FoMenu foMenu;
+    private List<GumikEntity> szurtGumik;
 
     public GumikForm(GumikService gumikService, RendelesService rendelesService, GumiMeretekService gumiMeretekService, FoMenu foMenu, AdminService adminService){
         this.gumikService = gumikService;
@@ -55,6 +55,7 @@ public class GumikForm extends VerticalLayout {
         Button keres = new Button("Keresés", new Icon(VaadinIcon.SEARCH));
         keres.addClickListener(e -> Kereses());
         ComboBox<String> rendezes = new ComboBox<>("", "Gyártó", "Ár/növekvő", "Ár/csökkenő", "Méret");
+        rendezes.addValueChangeListener(e -> listaRendezes(e.getValue()));
         rendezes.setPlaceholder("Sorrend");
         rendezes.setId("rendezes");
         menusor.add(keres, rendezes);
@@ -70,6 +71,37 @@ public class GumikForm extends VerticalLayout {
         almenu.add(menusor);
     }
 
+    private void listaRendezes(String sorrend){
+        List<GumikEntity> rendezendo;
+        if(szurtGumik != null){
+            rendezendo = szurtGumik;
+        }else{
+            rendezendo = gumikService.osszes();
+        }
+        switch(sorrend){
+            case "Gyártó":{
+                rendezendo.sort(GumikEntity.Comparators.GYARTO);
+                break;
+            }
+            case "Ár/növekvő":{
+                rendezendo.sort(GumikEntity.Comparators.ARNOVEKVO);
+                break;
+            }
+            case "Ár/csökkenő":{
+                rendezendo.sort(GumikEntity.Comparators.ARCSOKKENO);
+                break;
+            }
+            case "Méret":{
+                rendezendo.sort(GumikEntity.Comparators.MERET);
+                break;
+            }
+        }
+        this.remove(gumilap);
+        gumilap = new GumikLap(rendezendo, gumikService, rendelesService, foMenu.getKosar(), adminService);
+        add(gumilap);
+        initMenusor();
+    }
+
     private void Kereses(){
         Icon kilep = new Icon(VaadinIcon.ARROW_BACKWARD);
         kilep.setId("kilep");
@@ -80,7 +112,7 @@ public class GumikForm extends VerticalLayout {
         GumiKeresoMenu menu = new GumiKeresoMenu(gumiMeretekService);
         menu.setId("menu");
         menu.getKeres().addClickListener(e -> {
-            List<GumikEntity> szurtGumik = menu.szurtGumik(gumikService);
+            szurtGumik = menu.szurtGumik(gumikService);
             if(szurtGumik != null){
                 this.remove(gumilap);
                 gumilap = new GumikLap(szurtGumik, gumikService, rendelesService, foMenu.getKosar(), adminService);

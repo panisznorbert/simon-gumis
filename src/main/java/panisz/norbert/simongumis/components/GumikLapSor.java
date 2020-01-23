@@ -344,7 +344,12 @@ public class GumikLapSor extends HorizontalLayout {
     private void mentes(GumikEntity gumi){
         try{
             gumikService.ment(hibasKitoltes(gumi));
-            UI.getCurrent().getPage().reload();
+            if(gumi != null){
+                this.removeAll();
+                szerkesztesMegse(gumi);
+            }else{
+                UI.getCurrent().getPage().reload();
+            }
         }catch(LetezoGumiException ex){
             Notification hibaAblak = new Hibajelzes("Ilyen gumi már létezik: " + gumi.toString());
             Button hozzaad = new Button(gumi.getMennyisegRaktarban() + " db gumi hozzáadása");
@@ -369,7 +374,8 @@ public class GumikLapSor extends HorizontalLayout {
             gumi.setId(id);
             gumi.setMennyisegRaktarban(gumi.getMennyisegRaktarban() + gumikService.idraKereses(id).getMennyisegRaktarban());
             gumikService.ment(gumi);
-            UI.getCurrent().getPage().reload();
+            this.removeAll();
+            szerkesztesMegse(gumi);
         }catch(Exception ex) {
             Notification hibaAblak = new Hibajelzes(ex.getMessage());
             hibaAblak.open();

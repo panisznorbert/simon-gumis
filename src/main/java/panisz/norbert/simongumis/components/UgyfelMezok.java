@@ -13,6 +13,7 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
+import panisz.norbert.simongumis.exceptions.HibasKitoltesException;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -56,20 +57,19 @@ class UgyfelMezok extends VerticalLayout {
         szoveg.open();
     }
 
-    String kitoltottseg(){
+    void kitoltottseg() throws HibasKitoltesException {
         if(!pipa.getValue()){
-            return "Nem fogadta el az adatkezelést";
+            throw new HibasKitoltesException("Nem fogadta el az adatkezelést");
         }
         if(nev.isInvalid() || nev.isEmpty()){
-            return "Nem adott meg nevet";
+            throw new HibasKitoltesException("Nem adott meg nevet");
         }
         if(telefon.isInvalid() || telefon.isEmpty() || telefon.isPreventInvalidInput()){
-            return "Nem megfelelő telefonszám";
+            throw new HibasKitoltesException("Nem megfelelő telefonszám");
         }
         if(email.isInvalid() || email.isEmpty() || email.isPreventInvalidInput()){
-            return "Nem megfelelő e-mail cím";
+            throw new HibasKitoltesException("Nem megfelelő e-mail cím");
         }
-        return "";
     }
 
     void alaphelyzet(){

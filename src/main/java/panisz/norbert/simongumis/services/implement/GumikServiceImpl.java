@@ -35,6 +35,14 @@ public class GumikServiceImpl implements GumikService {
                 gumikEntity.getMeret().getFelni());
         if(meret != null){
             gumikEntity.setMeret(meret);
+        }else{
+            //Ha új gumi van akkor azt le kell külön menteni
+            GumiMeretekEntity ujGumiMeret = new GumiMeretekEntity();
+            ujGumiMeret.setFelni(gumikEntity.getMeret().getFelni());
+            ujGumiMeret.setProfil(gumikEntity.getMeret().getProfil());
+            ujGumiMeret.setSzelesseg(gumikEntity.getMeret().getSzelesseg());
+            gumiMeretekRepository.save(ujGumiMeret);
+            gumikEntity.setMeret(ujGumiMeret);
         }
         //vizsgálni, hogy van-e már ilyen gumi lementve, és ha igen akkor ne mentsunk még egyet le
         //módosítás esetén vizsgálva van hogy a módosítandón kívül van-e már ilyen

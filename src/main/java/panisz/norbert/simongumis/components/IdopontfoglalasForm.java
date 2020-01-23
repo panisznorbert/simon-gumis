@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontfoglalasEntity;
 import panisz.norbert.simongumis.entities.NyitvatartasEntity;
 import panisz.norbert.simongumis.entities.UgyfelEntity;
+import panisz.norbert.simongumis.exceptions.HibasKitoltesException;
 import panisz.norbert.simongumis.services.IdopontfoglalasServie;
 import panisz.norbert.simongumis.services.NyitvatartasService;
 import java.time.DayOfWeek;
@@ -199,34 +200,29 @@ public class IdopontfoglalasForm extends VerticalLayout {
         return idopontFoglalasEntity;
     }
 
-    private String kitoltottseg(){
+    private void kitoltottseg() throws HibasKitoltesException {
         if(idopontokDatum.isEmpty()){
-            return "Nem választott dátumot";
+            throw new HibasKitoltesException("Nem választott dátumot");
         }
         if(foglalhatoOrak.isEmpty()){
-           return "Nem választott időpontot";
+            throw new HibasKitoltesException("Nem választott időpontot");
         }
-        return ugyfelAdatok.kitoltottseg();
+        ugyfelAdatok.kitoltottseg();
     }
 
     private void idopontFoglalas(){
-        if(!kitoltottseg().equals("")){
-            Notification hiba = new Hibajelzes(kitoltottseg());
-            hiba.open();
-        }else{
-            try{
-                IdopontfoglalasEntity foglalas = idopontfoglalasServie.ment(idopontFoglalasAdat());
-                String idopont = foglalas.getDatum().toString();
-                idopont = idopont.replaceAll("T", " ");
+        try{
+            kitoltottseg();
+            IdopontfoglalasEntity foglalas = idopontfoglalasServie.ment(idopontFoglalasAdat());
+            String idopont = foglalas.getDatum().toString();
+            idopont = idopont.replaceAll("T", " ");
 
-                Notification visszajelzes = new Hibajelzes("Az időpontfoglalás sikeresen megtörtént " + idopont + " időpontra");
-                visszajelzes.open();
-                UI.getCurrent().navigate("gumik");
-            }catch(Exception ex){
-                Notification hibaAblak = new Hibajelzes(ex.getMessage());
-                hibaAblak.open();
-            }
-
+            Notification visszajelzes = new Hibajelzes("Az időpontfoglalás sikeresen megtörtént " + idopont + " időpontra");
+            visszajelzes.open();
+            UI.getCurrent().navigate("gumik");
+        } catch(Exception ex){
+            Notification hibaAblak = new Hibajelzes(ex.getMessage());
+            hibaAblak.open();
         }
     }
 }

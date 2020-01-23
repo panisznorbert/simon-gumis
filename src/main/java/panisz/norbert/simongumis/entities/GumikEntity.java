@@ -6,12 +6,13 @@ import lombok.Data;
 import panisz.norbert.simongumis.components.Hibajelzes;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Objects;
 
 @Data
 @Entity
 @Table(name = "gumik")
-public class GumikEntity extends BaseEntity {
+public class GumikEntity extends BaseEntity implements Comparable<GumikEntity>{
     private String gyarto;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     protected GumiMeretekEntity meret;
@@ -72,5 +73,38 @@ public class GumikEntity extends BaseEntity {
                 hibaAblak.open();
             }
         }
+    }
+
+    @Override
+    public int compareTo(GumikEntity gumikEntity) {
+        return Comparators.GYARTO.compare(this, gumikEntity);
+    }
+
+    public static class Comparators {
+
+        public static Comparator<GumikEntity> GYARTO = new Comparator<GumikEntity>() {
+            @Override
+            public int compare(GumikEntity o1, GumikEntity o2) {
+                return o1.getGyarto().compareTo(o2.getGyarto());
+            }
+        };
+        public static Comparator<GumikEntity> MERET = new Comparator<GumikEntity>() {
+            @Override
+            public int compare(GumikEntity o1, GumikEntity o2) {
+                return o1.getMeret().compareTo(o2.getMeret());
+            }
+        };
+        public static Comparator<GumikEntity> ARNOVEKVO = new Comparator<GumikEntity>() {
+            @Override
+            public int compare(GumikEntity o1, GumikEntity o2) {
+                return o1.getAr().compareTo(o2.getAr());
+            }
+        };
+        public static Comparator<GumikEntity> ARCSOKKENO = new Comparator<GumikEntity>() {
+            @Override
+            public int compare(GumikEntity o1, GumikEntity o2) {
+                return o2.getAr().compareTo(o1.getAr());
+            }
+        };
     }
 }
