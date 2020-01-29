@@ -41,12 +41,12 @@ INSERT INTO ugyfelek (id, nev, telefon, email) VALUES (11003, 'Cinti', '06703658
 INSERT INTO ugyfelek (id, nev, telefon, email) VALUES (11004, 'Timi', '06205874996', 'timi@gmail.com' );
 INSERT INTO ugyfelek (id, nev, telefon, email) VALUES (11005, 'Jani', '062036547218', 'jani@gmail.com' );
 INSERT INTO ugyfelek (id, nev, telefon, email) VALUES (11006, 'Zoli', '06300001254', 'zoli@gmail.com' );
-INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12001, '2020-09-22 14:30:00', 11001, ''  );
+INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12001, '2020-01-24 14:30:00', 11001, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12002, '2020-09-25 14:30:00', 11002, 'Defekt is van'  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12003, '2020-09-25 16:30:00', 11003, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12004, '2020-09-25 9:30:00', 11004, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12005, '2020-10-22 10:30:00', 11005, 'Megrendelt gumit vennék át és rakatnám fel'  );
-INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12006, '2020-09-22 15:00:00', 11006, ''  );
+INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12006, '2020-01-24 15:00:00', 11006, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12007, '2020-09-27 14:30:00', 11002, 'egy jó kávéz is lesz ;)'  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12008, '2020-11-27 10:30:00', 11004, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12009, '2020-09-27 8:30:00', 11006, ''  );

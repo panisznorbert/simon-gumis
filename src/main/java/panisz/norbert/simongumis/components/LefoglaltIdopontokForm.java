@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
@@ -12,44 +13,55 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.entities.IdopontfoglalasEntity;
 import panisz.norbert.simongumis.services.IdopontfoglalasServie;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
 import static java.util.Collections.sort;
 
+@StyleSheet("lefoglaltIdopontok.css")
 @UIScope
 @Component
 public class LefoglaltIdopontokForm extends VerticalLayout {
 
-    private IdopontfoglalasServie foglalasService;
+    private IdopontfoglalasServie alapFoglalasService;
+
+    private Grid<IdopontfoglalasEntity> tablaMa = new Grid<>();
 
     private Grid<IdopontfoglalasEntity> tabla = new Grid<>();
 
-    private HorizontalLayout keresoSor = new HorizontalLayout();
-
-    private HorizontalLayout foglalasok = new HorizontalLayout();
-
     public LefoglaltIdopontokForm(IdopontfoglalasServie foglalasService){
-        this.foglalasService = foglalasService;
+        this.alapFoglalasService = foglalasService;
         this.setAlignItems(Alignment.CENTER);
-        tabla.setWidth("650px");
+        this.setId("lefoglalt-idopontok");
         tabla.setHeightByRows(true);
         tabla.setVerticalScrollingEnabled(false);
-        List<IdopontfoglalasEntity> tobbiFoglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
+        tablaMa.setHeightByRows(true);
+        tablaMa.setVerticalScrollingEnabled(false);
+        tabla.setId("tabla-tobbi");
+        tablaMa.setId("tabla-ma");
+        List<IdopontfoglalasEntity> maiFoglalasok = alapFoglalasService.keresesMa();
+        VerticalLayout foglalasok = new VerticalLayout();
+        if(maiFoglalasok != null && !maiFoglalasok.isEmpty()){
+            tablafeltolto(maiFoglalasok, tablaMa);
+            foglalasok.add(tablaMa);
+        }
+        List<IdopontfoglalasEntity> tobbiFoglalasok = alapFoglalasService.keresesNaptol(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(0,0)));;
         if(tobbiFoglalasok != null && !tobbiFoglalasok.isEmpty()){
-            tabla = tablafeltolto(tobbiFoglalasok);
+            tablafeltolto(tobbiFoglalasok, tabla);
             foglalasok.add(tabla);
         }
 
-        add(keresoSor, foglalasok);
-
+        add(new HorizontalLayout(foglalasok));
     }
 
-
-    private Grid<IdopontfoglalasEntity> tablafeltolto(List<IdopontfoglalasEntity> foglalasok){
+    private void tablafeltolto(List<IdopontfoglalasEntity> foglalasok, Grid<IdopontfoglalasEntity> tabla){
         sort(foglalasok);
+
         tabla.addColumn(new LocalDateTimeRenderer<>(IdopontfoglalasEntity::getDatum, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)), "Időpont").setHeader("Időpont").setWidth("180px");
         tabla.addColumn(TemplateRenderer.<IdopontfoglalasEntity> of(
                 "<div><small>Név: [[item.nev]]<br>Tel: [[item.telefon]]<br>E-mail: [[item.email]]</small></div>")
@@ -78,16 +90,25 @@ public class LefoglaltIdopontokForm extends VerticalLayout {
             }
         });
         tabla.setItems(foglalasok);
-
-        return tabla;
     }
 
     private void idopontTorlese(IdopontfoglalasEntity idopontFoglalasEntity){
-        foglalasService.torol(idopontFoglalasEntity);
-        List<IdopontfoglalasEntity> foglalasok = foglalasService.keresesNaptol(LocalDateTime.now());
-        sort(foglalasok);
-        tabla.setItems(foglalasok);
-        tabla.getDataProvider().refreshAll();
+        alapFoglalasService.torol(idopontFoglalasEntity);
+
+        if(LocalDate.now().isEqual(LocalDate.of(idopontFoglalasEntity.getDatum().getYear(), idopontFoglalasEntity.getDatum().getMonth(), idopontFoglalasEntity.getDatum().getDayOfMonth()))){
+            List<IdopontfoglalasEntity> foglalasok = alapFoglalasService.keresesMa();
+            sort(foglalasok);
+            tablaMa.setItems(foglalasok);
+            tablaMa.getDataProvider().refreshAll();
+        }else{
+            List<IdopontfoglalasEntity> foglalasok = alapFoglalasService.keresesNaptol(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(0,0)));
+            sort(foglalasok);
+            tabla.setItems(foglalasok);
+            tabla.getDataProvider().refreshAll();
+        }
+
+
+
     }
 
 }

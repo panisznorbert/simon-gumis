@@ -129,4 +129,10 @@ public class RendelesServiceImpl implements RendelesService {
     @Override
     public List<RendelesEntity> rendelesekreKeres(RendelesStatusz statusz){return rendelesRepository.findAllByStatuszIsNot(statusz);}
 
+    @Override
+    public Integer gumiDarabszamRaktaron(RendelesiEgysegEntity rendelesiEgysegEntity) {
+        GumikEntity gumi = gumikRepository.findById(rendelesiEgysegEntity.getGumi().getGumiId()).get();
+        return gumi.getMennyisegRaktarban();
+    }
+
 }

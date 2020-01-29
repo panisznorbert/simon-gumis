@@ -1,0 +1,126 @@
+#kosar {
+    align-items: center;
+    margin-top: 80px;
+    margin-left: 0;
+    background: black;
+    width: 800px;
+    border-bottom-left-radius: 40px;
+    border-top-right-radius: 40px;
+}
+#rendelesek {
+    width: 750px;
+    align-items: center;
+}
+#rendeles-sorok {
+    min-height: 50px;
+    align-items: center;
+    background: #7f7f7f;
+    width: 700px;
+    border-bottom-right-radius: 30px;
+    border-top-left-radius: 30px;
+}
+#gumi-megnevezes-label {
+    color: #75f3f9;
+    font-weight: bold;
+    margin-left: 30px;
+    width: 350px;
+    padding: 4px;
+}
+#torles-ikon {
+    margin-left: 20px;
+    height: 30px;
+    color: red;
+}
+#darabszamos {
+    padding: 0 0 10px;
+    width: 130px;
+}
+#darab-mezo {
+    padding: 0;
+    width: 50px;
+    margin: 10px 0 0;
+    border-radius: 0;
+    color: #75f3f9;
+    background-color: black;
+    text-align-last: center;
+}
+#csokkent, #novel {
+    padding: 0;
+    margin: 10px 0 0;
+    width: 30px;
+    min-width: 30px;
+    border-radius: 0;
+    background-color: black;
+}
+#csokkent {
+    color: red;
+}
+#novel {
+    color: green;
+}
+#darabszamHiba-label {
+    padding: 0;
+    margin: 0 0 0 350px;
+    color: red;
+    font-weight: bold;
+    font-size: smaller;
+    height: 20px;
+}
+#vegosszeg {
+    color: #75f3f9;
+    font-weight: bold;
+    align-items: flex-end;
+    width: 700px;
+}
+#reszosszeg-label {
+    color: #75f3f9;
+    font-weight: bold;
+    margin-left: 30px;
+    width: 90px;
+    padding: 4px;
+}
+#ugyfelmezok vaadin-combo-box {
+    color: #75f3f9;
+    margin-top: 4px;
+}
+#ugyfelmezok vaadin-text-field::slotted(span) {
+    font-weight: bold;
+    color: #75f3f9;
+}
+#ugyfelmezok vaadin-combo-box::part(text-field), #ugyfelmezok vaadin-combo-box::part(clear-button), #ugyfelmezok vaadin-combo-box::part(toggle-button), #combobox-meret::part(label) {
+    color: #75f3f9;
+}
+#ugyfelmezok vaadin-combo-box::part(text-field) {
+    background: #7f7f7f;
+    padding: 0;
+    height: 100%;
+    border-radius: 5px;
+    color: #75f3f9;
+}
+vaadin-combo-box-overlay::part(content) {
+    background-color: #7f7f7f;
+    color: #75f3f9;
+}
+#ugyfelmezok vaadin-text-field {
+    margin-bottom: 20px;
+    max-height: 36px;
+    background: #7f7f7f;
+    padding: 0;
+    height: 100%;
+    border-radius: 5px;
+    color: #75f3f9;
+}
+#ugyfelmezok vaadin-checkbox::part(checkbox) {
+    background: #7f7f7f;
+}
+#ugyfelmezok label {
+    font-weight: bold;
+    color: #75f3f9;
+}
+#ugyfelmezok iron-icon {
+    color: #75f3f9;
+}
+#megrendeles-gomb {
+    background-color: #7f7f7f;
+    color: #75f3f9;
+}

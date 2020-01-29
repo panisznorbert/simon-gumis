@@ -18,9 +18,9 @@ import panisz.norbert.simongumis.exceptions.HibasKitoltesException;
 @EqualsAndHashCode(callSuper = true)
 @Data
 class UgyfelMezok extends VerticalLayout {
-    private TextField nev = new TextField("Név:");
-    private TextField telefon = new TextField("Telefon:");
-    private TextField email = new TextField("E-mail:");
+    private TextField nev = new TextField();
+    private TextField telefon = new TextField();
+    private TextField email = new TextField();
 
     private Checkbox pipa = new Checkbox();
     private Label leiras = new Label("Elfogadom az oldal adatkezelését");
@@ -28,6 +28,10 @@ class UgyfelMezok extends VerticalLayout {
     private HorizontalLayout adatkezeles = new HorizontalLayout(pipa, leiras, adatkezelesLeiras);
 
     UgyfelMezok(){
+        this.setId("ugyfelmezok");
+        nev.setPlaceholder("Név");
+        telefon.setPlaceholder("Telefonszám");
+        email.setPlaceholder("E-mail cím");
         adatkezelesLeiras.addClickListener(e -> adatkezelesMegnyitas());
         adatkezeles.setAlignItems(Alignment.BASELINE);
         this.setAlignItems(Alignment.CENTER);

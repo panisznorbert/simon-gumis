@@ -24,12 +24,12 @@ import panisz.norbert.simongumis.exceptions.LetezoGumiException;
 import panisz.norbert.simongumis.services.AdminService;
 import panisz.norbert.simongumis.services.GumikService;
 import panisz.norbert.simongumis.services.RendelesService;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class GumikLapSor extends HorizontalLayout {
 
@@ -69,7 +69,6 @@ public class GumikLapSor extends HorizontalLayout {
         this.rendelesService = rendelesService;
         this.adminService = adminService;
         ujSor(gumi);
-
     }
 
     GumikLapSor(GumikService gumikService, RendelesService rendelesService, AppLayoutMenuItem kosar, AdminService adminService){
@@ -78,7 +77,6 @@ public class GumikLapSor extends HorizontalLayout {
         this.rendelesService = rendelesService;
         this.adminService = adminService;
         ujElemFelvetele();
-
     }
 
     private void setKepHelyeSzerkeszt(String funkcio){
@@ -265,7 +263,6 @@ public class GumikLapSor extends HorizontalLayout {
         modositasHelye.add(szerkeszt);
 
         setKepHelyeSzerkeszt("szerkeszt");
-
     }
 
     private void szerkeszthetoMezokInit(){
@@ -339,7 +336,6 @@ public class GumikLapSor extends HorizontalLayout {
 
         return gumi;
     }
-
 
     private void mentes(GumikEntity gumi){
         try{
@@ -492,6 +488,7 @@ public class GumikLapSor extends HorizontalLayout {
         }
 
         try{
+            Collections.sort(rendeles.getRendelesiEgysegek());
             rendelesService.ment(rendeles);
             kosar.getStyle().set("color", "red");
             kosar.setIcon(new Icon(VaadinIcon.CART));

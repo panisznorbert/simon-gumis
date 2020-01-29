@@ -29,7 +29,6 @@ public class FoMenu extends VerticalLayout {
     private AppLayoutMenuItem idoponfoglalas = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(), "Időpontfoglalás", e -> UI.getCurrent().navigate("idopontfoglalas"));
     private AppLayoutMenuItem kosar = new AppLayoutMenuItem(VaadinIcon.CART_O.create(), "Kosár", e -> UI.getCurrent().navigate("kosar"));
     private AppLayoutMenuItem gumik = new AppLayoutMenuItem(VaadinIcon.BULLSEYE.create(), "Gumik", e -> UI.getCurrent().navigate("gumik"));
-    private AppLayoutMenuItem gumikKezelese = new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Gumik kezelése", e ->  UI.getCurrent().navigate("gumik_kezelese"));
     private AppLayoutMenuItem szolgaltatasok = new AppLayoutMenuItem(VaadinIcon.TOOLS.create(), "Szolgáltatások", e -> UI.getCurrent().navigate("szolgaltatasok"));
     private AppLayoutMenuItem kezdolap = new AppLayoutMenuItem(VaadinIcon.HOME.create(), "Kezdőlap", e -> UI.getCurrent().navigate(""));
     private AppLayoutMenuItem beallitasok = new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Beállítások", e -> UI.getCurrent().navigate("beallitasok"));
@@ -50,7 +49,6 @@ public class FoMenu extends VerticalLayout {
         //bejelentkezéshez kötött menüpontok
         try {
             //if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
-                menuElemeinekBeallitasa(menu, gumikKezelese);
                 menuElemeinekBeallitasa(menu, lefoglaltIdopontok);
                 menuElemeinekBeallitasa(menu, rendelesek);
                 menuElemeinekBeallitasa(menu, beallitasok);
@@ -123,7 +121,6 @@ public class FoMenu extends VerticalLayout {
         idoponfoglalas .getStyle().set("color", szin);
         kosar.getStyle().set("color", szin);
         gumik.getStyle().set("color", szin);
-        gumikKezelese.getStyle().set("color", szin);
         szolgaltatasok.getStyle().set("color", szin);
         kezdolap.getStyle().set("color", szin);
         beallitasok.getStyle().set("color", szin);

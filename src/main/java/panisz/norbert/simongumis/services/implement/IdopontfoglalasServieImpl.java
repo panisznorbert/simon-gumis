@@ -8,7 +8,10 @@ import panisz.norbert.simongumis.entities.UgyfelEntity;
 import panisz.norbert.simongumis.repositories.IdopontfoglalasRepository;
 import panisz.norbert.simongumis.repositories.UgyfelRepository;
 import panisz.norbert.simongumis.services.IdopontfoglalasServie;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -27,6 +30,13 @@ public class IdopontfoglalasServieImpl implements IdopontfoglalasServie {
     @Override
     public List<IdopontfoglalasEntity> keresesNaptol(LocalDateTime localDateTime) {
         return idopontfoglalasRepository.findAllByDatumAfter(localDateTime);
+    }
+
+    @Override
+    public List<IdopontfoglalasEntity> keresesMa() {
+        List<IdopontfoglalasEntity> foglalasok = idopontfoglalasRepository.findAllByDatumAfter(LocalDateTime.of(LocalDate.now(), LocalTime.now()));
+        foglalasok.removeAll(idopontfoglalasRepository.findAllByDatumAfter(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(0, 0))));
+        return foglalasok;
     }
 
     @Override
