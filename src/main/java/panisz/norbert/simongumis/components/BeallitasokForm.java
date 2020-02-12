@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import panisz.norbert.simongumis.services.KezdolapTartalomService;
 import panisz.norbert.simongumis.services.NyitvatartasService;
 
-@StyleSheet("style.css")
+@StyleSheet("beallitasok.css")
 @UIScope
 @Component
 public class BeallitasokForm extends VerticalLayout {

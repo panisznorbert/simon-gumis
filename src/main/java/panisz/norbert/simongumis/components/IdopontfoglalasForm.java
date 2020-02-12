@@ -23,6 +23,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.logging.Logger;
 
+@StyleSheet("kosar_idopontfoglalas.css")
 @UIScope
 @Component
 public class IdopontfoglalasForm extends VerticalLayout {
@@ -36,21 +37,28 @@ public class IdopontfoglalasForm extends VerticalLayout {
     private HorizontalLayout idopontok = new HorizontalLayout();
 
     private Button foglal = new Button("Lefoglal");
-    private HorizontalLayout gombsor = new HorizontalLayout(foglal);
 
     private UgyfelMezok ugyfelAdatok = new UgyfelMezok();
 
-    private TextField megjegyzes = new TextField("Megjegyzés:");
-    private HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
+    private TextField megjegyzes = new TextField();
 
 
     public IdopontfoglalasForm(IdopontfoglalasServie idopontfoglalasServie, NyitvatartasService nyitvatartasService){
+        this.setId("kosar_idopontfoglalas_alap");
+        this.setSizeUndefined();
         this.idopontfoglalasServie = idopontfoglalasServie;
-        idopontokDatum = new MagyarDatum("Dátum:");
-        foglalhatoOrak = new ComboBox<>("Szabad időpontok");
+        idopontokDatum = new MagyarDatum("");
+        idopontokDatum.setId("datum");
+        foglalhatoOrak = new ComboBox<>();
+        foglalhatoOrak.setPlaceholder("Szabad időpontok");
         idopontok.add(idopontokDatum, foglalhatoOrak);
+        idopontok.setId("ugyfelmezok");
+        HorizontalLayout gombsor = new HorizontalLayout(foglal);
+        foglal.setId("gomb");
+        megjegyzes.setPlaceholder("Megjegyzés");
+        HorizontalLayout egyeb = new HorizontalLayout(megjegyzes);
+        egyeb.setId("ugyfelmezok");
         add(idopontok, ugyfelAdatok, egyeb, gombsor);
-        this.setAlignItems(Alignment.CENTER);
         foglal.addClickListener(e -> idopontFoglalas());
         alapBeallitas(nyitvatartasService);
         idopontokDatum.addValueChangeListener(e -> kivalasztottDatum(e.getValue(), nyitvatartasService));
@@ -179,7 +187,8 @@ public class IdopontfoglalasForm extends VerticalLayout {
         }
 
         Collections.sort(orak);
-        foglalhatoOrak = new ComboBox<>("Szabad időpontok", orak);
+        foglalhatoOrak = new ComboBox<>("", orak);
+        foglalhatoOrak.setPlaceholder("Szabad időpontok");
         idopontok.add(foglalhatoOrak);
 
     }

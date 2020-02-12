@@ -1,4 +1,4 @@
-#kosar {
+#kosar_idopontfoglalas_alap {
     align-items: center;
     margin-top: 80px;
     margin-left: 0;
@@ -79,8 +79,9 @@
     width: 90px;
     padding: 4px;
 }
-#ugyfelmezok vaadin-combo-box {
+#ugyfelmezok vaadin-combo-box,  #ugyfelmezok vaadin-date-picker{
     color: #75f3f9;
+    height: 36px;
     margin-top: 4px;
 }
 #ugyfelmezok vaadin-text-field::slotted(span) {
@@ -90,14 +91,17 @@
 #ugyfelmezok vaadin-combo-box::part(text-field), #ugyfelmezok vaadin-combo-box::part(clear-button), #ugyfelmezok vaadin-combo-box::part(toggle-button), #combobox-meret::part(label) {
     color: #75f3f9;
 }
-#ugyfelmezok vaadin-combo-box::part(text-field) {
+#ugyfelmezok vaadin-date-picker::part(text-field), #ugyfelmezok vaadin-date-picker::part(clear-button), #ugyfelmezok vaadin-date-picker::part(toggle-button), #combobox-meret::part(label) {
+    color: #75f3f9;
+}
+#ugyfelmezok vaadin-combo-box::part(text-field), #ugyfelmezok vaadin-date-picker::part(text-field) {
     background: #7f7f7f;
     padding: 0;
     height: 100%;
     border-radius: 5px;
     color: #75f3f9;
 }
-vaadin-combo-box-overlay::part(content) {
+vaadin-combo-box-overlay::part(content), vaadin-date-picker-overlay::part(content) {
     background-color: #7f7f7f;
     color: #75f3f9;
 }
@@ -120,7 +124,7 @@ vaadin-combo-box-overlay::part(content) {
 #ugyfelmezok iron-icon {
     color: #75f3f9;
 }
-#megrendeles-gomb {
+#gomb {
     background-color: #7f7f7f;
     color: #75f3f9;
 }

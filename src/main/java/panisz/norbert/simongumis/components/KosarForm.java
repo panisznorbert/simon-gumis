@@ -17,7 +17,7 @@ import panisz.norbert.simongumis.exceptions.HibasKitoltesException;
 import panisz.norbert.simongumis.services.RendelesService;
 import java.time.LocalDate;
 
-@StyleSheet("kosar.css")
+@StyleSheet("kosar_idopontfoglalas.css")
 @UIScope
 @Component
 public class KosarForm extends VerticalLayout {
@@ -33,14 +33,14 @@ public class KosarForm extends VerticalLayout {
         alapRendelesService = rendelesService;
 
         if(alapRendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null) {
-            this.setId("kosar");
+            this.setId("kosar_idopontfoglalas_alap");
             rendelesEntity = alapRendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId());
             rendelesekBetoltese();
             rendelesEntity.setVegosszeg(rendelesVegosszeg());
             VerticalLayout tartalom = new VerticalLayout();
             HorizontalLayout megrendelesSorok = new HorizontalLayout();
             Button megrendeles = new Button("Megrendelés");
-            megrendeles.setId("megrendeles-gomb");
+            megrendeles.setId("gomb");
             HorizontalLayout gombok = new HorizontalLayout(megrendeles);
             tartalom.add(megrendelesSorok, new VerticalLayout(vevoAdatai, gombok));
             add(tartalom);
