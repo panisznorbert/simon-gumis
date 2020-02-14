@@ -13,7 +13,6 @@ import java.util.List;
 class GumikLap extends VerticalLayout {
 
     GumikLap(List<GumikEntity> szurtGumik, GumikService gumikService, RendelesService rendelesService, AppLayoutMenuItem kosar, AdminService adminService){
-        szurtGumik.sort(GumikEntity.Comparators.GYARTO);
         for (GumikEntity gumi : szurtGumik) {
             this.add(new GumikLapSor(gumi, gumikService, rendelesService, kosar, adminService));
         }

@@ -37,7 +37,9 @@ public class GumikForm extends VerticalLayout {
         this.foMenu = foMenu;
         this.adminService = adminService;
         this.setId("alap");
-        gumilap = new GumikLap(gumikService.osszes(), gumikService, rendelesService, foMenu.getKosar(), adminService);
+        szurtGumik = gumikService.osszes();
+        szurtGumik.sort(GumikEntity.Comparators.GYARTO);
+        gumilap = new GumikLap(szurtGumik, gumikService, rendelesService, foMenu.getKosar(), adminService);
         almenu.setSizeUndefined();
         initMenusor();
 
