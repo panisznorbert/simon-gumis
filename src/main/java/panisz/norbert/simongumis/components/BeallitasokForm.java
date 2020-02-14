@@ -13,6 +13,7 @@ import panisz.norbert.simongumis.services.NyitvatartasService;
 public class BeallitasokForm extends VerticalLayout {
 
     public BeallitasokForm(NyitvatartasService nyitvatartasService, KezdolapTartalomService kezdolapTartalomService){
+        this.setId("beallitasok_lap");
         VerticalLayout nyitvatartasModositasa = new NyitvatartasModositasa(nyitvatartasService);
         VerticalLayout kezdolapKepModositasa = new SzorolapModositasa(kezdolapTartalomService);
         kezdolapKepModositasa.addClassName("szegely");
