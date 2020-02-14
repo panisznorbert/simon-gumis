@@ -1,0 +1,29 @@
+#kezdo_alap {
+    margin-top: 60px;
+    align-items: center;
+}
+#uj-tartalom {
+    align-items: center;
+}
+#kezdolap-sorok {
+    width: 900px;
+}
+#kezdolap-tartalom-neallitas {
+    width: 900px;
+}
+#kep-szoveggel {
+    width: 20%;
+}
+#kep-szoveggel-leiras {
+    padding-right: 0;
+    align-items: center;
+}
+#csak-kep {
+    width: 500px;
+}
+#csak-szoveg {
+    width: 900px;
+}
+#aktualis-szorolap {
+    align-items: center;
+}

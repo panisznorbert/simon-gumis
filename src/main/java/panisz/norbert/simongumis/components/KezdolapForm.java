@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.InputStreamFactory;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
+@StyleSheet("kezdolap.css")
 @UIScope
 @Component
 public class KezdolapForm extends VerticalLayout {
@@ -22,9 +24,7 @@ public class KezdolapForm extends VerticalLayout {
     public KezdolapForm(KezdolapTartalomService kezdolapTartalomService){
         szorolapBetoltes(kezdolapTartalomService);
         tovabbiBetoltes(kezdolapTartalomService);
-
-        alap.setAlignItems(Alignment.CENTER);
-
+        alap.setId("kezdo_alap");
         this.add(alap);
     }
 
@@ -47,7 +47,7 @@ public class KezdolapForm extends VerticalLayout {
 
         Collections.sort(kezdolapTartalomEntityList);
         VerticalLayout ujTartalom = new VerticalLayout();
-        ujTartalom.setAlignItems(Alignment.CENTER);
+        ujTartalom.setId("uj-tartalom");
         for(KezdolapTartalomEntity kezdolapTartalomEntity:kezdolapTartalomEntityList){
             ujTartalom.add(new KezdolapSorok(kezdolapTartalomEntity.getKep(), kezdolapTartalomEntity.getLeiras(), true));
         }

@@ -46,7 +46,7 @@ INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12002, 
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12003, '2020-09-25 16:30:00', 11003, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12004, '2020-09-25 9:30:00', 11004, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12005, '2020-10-22 10:30:00', 11005, 'Megrendelt gumit vennék át és rakatnám fel'  );
-INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12006, '2020-01-24 15:00:00', 11006, ''  );
+INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12006, '2021-01-24 15:00:00', 11006, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12007, '2020-09-27 14:30:00', 11002, 'egy jó kávéz is lesz ;)'  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12008, '2020-11-27 10:30:00', 11004, ''  );
 INSERT INTO idopontfoglalasok (id, datum, ugyfel_id, megjegyzes) VALUES (12009, '2020-09-27 8:30:00', 11006, ''  );

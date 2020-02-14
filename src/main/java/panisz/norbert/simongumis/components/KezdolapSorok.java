@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -9,40 +10,40 @@ import com.vaadin.flow.server.StreamResource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+@StyleSheet("kezdolap.css")
 class KezdolapSorok extends HorizontalLayout {
 
     KezdolapSorok(byte[] kepAdat, String leiras, boolean kezdolap){
 
         HorizontalLayout tartalom = new HorizontalLayout();
-        tartalom.setWidth("900px");
+        tartalom.setId("kezdolap-sorok");
         if(!kezdolap){
-            this.setWidth("900px");
+            this.setId("kezdolap-tartalom-neallitas");
         }
 
         if(kepAdat != null && leiras != null){
-
             Image kep = kepBetolt(kepAdat);
-            kep.setWidth("20%");
+            kep.setId("kep-szoveggel");
             tartalom.add(kep);
             TextArea szoveg = new TextArea();
             szoveg.setSizeFull();
             szoveg.setReadOnly(true);
             szoveg.setValue(leiras);
             VerticalLayout szovegmezo = new VerticalLayout(szoveg);
-            szovegmezo.setAlignItems(Alignment.CENTER);
+            szovegmezo.setId("kep-szoveggel-leiras");
             tartalom.add(szovegmezo);
             add(tartalom);
         }
         if(kepAdat != null && leiras == null){
             Image kep = kepBetolt(kepAdat);
-            kep.setWidth("500px");
+            kep.setId("csak-kep");
             add(kep);
         }
         if(kepAdat == null && leiras != null){
             TextArea szoveg = new TextArea();
+            szoveg.setId("csak-szoveg");
             szoveg.setReadOnly(true);
             szoveg.setValue(leiras);
-            szoveg.setWidth("900px");
             add(szoveg);
         }
 
