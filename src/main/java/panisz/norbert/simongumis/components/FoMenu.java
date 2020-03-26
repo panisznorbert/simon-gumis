@@ -4,18 +4,13 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
-import panisz.norbert.simongumis.entities.NyitvatartasEntity;
 import panisz.norbert.simongumis.services.AdminService;
-import panisz.norbert.simongumis.services.NyitvatartasService;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @UIScope
 @Component
@@ -34,7 +29,7 @@ public class FoMenu extends VerticalLayout {
     private AppLayoutMenuItem beallitasok = new AppLayoutMenuItem(VaadinIcon.COGS.create(), "Beállítások", e -> UI.getCurrent().navigate("beallitasok"));
 
 
-    public FoMenu(AdminService adminService, NyitvatartasService nyitvatartasService){
+    public FoMenu(AdminService adminService){
 
         menuSzinek("white");
         AppLayoutMenu menu = appLayout.createMenu();
@@ -55,64 +50,12 @@ public class FoMenu extends VerticalLayout {
             //}
         }catch(Exception e){}
 
-        add(appLayout, nyitvatartasMeghatarozo(nyitvatartasService));
-
-    }
-
-    private VerticalLayout nyitvatartasMeghatarozo(NyitvatartasService nyitvatartasService){
-        VerticalLayout infosav = new VerticalLayout();
-        Label nyitvatartasLabel = new Label();
-        nyitvatartasLabel.addClassName("nyitvatartas");
-        infosav.addClassName("infosav");
-        infosav.add(nyitvatartasLabel);
-        nyitvatartasLabel.getStyle().set("font-weight", "bold");
-        NyitvatartasEntity elteroNyitvatartas = nyitvatartasService.adottNapNyitvatartasa(LocalDate.now());
-
-        nyitvatartasLabel.getStyle().set("color", "red");
-
-        if(elteroNyitvatartas != null){
-            if(!elteroNyitvatartas.isNyitva()){
-                nyitvatartasLabel.setText("Ma zárva van a műhely.");
-                return infosav;
-            }else{
-                nyitvatartasLabel.setText("Ma nyitva: " + elteroNyitvatartas.getNyitas().toString() + " - " + elteroNyitvatartas.getZaras().toString());
-            }
-            if(nyitvavan(elteroNyitvatartas.getNyitas(), elteroNyitvatartas.getZaras())){
-                nyitvatartasLabel.getStyle().set("color", "green");
-            }
-            return infosav;
-        }
-        switch(LocalDate.now().getDayOfWeek()){
-            case SUNDAY:{
-                nyitvatartasLabel.setText("Ma zárva van a műhely.");
-                break;
-            }
-            case SATURDAY:{
-                nyitvatartasLabel.setText("Ma nyitva: 7:00 - 12:00");
-                if(nyitvavan(LocalTime.of(7, 0), LocalTime.of(12, 0))){
-                    nyitvatartasLabel.getStyle().set("color", "green");
-                }
-                break;
-            }
-            default:{
-                nyitvatartasLabel.setText("Ma nyitva: 7:00 - 17:00");
-                if(nyitvavan(LocalTime.of(7, 0), LocalTime.of(17, 0))){
-                    nyitvatartasLabel.getStyle().set("color", "green");
-                }
-                break;
-            }
-        }
-
-        return infosav;
+        add(appLayout);
     }
 
     private void menuElemeinekBeallitasa(AppLayoutMenu menu, AppLayoutMenuItem menuItem) {
         menuItem.getElement().setAttribute("theme", "icon-on-top");
         menu.addMenuItem(menuItem);
-    }
-
-    private boolean nyitvavan(LocalTime nyitas, LocalTime zaras){
-        return LocalTime.now().isAfter(nyitas) && LocalTime.now().isBefore(zaras);
     }
 
     private void menuSzinek(String szin){

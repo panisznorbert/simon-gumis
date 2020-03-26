@@ -15,6 +15,7 @@ public class SzolgaltatsokForm extends VerticalLayout {
     public SzolgaltatsokForm(){
 
         this.getStyle().set("padding-left","30%");
+        this.getStyle().set("margin-top", "50px");
         VerticalLayout tartalom = new VerticalLayout();
         tartalom.setWidth("400px");
         add(tartalom);

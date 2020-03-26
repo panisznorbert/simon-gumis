@@ -14,7 +14,7 @@ import java.util.Objects;
 @Table(name = "gumik")
 public class GumikEntity extends BaseEntity implements Comparable<GumikEntity>{
     private String gyarto;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL})
     protected GumiMeretekEntity meret;
     private Integer ar;
     private String evszak;

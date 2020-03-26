@@ -9,12 +9,12 @@
     position: fixed;
     display: flex;
     width: 100%;
-    min-height: 170px;
+    min-height: 175px;
     background-color: white;
 }
 .menusor {
     background-color: black;
-    height: 95px;
+    height: 118px;
     margin: 0;
 }
 ::part(splitter) {
@@ -23,45 +23,43 @@
 ::part(back-button), ::part(forward-button) {
     color: #75f3f9;
 }
-
 .jobb-fejlec-kep {
-    height: 170px;
-    margin: 0;
-}
-.bal-fejlec-kep {
-    height: 95px;
+    height: 175px;
     margin: 0;
 }
 .szolgaltatas-sorok {
     margin-top: 20px;
+}
+.infosav {
+    height: 118px;
+    background: black;
+    padding: 0 0 0 2%;
 }
 vaadin-app-layout {
     background-color: transparent;
     --lumo-base-color: transparent;
     height: 95px;
 }
-@media (min-width: 850px) {
-    .nyitvatartas {
-        min-width: 200px;
-        margin-top: 50px;
-        width: inherit;
-    }
-    vaadin-app-layout vaadin-tab {
-        --lumo-font-size-m: var(--lumo-font-size-xs);
-        --lumo-icon-size-m: 1.5rem;
-        padding-left: .75em;
-        padding-right: .75em;
-
-    }
-    .infosav {
-        align-items: center;
-    }
-    .tartalom {
-        width: 100%;
-        align-items: center;
-        margin-top: 95px;
-    }
+.nyitvatartas {
+    min-width: 200px;
+    margin-top: 100px;
+    width: inherit;
 }
+vaadin-app-layout vaadin-tab {
+    --lumo-font-size-m: var(--lumo-font-size-xs);
+    --lumo-icon-size-m: 1.5rem;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+.infosav {
+    align-items: center;
+}
+.tartalom {
+    width: 100%;
+    align-items: center;
+    margin-top: 95px;
+}
+/*
 @media (max-width: 1200px) {
     .tartalom {
         width: 100%;
@@ -128,5 +126,7 @@ vaadin-app-layout {
         min-width: 400px;
     }
 }
+
+ */
 
 

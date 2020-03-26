@@ -126,7 +126,7 @@ vaadin-text-field::slotted(span) {
 }
 #sorvege {
     padding: 0 20px 0 0;
-    width: 100px;
+    width: 150px;
     align-items: flex-end;
     color: #75f3f9;
     background-color: #7f7f7f;
