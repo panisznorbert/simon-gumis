@@ -94,16 +94,17 @@ class SzorolapModositasa extends VerticalLayout {
         try{
             ujSzorolap.setKep(memoryBuffer.getInputStream().readAllBytes());
             kezdolapTartalomService.ment(ujSzorolap);
+            aktualisSzorolap.removeAll();
+            szorolap = kepBetolt(ujSzorolap);
+            szorolap.setWidth(ujSzorolap.getKepMeret());
+            aktualisSzorolap.add(szorolap);
+            uploadInit();
         }catch (Exception ex) {
             hibaAblak = new Hibajelzes("A kép mentése sikertelen");
             hibaAblak.open();
         }
 
-        aktualisSzorolap.removeAll();
-        szorolap = kepBetolt(ujSzorolap);
-        szorolap.setWidth(ujSzorolap.getKepMeret());
-        aktualisSzorolap.add(szorolap);
-        uploadInit();
+
     }
 
     private void eltavolitas(KezdolapTartalomService kezdolapTartalomService){
