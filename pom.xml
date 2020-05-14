@@ -7,6 +7,7 @@
     <groupId>panisz.norbert</groupId>
     <artifactId>simon-gumis</artifactId>
     <version>1.1-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -22,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <java.version>1.11</java.version>
+        <java.version>1.8</java.version>
 
         <version.checkstyle>2.17</version.checkstyle>
         <version.findbugs>3.0.4</version.findbugs>
@@ -62,6 +63,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
