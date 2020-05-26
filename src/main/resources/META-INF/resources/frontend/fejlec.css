@@ -10,7 +10,6 @@
     display: flex;
     width: 100%;
     min-height: 185px;
-    background-color: white;
 }
 .menusor {
     background-color: black;
@@ -58,6 +57,18 @@ vaadin-app-layout vaadin-tab {
     width: 100%;
     align-items: center;
     margin-top: 95px;
+}
+.guminyom1-kep {
+    position: fixed;
+    top: 150px;
+    left: 0;
+    z-index: -10;
+}
+.guminyom2-kep {
+    position: fixed;
+    bottom: 50px;
+    right: 0;
+    z-index: -10;
 }
 /*
 @media (max-width: 1200px) {

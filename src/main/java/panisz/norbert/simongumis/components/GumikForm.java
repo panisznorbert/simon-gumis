@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.components;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -62,11 +63,11 @@ public class GumikForm extends VerticalLayout {
         rendezes.setId("rendezes");
         menusor.add(keres, rendezes);
 
-        //if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
+        if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
         Button uj = new Button("Új gumi");
         uj.addClickListener(e -> UjElem());
         menusor.add(uj);
-        //}
+        }
         menusor.setId("menusor");
         menusor.setSizeUndefined();
 

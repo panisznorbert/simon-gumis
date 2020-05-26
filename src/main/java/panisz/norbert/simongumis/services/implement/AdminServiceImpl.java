@@ -1,5 +1,6 @@
 package panisz.norbert.simongumis.services.implement;
 
+
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
 @Service
 @Transactional
 public class AdminServiceImpl implements AdminService {
-    //private final static Logger LOGGER = Logger.getLogger(AdminServiceImpl.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(AdminServiceImpl.class.getName());
     @Autowired
     AdminRepository adminRepository;
 
@@ -24,6 +25,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminEntity adminraKeres(String nev, String jelszo) {
+        LOGGER.info(Base64.encodeBase64String(jelszo.getBytes()));
         return adminRepository.findByNevAndJelszo(nev, Base64.encodeBase64String(jelszo.getBytes()));
     }
 

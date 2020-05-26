@@ -198,7 +198,7 @@ public class GumikLapSor extends HorizontalLayout {
         this.add(kepHelye, leirasHelye1, leirasHelye2, megrendelesHelye);
         this.setId("gumik-sor");
 
-        //if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
+        if (adminService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
         torol = new Icon(VaadinIcon.TRASH);
         torol.setId("torol-ikon");
         torol.addClickListener(e -> torles(gumi, gumikService));
@@ -209,9 +209,9 @@ public class GumikLapSor extends HorizontalLayout {
         modositasHelye.setSizeUndefined();
         modositasHelye.setId("sorvege");
         this.add(modositasHelye);
-        //}else{
-        //   megrendelesHelye.setId("sorvege");
-        //}
+        }else{
+           megrendelesHelye.setId("sorvege");
+        }
     }
 
     private void torles(GumikEntity gumi, GumikService gumikService){

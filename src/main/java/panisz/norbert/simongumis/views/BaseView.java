@@ -33,7 +33,9 @@ public class BaseView extends SplitLayout {
 
     private HorizontalLayout fejlec = new HorizontalLayout();
 
-    private Image jobbOldal = new Image("/images/fejlec.jpg", "");
+    private Image jobbOldal = new Image("/images/fejlec.png", "");
+    private Image guminyom1 = new Image("/images/guminyom1.png", "");
+    private Image guminyom2 = new Image("/images/guminyom2.png", "");
     VerticalLayout tartalom = new VerticalLayout();
     private VerticalLayout lablec = new VerticalLayout();
 
@@ -51,12 +53,15 @@ public class BaseView extends SplitLayout {
         fejlec.addClassName("fejlec");
         fomenu.addClassName("menusor");
         jobbOldal.addClassName("jobb-fejlec-kep");
+        guminyom1.addClassName("guminyom1-kep");
+        guminyom2.addClassName("guminyom2-kep");
         if(rendelesService.sessionreKeres(UI.getCurrent().getSession().getSession().getId()) != null){
             fomenu.getKosar().setIcon(new Icon(VaadinIcon.CART));
             fomenu.getKosar().getStyle().set("color", "red");
         }
 
         fejlec.add(nyitvatartasMeghatarozo(nyitvatartasService), fomenu, jobbOldal);
+        tartalom.add(guminyom1, guminyom2);
         this.addToPrimary(fejlec);
         this.addToSecondary(tartalom);
 

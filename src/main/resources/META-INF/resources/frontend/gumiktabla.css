@@ -1,6 +1,6 @@
 vaadin-button img {
-    max-width: 140px;
-    max-height: 140px;
+    max-width: 120px;
+    max-height: 120px;
 }
 vaadin-button iron-icon {
     width: 100px;
@@ -30,10 +30,10 @@ vaadin-text-field::slotted(span) {
 }
 #kepHelye vaadin-button {
     padding: 0;
-    margin: 26px 0 0;
+    margin: 36px 0 0;
     align-self: center;
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
 }
 #leirasHelye1 {
     width: 200px;
