@@ -2,6 +2,7 @@ package panisz.norbert.simongumis.components;
 
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -17,8 +18,9 @@ class KezdolapSorok extends HorizontalLayout {
 
         HorizontalLayout tartalom = new HorizontalLayout();
         tartalom.setId("kezdolap-sorok");
+
         if(!kezdolap){
-            this.setId("kezdolap-tartalom-neallitas");
+            this.setId("kezdolap-tartalom-beallitas");
         }
 
         if(kepAdat != null && leiras != null){
